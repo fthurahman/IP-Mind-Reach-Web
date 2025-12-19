@@ -63,7 +63,7 @@
                       class="text-sm text-[#2D2A28] font-semibold border-b-2 border-[#B4C59B] pb-1 transition-all">Resources</a>
                     <a href="${pageContext.request.contextPath}/forum"
                       class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Forum</a>
-                    <a href="${pageContext.request.contextPath}/resultDASS"
+                    <a href="${pageContext.request.contextPath}/progress"
                       class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Progress</a>
                     <a href="${pageContext.request.contextPath}/counseling"
                       class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Telehealth

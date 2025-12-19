@@ -18,13 +18,13 @@
               --font-family-sans: 'Work Sans', sans-serif;
             }
 
-                  body {
-                    font-family: var(--font-family-sans);
-                    background-color: #F7F3EF;
-                    margin: 0;
-                    padding-bottom: 3rem;
-                  }
-      
+            body {
+              font-family: var(--font-family-sans);
+              background-color: #F7F3EF;
+              margin: 0;
+              padding-bottom: 3rem;
+            }
+
             /* Custom Badge Styles matching the dashboard */
             .badge-topic {
               background-color: #F3F4F6;
@@ -58,7 +58,7 @@
               box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             }
           </style>
-          </head>
+      </head>
 
       <body>
 
@@ -74,7 +74,7 @@
                 class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Resources</a>
               <a href="${pageContext.request.contextPath}/forum"
                 class="text-sm text-[#2D2A28] font-semibold border-b-2 border-[#B4C59B] pb-1 transition-all">Forum</a>
-              <a href="${pageContext.request.contextPath}/resultDASS"
+              <a href="${pageContext.request.contextPath}/progress"
                 class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Progress</a>
               <a href="${pageContext.request.contextPath}/counseling"
                 class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Telehealth
@@ -114,7 +114,7 @@
               <a href="${pageContext.request.contextPath}/homeStudent" class="text-[#3D3A37] font-medium">Self-Help</a>
               <a href="${pageContext.request.contextPath}/resources" class="text-[#3D3A37] font-medium">Resources</a>
               <a href="${pageContext.request.contextPath}/forum" class="text-[#2D2A28] font-semibold">Forum</a>
-              <a href="${pageContext.request.contextPath}/resultDASS" class="text-[#3D3A37] font-medium">Progress</a>
+              <a href="${pageContext.request.contextPath}/progress" class="text-[#3D3A37] font-medium">Progress</a>
               <a href="${pageContext.request.contextPath}/counseling" class="text-[#3D3A37] font-medium">Telehealth
                 Assistance</a>
               <a href="#" class="text-[#3D3A37] font-medium">Chat Support</a>
@@ -237,18 +237,18 @@
           </div>
         </div>
 
-            <script>
+        <script>
           lucide.createIcons();
 
-              // --- Mobile Menu Logic ---
-              function toggleMobileMenu() {
-                const sheet = document.getElementById("mobileSheet");
-                if (sheet.classList.contains("hidden")) {
-                  sheet.classList.remove("hidden");
-                } else {
-                  sheet.classList.add("hidden");
-                }
-              }
+          // --- Mobile Menu Logic ---
+          function toggleMobileMenu() {
+            const sheet = document.getElementById("mobileSheet");
+            if (sheet.classList.contains("hidden")) {
+              sheet.classList.remove("hidden");
+            } else {
+              sheet.classList.add("hidden");
+            }
+          }
 
           // --- Modal Logic ---
           function openCreateModal() {
@@ -256,9 +256,9 @@
             const randomAnimal = animals[Math.floor(Math.random() * animals.length)];
             document.getElementById("authorField").value = "Anonymous " + randomAnimal;
 
-                const modal = document.getElementById("createPostModal");
-                modal.classList.remove("hidden");
-              }
+            const modal = document.getElementById("createPostModal");
+            modal.classList.remove("hidden");
+          }
 
           function closeCreateModal() {
             const modal = document.getElementById("createPostModal");
