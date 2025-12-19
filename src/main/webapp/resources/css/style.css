@@ -1,0 +1,361 @@
+/* ===== Base Layout ===== */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f5f1ed;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* ===== Container / Card ===== */
+.form-container {
+    background: white;
+    padding: 30px 40px;
+    width: 350px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+/* ===== Brand Title ===== */
+.form-container h1 {
+    margin-bottom: 5px;
+    font-size: 28px;
+    color: #333;
+}
+
+/* Sub tagline */
+.form-container p.subtitle {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* ===== Input Fields ===== */
+label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+input:focus {
+    border-color: #BFD0AA;
+    outline: none;
+}
+
+/* ===== Buttons ===== */
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #BFD0AA;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+input[type="submit"]:hover {
+    background-color: #597A30;
+}
+
+/* ===== Links ===== */
+a {
+    color: #4A76FD;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Error Message */
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+/* Optional Success alert (light green) */
+.success-alert {
+    padding: 10px;
+    background: #e6ffe6;
+    border: 1px solid green;
+    color: green;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.assessment-container {
+		background: white;
+		width: 550px;
+		padding: 30px;
+		border-radius: 12px;
+		box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+		text-align: center;
+	}
+
+	h2 {
+		margin-top: 0;
+		color: #2c3e50;
+	}
+
+	fieldset {
+		border: none;
+		margin-top: 15px;
+		text-align: left;
+	}
+
+	legend {
+		font-size: 18px;
+		font-weight: bold;
+		color: #34495e;
+		margin-bottom: 10px;
+	}
+
+	.assessment-container label {
+		display: block;
+		background: #f6f8fb;
+		padding: 8px;
+		margin: 6px 0;
+		border-radius: 6px;
+		cursor: pointer;
+		border: 1px solid transparent;
+		transition: 0.2s;
+	}
+
+	label:hover {
+		background: #e8eff7;
+		border-color: #b9cede;
+	}
+
+	button {
+		padding: 10px 20px;
+		border: none;
+		border-radius: 6px;
+		margin: 10px;
+		font-size: 16px;
+		cursor: pointer;
+		transition: 0.3s;
+	}
+
+	#back {
+		background: #bdc3c7;
+		color: white;
+	}
+
+	#back:hover {
+		background: #95a5a6;
+	}
+
+	#next {
+		background: #3498db;
+		color: white;
+	}
+
+	#next:hover {
+		background: #217dbb;
+	}
+
+	/* question display */
+	.question {
+		display: none;
+	}
+	
+/* ------- RESULT PAGE -------- */
+
+.result-container {
+    max-width: 600px;
+    background: white;
+    margin: 60px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.score-box {
+    background: #f6f8fb;
+    border-left: 6px solid #4a74d5;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 6px;
+    font-size: 17px;
+    text-align: left;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 10px 18px;
+    background: #1c3b70;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    opacity: 0.8;
+}
+
+/* Color for Levels */
+.level.Mild { color: #2d7d46; font-weight: bold; }
+.level.Moderate { color: #c58500; font-weight: bold; }
+.level.Severe { color: #c13333; font-weight: bold; }
+.level.ExtremeSevere { color: #7a0a0a; font-weight: bold; }
+
+/* === STUDENT HOME PAGE === */
+
+.student-home {
+    background: #f5f1ed;
+    font-family: "Segoe UI", sans-serif;
+    color: #333;
+    margin: 0;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 50px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    margin-right: 40px;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.menu a {
+    margin-right: 25px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #555;
+    padding-bottom: 5px;
+}
+
+.menu a.active {
+    border-bottom: 3px solid #7f9b82;
+    font-weight: bold;
+}
+
+/* profile */
+.profile {
+    display: flex;
+    align-items: center;
+}
+
+.profile-img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.profile-info {
+    margin-right: 15px;
+}
+
+.profile-name {
+    margin: 0;
+    font-weight: bold;
+}
+
+.profile-role {
+    margin: 0;
+    font-size: 13px;
+    color: gray;
+}
+
+.logout-btn {
+    background: transparent;
+    color: #444;
+    text-decoration: none;
+    border: 1px solid #888;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+/* Title */
+.page-header {
+    text-align: center;
+    margin-top: 60px;
+}
+
+.page-header h1 {
+    font-size: 36px;
+    margin-bottom: 7px;
+}
+
+/* Cards */
+.assessment-options {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 60px;
+}
+
+.assessment-card {
+    width: 380px;
+    padding: 30px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.assessment-card h3 {
+    margin-top: 10px;
+}
+
+.assessment-card p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.start-btn {
+    display: inline-block;
+    background: #9bb688;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    border-radius: 20px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+.logout-btn:hover {
+    background: #ddd;
+}
+
+
