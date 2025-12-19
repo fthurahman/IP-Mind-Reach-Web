@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  /* Cozy Earthy Palette - No Purple */
+  --background: #F7F3EF;
+  /* Beige Mist */
+  --foreground: #3D3A37;
+  /* Charcoal Brown - High Contrast */
+  --card: #FFFFFF;
+  /* Warm Ivory */
+  --card-foreground: #5A5653;
+  /* Natural Dark Taupe */
+  --popover: #FFFFFF;
+  --popover-foreground: #5A5653;
+  --primary: #B4C59B;
+  /* Muted Olive */
+  --primary-foreground: #3D3A37;
+  --secondary: #D8A79E;
+  /* Clay Blush */
+  --secondary-foreground: #3D3A37;
+  --muted: #E9E4DF;
+  --muted-foreground: #8C8784;
+  /* Soft Taupe */
+  --accent: #CADBB7;
+  /* Garden Sage */
+  --accent-foreground: #3D3A37;
+  --destructive: #D8A79E;
+  --destructive-foreground: #3D3A37;
+  --border: #E9E4DF;
+  --input: transparent;
+  --input-background: #FFFFFF;
+  --switch-background: #E9E4DF;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #B4C59B;
+  --chart-1: #B4C59B;
+  --chart-2: #D8A79E;
+  --chart-3: #CADBB7;
+  --chart-4: #9AAF86;
+  --chart-5: #8C8784;
+  --radius: 0.75rem;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #3D3A37;
+  --sidebar-primary: #B4C59B;
+  --sidebar-primary-foreground: #3D3A37;
+  --sidebar-accent: #F7F3EF;
+  --sidebar-accent-foreground: #3D3A37;
+  --sidebar-border: #E9E4DF;
+  --sidebar-ring: #B4C59B;
+}
+
+.dark {
+  --background: #3D3A37;
+  --foreground: #F7F3EF;
+  --card: #3D3A37;
+  --card-foreground: #F7F3EF;
+  --popover: #3D3A37;
+  --popover-foreground: #F7F3EF;
+  --primary: #B4C59B;
+  --primary-foreground: #3D3A37;
+  --secondary: #D8A79E;
+  --secondary-foreground: #3D3A37;
+  --muted: #8C8784;
+  --muted-foreground: #E9E4DF;
+  --accent: #CADBB7;
+  --accent-foreground: #3D3A37;
+  --destructive: #D8A79E;
+  --destructive-foreground: #3D3A37;
+  --border: #8C8784;
+  --input: #8C8784;
+  --ring: #B4C59B;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: #B4C59B;
+  --chart-2: #D8A79E;
+  --chart-3: #CADBB7;
+  --chart-4: #9AAF86;
+  --chart-5: #8C8784;
+  --sidebar: #3D3A37;
+  --sidebar-foreground: #F7F3EF;
+  --sidebar-primary: #B4C59B;
+  --sidebar-primary-foreground: #3D3A37;
+  --sidebar-accent: #8C8784;
+  --sidebar-accent-foreground: #F7F3EF;
+  --sidebar-border: #8C8784;
+  --sidebar-ring: #B4C59B;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=' text-']), :not(:has([class^='text-'])))) {
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      color: #3D3A37;
+    }
+
+    h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.875rem;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: #3D3A37;
+    }
+
+    h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      line-height: 1.4;
+      color: #3D3A37;
+    }
+
+    h4 {
+      font-family: 'Work Sans', sans-serif;
+      font-size: 1.125rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      color: #3D3A37;
+    }
+
+    p {
+      font-family: 'Work Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: var(--font-weight-normal);
+      line-height: 1.6;
+      color: #5A5653;
+    }
+
+    label {
+      font-family: 'Work Sans', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      color: #3D3A37;
+    }
+
+    button {
+      font-family: 'Work Sans', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-family: 'Work Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+      color: #5A5653;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+  overflow-y: scroll;
+}

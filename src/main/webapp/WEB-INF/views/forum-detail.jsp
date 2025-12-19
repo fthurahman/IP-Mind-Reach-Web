@@ -91,17 +91,18 @@
         </div>
 
         <!-- Main Content -->
-        <main class="dashboard-content" style="max-width: 800px; margin: 0 auto; padding-top: 2rem;">
+        <main class="dashboard-content" style="max-width: 800px; margin: 0 auto;">
 
           <!-- Back Button -->
-          <a href="forum" class="btn-ghost"
+          <c:set var="backLink" value="${param.source == 'monitor' ? 'forum-monitor' : 'forum'}" />
+          <a href="${backLink}" class="btn-ghost"
             style="display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; padding-left: 0; color: #6B7280;">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M19 12H5" />
               <path d="M12 19l-7-7 7-7" />
             </svg>
-            Back to Forum
+            ${param.source == 'monitor' ? 'Back to Monitor' : 'Back to Forum'}
           </a>
 
           <!-- Selected Post Card -->
@@ -124,8 +125,9 @@
                 <p style="color: #1F2937; margin: 0 0 0.75rem 0; line-height: 1.5; font-size: 1rem;">${post.content}</p>
               </div>
 
+              <c:set var="reportAction" value="${post.reported ? 'unreport' : 'report'}" />
               <a id="reportBtn" href="forum?action=report&id=${post.id}"
-                onclick='return confirm("Are you sure you want to ${post.reported ? "unreport" : "report"} this post?")'
+                onclick='return confirm("Are you sure you want to ${reportAction} this post?")'
                 class="action-btn-ghost ${post.reported ? 'reported' : ''}"
                 style="text-decoration: none; display: flex; align-items: center; gap: 0.25rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -168,31 +170,34 @@
                 </c:forEach>
               </div>
 
-              <!-- Add Comment Form -->
-              <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
-                <form action="forum" method="post" style="display: flex; gap: 0.5rem; width: 100%;">
-                  <input type="hidden" name="action" value="comment">
-                  <!-- Assuming Controller handles this if action param is present or checks for 'reply' param -->
-                  <!-- Based on reading existing file, it seems the controller might just take the parameters. 
+              <!-- Add Comment Form (Only show if not from monitor) -->
+              <c:if test="${param.source != 'monitor'}">
+                <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                  <form action="forum" method="post" style="display: flex; gap: 0.5rem; width: 100%;"
+                    onsubmit="return confirm('Are you sure you want to post this comment?');">
+                    <input type="hidden" name="action" value="comment">
+                    <!-- Assuming Controller handles this if action param is present or checks for 'reply' param -->
+                    <!-- Based on reading existing file, it seems the controller might just take the parameters. 
                              Wait, existing file had <input type="hidden" name="id" value="${post.id}" /> and <textarea name="reply">.
                              And action="forum". So defaults to POST /forum.
                              I should replicate that structure.
                         -->
-                  <input type="hidden" name="id" value="${post.id}">
+                    <input type="hidden" name="id" value="${post.id}">
 
-                  <input type="text" name="reply" placeholder="Write a supportive comment..." required
-                    style="flex: 1; padding: 0.75rem 1rem; border-radius: var(--radius-xl); border: 1px solid var(--border); font-family: var(--font-family-sans); font-size: 0.875rem;">
+                    <input type="text" name="reply" placeholder="Write a supportive comment..." required
+                      style="flex: 1; padding: 0.75rem 1rem; border-radius: var(--radius-xl); border: 1px solid var(--border); font-family: var(--font-family-sans); font-size: 0.875rem;">
 
-                  <button type="submit"
-                    style="background: var(--primary); color: white; border: none; border-radius: var(--radius-xl); padding: 0 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="22" y1="2" x2="11" y2="13" />
-                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                    </svg>
-                  </button>
-                </form>
-              </div>
+                    <button type="submit"
+                      style="background: var(--primary); color: white; border: none; border-radius: var(--radius-xl); padding: 0 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13" />
+                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                      </svg>
+                    </button>
+                  </form>
+                </div>
+              </c:if>
 
             </div>
           </div>

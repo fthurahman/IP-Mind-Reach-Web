@@ -9,6 +9,8 @@
         <title>Forum | MindReach</title>
         <!-- Use embedded CSS approach for speed/reliability, plus link to main style -->
         <!-- Embedded CSS -->
+        <!-- Use Tailwind CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
         <%@ include file="layout/css-include.jsp" %>
           <style>
             /* Ensure font variables are available if not picked up */
@@ -29,48 +31,40 @@
       <body>
 
         <!-- Top Navigation Bar (Duplicated from homeStudent.jsp for standalone reliability) -->
-        <header class="header">
-          <div class="header-container">
-            <a href="homeStudent" class="logo-btn">MindReach</a>
-            <nav class="nav-desktop">
-              <a href="homeStudent" class="nav-item">Self-Help</a>
-              <a href="resources" class="nav-item">Resources</a>
-              <a href="forum" class="nav-item active">Forum</a>
-              <a href="resultDASS" class="nav-item">Progress</a>
-              <a href="counseling" class="nav-item">Telehealth Assistance</a>
-              <a href="#" class="nav-item">Chat Support</a>
+        <header class="bg-white border-b border-[#E9E4DF] sticky top-0 z-50 h-[72px] flex justify-center">
+          <div class="w-full max-w-[1200px] px-8 flex items-center justify-between h-full">
+            <a href="${pageContext.request.contextPath}/homeStudent"
+              class="font-serif text-2xl text-[#3D3A37] hover:opacity-80">MindReach</a>
+            <nav class="hidden lg:flex items-center gap-6">
+              <a href="${pageContext.request.contextPath}/homeStudent"
+                class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Self-Help</a>
+              <a href="${pageContext.request.contextPath}/resources"
+                class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Resources</a>
+              <a href="${pageContext.request.contextPath}/forum"
+                class="text-sm text-[#2D2A28] font-semibold border-b-2 border-[#B4C59B] pb-1 transition-all">Forum</a>
+              <a href="${pageContext.request.contextPath}/resultDASS"
+                class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Progress</a>
+              <a href="${pageContext.request.contextPath}/counseling"
+                class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Telehealth
+                Assistance</a>
+              <a href="#" class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Chat
+                Support</a>
             </nav>
-            <div class="user-section-desktop">
-              <div class="avatar-circle">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <circle cx="12" cy="10" r="3" />
-                  <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
-                </svg>
+            <div class="hidden lg:flex items-center gap-3">
+              <div class="text-right">
+                <div class="text-sm text-[#3D3A37] font-medium uppercase">${loggedUser.name}</div>
+                <div class="text-xs text-gray-500 capitalize">${loggedUser.role}</div>
               </div>
-              <div class="user-info">
-                <p class="user-name">${loggedUser.name}</p>
-                <p class="user-role">Student</p>
+              <div class="w-10 h-10 rounded-full bg-[#B4C59B]/20 flex items-center justify-center text-[#B4C59B]">
+                <script src="https://unpkg.com/lucide@latest"></script>
+                <i data-lucide="user"></i>
               </div>
-              <a href="logout" class="btn-ghost">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  style="margin-right: 8px;">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                  <polyline points="16 17 21 12 16 7" />
-                  <line x1="21" x2="9" y1="12" y2="12" />
-                </svg>
-                Log out
-              </a>
+              <a href="${pageContext.request.contextPath}/logout"
+                class="ml-4 text-sm text-red-500 hover:text-red-700">Logout</a>
             </div>
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="4" x2="20" y1="12" y2="12" />
-                <line x1="4" x2="20" y1="6" y2="6" />
-                <line x1="4" x2="20" y1="18" y2="18" />
-              </svg>
+            <!-- Mobile Menu Button -->
+            <button class="lg:hidden p-2 text-[#3D3A37]" onclick="toggleMobileMenu()">
+              <i data-lucide="menu"></i>
             </button>
           </div>
         </header>
@@ -94,7 +88,7 @@
         </div>
 
         <!-- Main Content -->
-        <main class="dashboard-content">
+        <main class="dashboard-content" style="padding-top: 20px;">
 
           <!-- Hero Header -->
           <div class="hero-card bg-gradient-forum">
@@ -105,7 +99,7 @@
                 <p style="color: rgba(255,255,255,0.9); margin: 0;">Connect with peers anonymously in a safe space</p>
               </div>
               <button onclick="openCreateModal()"
-                style="background: white; color: #3D3A37; border: none; padding: 0.75rem 1rem; border-radius: 0.75rem; font-weight: 500; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background 0.2s;">
+                style="background: #F59E0B; color: white; border: none; padding: 0.75rem 1rem; border-radius: 0.75rem; font-weight: 500; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background 0.2s;">
                 Create Post
               </button>
             </div>
@@ -115,7 +109,8 @@
           <div class="space-y-4">
             <c:forEach var="post" items="${posts}">
               <!-- Make the whole card clickable -> go to detail -->
-              <a href="forum?action=detail&id=${post.id}" class="post-card" style="display: block; color: inherit;">
+              <div onclick="location.href='forum?action=detail&id=${post.id}'" class="post-card"
+                style="display: block; color: inherit; cursor: pointer;">
                 <div style="display: flex; align-items: start; gap: 1rem; justify-content: space-between;">
                   <div style="flex: 1;">
                     <div
@@ -144,7 +139,7 @@
                     <p style="color: #1F2937; margin: 0 0 0.75rem 0; line-height: 1.5;">${post.content}</p>
 
                     <!-- Action Bar -->
-                    <div style="display: flex; items: center; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
                       <div
                         style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #6B7280;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -154,26 +149,26 @@
                         <span>${fn:length(post.comments)} comment${fn:length(post.comments) != 1 ? 's' : ''}</span>
                       </div>
 
+
                       <!-- Stop propagation for buttons inside the anchor -->
-                      <object>
-                        <a href="forum?action=report&id=${post.id}"
-                          onclick='return confirm("Are you sure you want to ${post.reported ? "unreport" : "report"} this post?")'
-                          class="action-btn-ghost ${post.reported ? 'reported' : ''}"
-                          title="${post.reported ? 'Remove report' : 'Report as inappropriate'}"
-                          style="text-decoration: none;">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                            fill="${post.reported ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-                            <line x1="4" x2="4" y1="22" y2="15" />
-                          </svg>
-                          <span style="font-size: 0.875rem;">${post.reported ? 'Reported' : 'Report'}</span>
-                        </a>
-                      </object>
+                      <c:set var="reportAction" value="${post.reported ? 'unreport' : 'report'}" />
+                      <a href="forum?action=report&id=${post.id}"
+                        onclick='event.stopPropagation(); return confirm("Are you sure you want to ${reportAction} this post?")'
+                        class="action-btn-ghost ${post.reported ? 'reported' : ''}"
+                        title="${post.reported ? 'Remove report' : 'Report as inappropriate'}"
+                        style="text-decoration: none; position: relative; z-index: 2;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                          fill="${post.reported ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                          <line x1="4" x2="4" y1="22" y2="15" />
+                        </svg>
+                        <span style="font-size: 0.875rem;">${post.reported ? 'Reported' : 'Report'}</span>
+                      </a>
                     </div>
                   </div>
                 </div>
-              </a>
+              </div>
             </c:forEach>
           </div>
 
@@ -186,7 +181,7 @@
             <p class="dialog-description" style="text-align: left; margin-bottom: 1.5rem;">Share your thoughts,
               questions, or experiences anonymously.</p>
 
-            <form action="forum" method="post">
+            <form action="forum" method="post" onsubmit="return confirm('Are you sure you want to create this post?');">
               <input type="hidden" name="action" value="create">
               <!-- Anonymous Handle Generator Logic would go here or backend. 
                      For now, we let backend handle it, or pass a hidden client-generated one.

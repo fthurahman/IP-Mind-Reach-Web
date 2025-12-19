@@ -85,7 +85,7 @@ public class Post {
             p1.setAuthor("Anonymous Owl");
             p1.setTopic("Stress");
             p1.setContent("Finals week is overwhelming ");
-            p1.setStatus("active");
+            p1.setStatus("visible");
             p1.setReported(false);
             p1.setCreatedAt("2025-12-18");
 
@@ -103,7 +103,7 @@ public class Post {
             p2.setAuthor("Worried Student");
             p2.setTopic("Anxiety");
             p2.setContent("I'm feeling really anxious about my grades. Any tips?");
-            p2.setStatus("active");
+            p2.setStatus("visible");
             p2.setReported(false);
             p2.setCreatedAt("2025-12-17");
 
@@ -121,7 +121,7 @@ public class Post {
             p3.setAuthor("Sleepy Scholar");
             p3.setTopic("Sleep");
             p3.setContent("Not getting enough sleep. How do you balance study and rest?");
-            p3.setStatus("active");
+            p3.setStatus("visible");
             p3.setReported(false);
             p3.setCreatedAt("2025-12-16");
 
@@ -139,7 +139,7 @@ public class Post {
             p4.setAuthor("Motivated Learner");
             p4.setTopic("Motivation");
             p4.setContent("How do you stay motivated during tough times?");
-            p4.setStatus("active");
+            p4.setStatus("visible");
             p4.setReported(false);
             p4.setCreatedAt("2025-12-15");
 

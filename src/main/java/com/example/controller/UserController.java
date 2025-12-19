@@ -97,7 +97,10 @@ public class UserController {
 	}
 
 	@GetMapping("/homeMProfessional")
-	public String homeMProfessional() {
+	public String homeMProfessional(Model model) {
+		// Fetch resources for the dashboard
+		model.addAttribute("resources", com.example.model.Resource.mockResources());
+		model.addAttribute("currentTopic", "all");
 		return "homeMProfessional"; // maps to homeMProfessional.jsp
 	}
 
