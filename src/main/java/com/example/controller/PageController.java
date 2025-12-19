@@ -27,8 +27,7 @@ public class PageController {
         "Inappropriate content",
         "Anonymous Owl",
         new Date(System.currentTimeMillis() - 2L * 60 * 60 * 1000),
-        "pending"
-    ));
+        "pending"));
     reportedPosts.add(new ReportedPost(
         "2",
         "Another post that was reported for containing harmful advice.",
@@ -36,12 +35,12 @@ public class PageController {
         "Harmful advice",
         "Anonymous Butterfly",
         new Date(System.currentTimeMillis() - 5L * 60 * 60 * 1000),
-        "pending"
-    ));
+        "pending"));
 
     int pendingReports = 0;
     for (ReportedPost p : reportedPosts) {
-      if ("pending".equalsIgnoreCase(p.getStatus())) pendingReports++;
+      if ("pending".equalsIgnoreCase(p.getStatus()))
+        pendingReports++;
     }
 
     model.addAttribute("reportedPosts", reportedPosts);
