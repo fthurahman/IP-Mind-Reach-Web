@@ -10,6 +10,7 @@ public class Resource {
     private String type;
     private String topic;
     private String content;
+    private String duration; // Optional, for videos
 
     public int getId() {
         return id;
@@ -59,52 +60,82 @@ public class Resource {
         this.content = content;
     }
 
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    private String videoUrl;
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
     public static List<Resource> mockResources() {
         if (resources == null) {
             resources = new ArrayList<>();
             Resource r1 = new Resource();
             r1.setId(1);
-            r1.setTitle("Managing Exam Stress");
-            r1.setDescription("Tips to cope with academic pressure");
-            r1.setType("Article");
-            r1.setTopic("Stress Management");
-            r1.setContent(
-                    "Exam stress is common among students. Here are some tips: 1. Prepare a study schedule. 2. Take breaks. 3. Eat healthy. 4. Get enough sleep. 5. Talk to someone if needed.");
-
+            r1.setTitle("Understanding Anxiety: What You Need to Know");
+            r1.setDescription("Learn about the causes, symptoms, and coping strategies for anxiety.");
+            r1.setType("article");
+            r1.setTopic("anxiety");
+            r1.setContent("Anxiety is a natural response to stress...");
             resources.add(r1);
 
             Resource r2 = new Resource();
             r2.setId(2);
-            r2.setTitle("Sleep Hygiene Guide");
-            r2.setDescription("Improve your sleep quality");
-            r2.setType("Guide");
-            r2.setTopic("Sleep");
-            r2.setContent(
-                    "Good sleep hygiene includes: Maintain a consistent sleep schedule. Create a relaxing bedtime routine. Avoid screens before bed. Keep your bedroom cool and dark. Limit caffeine intake.");
-
+            r2.setTitle("Mindfulness Meditation for Beginners");
+            r2.setDescription("A step-by-step guide to starting your mindfulness practice.");
+            r2.setType("video");
+            r2.setTopic("mindfulness");
+            r2.setDuration("12 min");
+            r2.setContent("Video content about mindfulness meditation...");
             resources.add(r2);
 
             Resource r3 = new Resource();
             r3.setId(3);
-            r3.setTitle("Anxiety Reduction Techniques");
-            r3.setDescription("Practical methods to reduce anxiety");
-            r3.setType("Video");
-            r3.setTopic("Anxiety");
-            r3.setContent(
-                    "Watch this video for breathing exercises and mindfulness techniques to reduce anxiety. Practice deep breathing: Inhale for 4 counts, hold for 4, exhale for 4.");
-
+            r3.setTitle("Managing Stress During Exams");
+            r3.setDescription("Practical tips and techniques to handle academic pressure.");
+            r3.setType("article");
+            r3.setTopic("stress");
+            r3.setContent("Exam periods can be stressful...");
             resources.add(r3);
 
             Resource r4 = new Resource();
             r4.setId(4);
-            r4.setTitle("Building Self-Confidence");
-            r4.setDescription("Strategies to boost your self-esteem");
-            r4.setType("Article");
-            r4.setTopic("Motivation");
-            r4.setContent(
-                    "To build self-confidence: Set small goals. Celebrate achievements. Surround yourself with positive people. Practice self-care. Challenge negative thoughts.");
-
+            r4.setTitle("Sleep Hygiene: Getting Better Rest");
+            r4.setDescription("Improve your sleep quality with these evidence-based strategies.");
+            r4.setType("article");
+            r4.setTopic("sleep");
+            r4.setContent("Good sleep is essential for mental health...");
             resources.add(r4);
+
+            Resource r5 = new Resource();
+            r5.setId(5);
+            r5.setTitle("Building Self-Esteem and Confidence");
+            r5.setDescription("Techniques to develop a healthier relationship with yourself.");
+            r5.setType("video");
+            r5.setTopic("self-esteem");
+            r5.setDuration("15 min");
+            r5.setContent("Video about building confidence...");
+            resources.add(r5);
+
+            Resource r6 = new Resource();
+            r6.setId(6);
+            r6.setTitle("Dealing with Depression: A Guide");
+            r6.setDescription("Understanding depression and when to seek professional help.");
+            r6.setType("article");
+            r6.setTopic("depression");
+            r6.setContent("Depression is more than feeling sad...");
+            resources.add(r6);
         }
         return resources;
     }
@@ -113,5 +144,21 @@ public class Resource {
 
     public static Resource findById(int id) {
         return mockResources().stream().filter(r -> r.getId() == id).findFirst().orElse(null);
+    }
+
+    public static void addResource(Resource r) {
+        mockResources();
+        if (r != null) {
+            System.out.println("DEBUG: Adding resource: " + r.getTitle());
+            // Generate ID
+            int maxId = resources.stream().mapToInt(Resource::getId).max().orElse(0);
+            r.setId(maxId + 1);
+            resources.add(0, r); // Add to top
+            System.out.println("DEBUG: Resource added. New size: " + resources.size());
+        }
+    }
+
+    public static void deleteResource(int id) {
+        mockResources().removeIf(r -> r.getId() == id);
     }
 }

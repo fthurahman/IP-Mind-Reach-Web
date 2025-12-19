@@ -722,14 +722,26 @@
     }
 </style>
 
-<!-- Toast Container -->
-<div id="toastContainer" class="toast-container"></div>
 
 <script>
-    function showToast(message, type = 'success') {
+    // Create Toast Container dynamically if it doesn't exist
+    function ensureToastContainer() {
+        if (!document.getElementById('toastContainer')) {
+            const container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container';
+            document.body.appendChild(container); // Append to body, not head
+        }
+    }
+
+    function showToast(message, type) {
+        if (!type) type = 'success';
+
+        ensureToastContainer();
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
+        // Fix for JSP EL collision
+        toast.className = 'toast toast-' + type;
 
         let icon = '';
         if (type === 'success') {
@@ -738,16 +750,17 @@
             icon = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #0284c7;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
         }
 
-        toast.innerHTML = `<div style="display:flex; align-items:center; gap:0.75rem;">${icon} <span style="font-weight:500;">${message}</span></div>`;
+        // Fix for JSP EL collision
+        toast.innerHTML = '<div style="display:flex; align-items:center; gap:0.75rem;">' + icon + ' <span style="font-weight:500;">' + message + '</span></div>';
         container.appendChild(toast);
 
         // Trigger animation
-        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(function () { toast.classList.add('show'); }, 10);
 
         // Remove after 3.5 seconds
-        setTimeout(() => {
+        setTimeout(function () {
             toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 400);
+            setTimeout(function () { toast.remove(); }, 400);
         }, 3500);
     }
 
@@ -755,8 +768,15 @@
     (function () {
         function triggerToast() {
             try {
+                // Ensure container exists before trying to show
+                if (document.body) {
+                    ensureToastContainer();
+                }
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const status = urlParams.get('status');
+
+                if (!status) return;
 
                 console.log('Toast system initialized. Status param:', status);
 
@@ -764,13 +784,17 @@
                     'created': 'Post shared successfully!',
                     'commented': 'Comment added successfully!',
                     'reported': 'Post reported for review. Thank you!',
-                    'unreported': 'Report withdrawn. Post reset to normal.'
+                    'unreported': 'Report withdrawn. Post reset to normal.',
+                    'warned': 'Friendly reminder sent to user.'
                 };
 
-                if (status && statusMessages[status]) {
+                if (statusMessages[status]) {
                     const isInfo = (status === 'reported' || status === 'unreported');
-                    console.log('Showing toast:', statusMessages[status], 'Type:', isInfo ? 'info' : 'success');
-                    showToast(statusMessages[status], isInfo ? 'info' : 'success');
+
+                    // Delay slightly to ensure DOM is ready if called early
+                    setTimeout(() => {
+                        showToast(statusMessages[status], isInfo ? 'info' : 'success');
+                    }, 100);
 
                     // Clean up URL without reload
                     try {
@@ -780,8 +804,6 @@
                     } catch (e) {
                         console.warn('Could not clean URL:', e);
                     }
-                } else if (status) {
-                    console.warn('Unknown status value:', status);
                 }
             } catch (error) {
                 console.error('Toast trigger error:', error);
