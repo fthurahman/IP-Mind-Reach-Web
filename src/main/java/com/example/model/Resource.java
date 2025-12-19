@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.model;
 
 import java.util.*;
 
@@ -11,23 +11,53 @@ public class Resource {
     private String topic;
     private String content;
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getTitle() {
+        return title;
+    }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public String getTopic() { return topic; }
-    public void setTopic(String topic) { this.topic = topic; }
+    public String getDescription() {
+        return description;
+    }
 
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public static List<Resource> mockResources() {
         if (resources == null) {
@@ -38,7 +68,8 @@ public class Resource {
             r1.setDescription("Tips to cope with academic pressure");
             r1.setType("Article");
             r1.setTopic("Stress Management");
-            r1.setContent("Exam stress is common among students. Here are some tips: 1. Prepare a study schedule. 2. Take breaks. 3. Eat healthy. 4. Get enough sleep. 5. Talk to someone if needed.");
+            r1.setContent(
+                    "Exam stress is common among students. Here are some tips: 1. Prepare a study schedule. 2. Take breaks. 3. Eat healthy. 4. Get enough sleep. 5. Talk to someone if needed.");
 
             resources.add(r1);
 
@@ -48,7 +79,8 @@ public class Resource {
             r2.setDescription("Improve your sleep quality");
             r2.setType("Guide");
             r2.setTopic("Sleep");
-            r2.setContent("Good sleep hygiene includes: Maintain a consistent sleep schedule. Create a relaxing bedtime routine. Avoid screens before bed. Keep your bedroom cool and dark. Limit caffeine intake.");
+            r2.setContent(
+                    "Good sleep hygiene includes: Maintain a consistent sleep schedule. Create a relaxing bedtime routine. Avoid screens before bed. Keep your bedroom cool and dark. Limit caffeine intake.");
 
             resources.add(r2);
 
@@ -58,7 +90,8 @@ public class Resource {
             r3.setDescription("Practical methods to reduce anxiety");
             r3.setType("Video");
             r3.setTopic("Anxiety");
-            r3.setContent("Watch this video for breathing exercises and mindfulness techniques to reduce anxiety. Practice deep breathing: Inhale for 4 counts, hold for 4, exhale for 4.");
+            r3.setContent(
+                    "Watch this video for breathing exercises and mindfulness techniques to reduce anxiety. Practice deep breathing: Inhale for 4 counts, hold for 4, exhale for 4.");
 
             resources.add(r3);
 
@@ -68,7 +101,8 @@ public class Resource {
             r4.setDescription("Strategies to boost your self-esteem");
             r4.setType("Article");
             r4.setTopic("Motivation");
-            r4.setContent("To build self-confidence: Set small goals. Celebrate achievements. Surround yourself with positive people. Practice self-care. Challenge negative thoughts.");
+            r4.setContent(
+                    "To build self-confidence: Set small goals. Celebrate achievements. Surround yourself with positive people. Practice self-care. Challenge negative thoughts.");
 
             resources.add(r4);
         }

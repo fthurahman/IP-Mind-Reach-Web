@@ -1,0 +1,39 @@
+[INFO] Error stacktraces are turned on.
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.example:MindReachWeb >----------------------
+[INFO] Building MindReachWeb Maven Webapp 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.0:clean (default-clean) @ MindReachWeb ---
+[INFO] Deleting C:\IP\IP-Mind-Reach-Web\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ MindReachWeb ---
+[INFO] skip non existing resourceDirectory C:\IP\IP-Mind-Reach-Web\src\main\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ MindReachWeb ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 15 source files with javac [debug target 8] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ MindReachWeb ---
+[INFO] skip non existing resourceDirectory C:\IP\IP-Mind-Reach-Web\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ MindReachWeb ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.3.0:test (default-test) @ MindReachWeb ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- war:3.4.0:war (default-war) @ MindReachWeb ---
+[INFO] Packaging webapp
+[INFO] Assembling webapp [MindReachWeb] in [C:\IP\IP-Mind-Reach-Web\target\MindReachWeb]
+[INFO] Processing war project
+[INFO] Copying webapp resources [C:\IP\IP-Mind-Reach-Web\src\main\webapp]
+[INFO] Building war: C:\IP\IP-Mind-Reach-Web\target\MindReachWeb.war
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.820 s
+[INFO] Finished at: 2025-12-19T11:10:53+08:00
+[INFO] ------------------------------------------------------------------------

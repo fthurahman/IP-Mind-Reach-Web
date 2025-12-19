@@ -1,0 +1,114 @@
+/* ===== Forum Module Styles ===== */
+
+.bg-gradient-forum {
+    background: linear-gradient(to right, #B4C59B, #CADBB7);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    /* rounded-full */
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    text-transform: capitalize;
+}
+
+.badge-topic {
+    background-color: rgba(180, 197, 155, 0.2);
+    color: #3D3A37;
+    border: 1px solid rgba(180, 197, 155, 0.3);
+}
+
+.badge-reported {
+    background-color: #FEF2F2;
+    /* red-50 */
+    color: #DC2626;
+    /* red-600 */
+    border: 1px solid #FECACA;
+    /* red-300 */
+}
+
+.badge-yours {
+    background-color: rgba(180, 197, 155, 0.1);
+    color: #B4C59B;
+    border: 1px solid rgba(180, 197, 155, 0.3);
+}
+
+.post-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    /* rounded-2xl */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    /* shadow-lg */
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    /* For wrapping anchor */
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.post-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    /* shadow-xl */
+}
+
+.avatar-small {
+    width: 2rem;
+    /* 8 * 0.25rem = 2rem approx for size 16 icon context? No, generally w-8 h-8 */
+    height: 2rem;
+    border-radius: 50%;
+    background-color: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+}
+
+.hero-card {
+    border-radius: 1rem;
+    /* rounded-2xl */
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(180, 197, 155, 0.15);
+    margin-bottom: 1.5rem;
+    /* Gradient applied via utility class */
+}
+
+.action-btn-ghost {
+    background: transparent;
+    border: none;
+    color: #6B7280;
+    /* gray-500 */
+    padding: 0.5rem;
+    border-radius: 0.75rem;
+    /* rounded-xl */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.2s;
+}
+
+.action-btn-ghost:hover {
+    background-color: #F3F4F6;
+    /* gray-50 */
+    color: #374151;
+    /* gray-700 */
+}
+
+.action-btn-ghost.reported {
+    color: #DC2626;
+    /* red-600 */
+}
+
+.action-btn-ghost.reported:hover {
+    background-color: #FEF2F2;
+    /* red-50 */
+    color: #B91C1C;
+    /* red-700 */
+}

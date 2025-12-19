@@ -1,15 +1,18 @@
 package com.example.controller;
 
-import com.example.demo.model.*;
+import com.example.model.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class CounselingController implements Controller {
+@Controller
+@RequestMapping("/counseling")
+public class CounselingController {
 
-    @Override
+    @RequestMapping
     public ModelAndView handleRequest(
             HttpServletRequest request,
             HttpServletResponse response) {

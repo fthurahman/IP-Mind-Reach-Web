@@ -1,16 +1,19 @@
 package com.example.controller;
 
-import com.example.demo.model.Resource;
+import com.example.model.Resource;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ResourceController implements Controller {
+@Controller
+@RequestMapping("/resources")
+public class ResourceController {
 
-    @Override
+    @RequestMapping
     public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res) {
 
         String action = req.getParameter("action");
@@ -33,10 +36,10 @@ public class ResourceController implements Controller {
                 List<Resource> filtered = allResources;
                 if (q != null && !q.trim().isEmpty()) {
                     filtered = allResources.stream()
-                        .filter(r -> r.getTitle().toLowerCase().contains(q.toLowerCase()) ||
-                                     r.getDescription().toLowerCase().contains(q.toLowerCase()) ||
-                                     r.getTopic().toLowerCase().contains(q.toLowerCase()))
-                        .collect(Collectors.toList());
+                            .filter(r -> r.getTitle().toLowerCase().contains(q.toLowerCase()) ||
+                                    r.getDescription().toLowerCase().contains(q.toLowerCase()) ||
+                                    r.getTopic().toLowerCase().contains(q.toLowerCase()))
+                            .collect(Collectors.toList());
                 }
                 ModelAndView mv = new ModelAndView();
                 mv.addObject("resources", filtered);

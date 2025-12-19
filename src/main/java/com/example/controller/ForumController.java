@@ -1,17 +1,21 @@
 package com.example.controller;
 
-import com.example.demo.model.Post;
+import com.example.model.Post;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ForumController implements Controller {
+@Controller
+@RequestMapping("/forum")
+public class ForumController {
 
-    @Override
+    @RequestMapping
     public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res) {
 
         String action = req.getParameter("action");
@@ -31,12 +35,24 @@ public class ForumController implements Controller {
             if ("report".equals(action) && idParam != null) {
                 int id = Integer.parseInt(idParam);
                 Post post = Post.findById(id);
+                String resultStatus = "reported";
                 if (post != null) {
-                    post.setReported(true);
+                    boolean isAlreadyReported = post.isReported();
+                    post.setReported(!isAlreadyReported);
+                    if (isAlreadyReported) {
+                        resultStatus = "unreported";
+                    }
                 }
-                // Redirect to forum
+
+                // Redirect back to either the list or detail view with status
+                String contextPath = req.getContextPath();
+                String referer = req.getHeader("Referer");
                 try {
-                    res.sendRedirect("forum");
+                    if (referer != null && referer.contains("action=detail")) {
+                        res.sendRedirect(contextPath + "/forum?action=detail&id=" + id + "&status=" + resultStatus);
+                    } else {
+                        res.sendRedirect(contextPath + "/forum?status=" + resultStatus);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -53,10 +69,10 @@ public class ForumController implements Controller {
                 List<Post> filtered = allPosts;
                 if (q != null && !q.trim().isEmpty()) {
                     filtered = allPosts.stream()
-                        .filter(p -> p.getContent().toLowerCase().contains(q.toLowerCase()) ||
-                                     p.getAuthor().toLowerCase().contains(q.toLowerCase()) ||
-                                     p.getTopic().toLowerCase().contains(q.toLowerCase()))
-                        .collect(Collectors.toList());
+                            .filter(p -> p.getContent().toLowerCase().contains(q.toLowerCase()) ||
+                                    p.getAuthor().toLowerCase().contains(q.toLowerCase()) ||
+                                    p.getTopic().toLowerCase().contains(q.toLowerCase()))
+                            .collect(Collectors.toList());
                 }
                 ModelAndView mv = new ModelAndView();
                 mv.addObject("posts", filtered);
@@ -74,7 +90,7 @@ public class ForumController implements Controller {
                 String topic = req.getParameter("topic");
                 String content = req.getParameter("content");
                 if (author != null && topic != null && content != null &&
-                    !author.trim().isEmpty() && !topic.trim().isEmpty() && !content.trim().isEmpty()) {
+                        !author.trim().isEmpty() && !topic.trim().isEmpty() && !content.trim().isEmpty()) {
                     Post newPost = new Post();
                     newPost.setId(Post.mockPosts().size() + 1);
                     newPost.setAuthor(author.trim());
@@ -88,7 +104,7 @@ public class ForumController implements Controller {
                 }
                 // Redirect to forum
                 try {
-                    res.sendRedirect("forum");
+                    res.sendRedirect(req.getContextPath() + "/forum?status=created");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -103,7 +119,7 @@ public class ForumController implements Controller {
             }
             // Redirect to detail
             try {
-                res.sendRedirect("forum?action=detail&id=" + id);
+                res.sendRedirect(req.getContextPath() + "/forum?action=detail&id=" + id + "&status=commented");
             } catch (Exception e) {
                 e.printStackTrace();
             }

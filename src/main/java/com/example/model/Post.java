@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.model;
 
 import java.util.*;
 
@@ -13,29 +13,69 @@ public class Post {
     private String createdAt;
     private List<Comment> comments;
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getAuthor() { return author; }
-    public void setAuthor(String author) { this.author = author; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+    public String getAuthor() {
+        return author;
+    }
 
-    public String getTopic() { return topic; }
-    public void setTopic(String topic) { this.topic = topic; }
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getContent() {
+        return content;
+    }
 
-    public boolean isReported() { return reported; }
-    public void setReported(boolean reported) { this.reported = reported; }
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-    public String getCreatedAt() { return createdAt; }
-    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public String getTopic() {
+        return topic;
+    }
 
-    public List<Comment> getComments() { return comments; }
-    public void setComments(List<Comment> comments) { this.comments = comments; }
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public boolean isReported() {
+        return reported;
+    }
+
+    public void setReported(boolean reported) {
+        this.reported = reported;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 
     public static List<Post> mockPosts() {
         if (posts == null) {
@@ -54,7 +94,7 @@ public class Post {
             c1.setAuthor("Support");
             c1.setContent("Hang in there!");
             c1.setCreatedAt("2025-12-18");
-            p1.setComments(new ArrayList<>(List.of(c1)));
+            p1.setComments(new ArrayList<>(Arrays.asList(c1)));
 
             posts.add(p1);
 
@@ -72,7 +112,7 @@ public class Post {
             c2.setAuthor("Peer Helper");
             c2.setContent("Try deep breathing exercises. You've got this!");
             c2.setCreatedAt("2025-12-17");
-            p2.setComments(new ArrayList<>(List.of(c2)));
+            p2.setComments(new ArrayList<>(Arrays.asList(c2)));
 
             posts.add(p2);
 
@@ -90,7 +130,7 @@ public class Post {
             c3.setAuthor("Wellness Buddy");
             c3.setContent("Set a consistent sleep schedule and avoid screens before bed.");
             c3.setCreatedAt("2025-12-16");
-            p3.setComments(new ArrayList<>(List.of(c3)));
+            p3.setComments(new ArrayList<>(Arrays.asList(c3)));
 
             posts.add(p3);
 

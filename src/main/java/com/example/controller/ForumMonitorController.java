@@ -1,14 +1,18 @@
 package com.example.controller;
 
-import com.example.demo.model.Post;
+import com.example.model.Post;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public class ForumMonitorController implements Controller {
+@Controller
+@RequestMapping("/forum-monitor")
+public class ForumMonitorController {
 
-    @Override
+    @RequestMapping
     public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res) {
 
         ModelAndView mv = new ModelAndView();

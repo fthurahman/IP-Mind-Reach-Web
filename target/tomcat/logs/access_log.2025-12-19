@@ -1,0 +1,17 @@
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:07:27 +0800] "GET / HTTP/1.1" 200 57 http-bio-8080-exec-1 344
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:07:51 +0800] "GET /forum HTTP/1.1" 200 44901 http-bio-8080-exec-3 443
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:07:51 +0800] "GET /forum HTTP/1.1" 200 44901 http-bio-8080-exec-4 6
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:07:51 +0800] "GET /favicon.ico HTTP/1.1" 404 973 http-bio-8080-exec-6 6
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:07:51 +0800] "GET /favicon.ico HTTP/1.1" 404 973 http-bio-8080-exec-7 2
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:08:05 +0800] "POST /forum HTTP/1.1" 302 - http-bio-8080-exec-8 2
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:08:05 +0800] "GET /forum?status=created HTTP/1.1" 200 48395 http-bio-8080-exec-9 6
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:08:23 +0800] "POST /forum HTTP/1.1" 302 - http-bio-8080-exec-10 1
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:08:23 +0800] "GET /forum?status=created HTTP/1.1" 200 51894 http-bio-8080-exec-1 8
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:08:50 +0800] "GET /forum HTTP/1.1" 200 51894 http-bio-8080-exec-1 8
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:08:51 +0800] "GET /forum HTTP/1.1" 200 51894 http-bio-8080-exec-1 5
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:13:08:51 +0800] "GET /forum HTTP/1.1" 200 51894 http-bio-8080-exec-1 5
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:14:54:10 +0800] "GET /homeStudent HTTP/1.1" 200 10716 http-bio-8080-exec-8 179
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:14:54:10 +0800] "GET /resources/css/style.css HTTP/1.1" 500 3767 http-bio-8080-exec-10 131
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:14:56:14 +0800] "GET / HTTP/1.1" 200 57 http-bio-8080-exec-2 8
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:14:56:14 +0800] "GET /favicon.ico HTTP/1.1" 404 973 http-bio-8080-exec-2 2
+0:0:0:0:0:0:0:1 - - [19/Dec/2025:14:56:19 +0800] "GET /login HTTP/1.1" 200 10688 http-bio-8080-exec-2 113

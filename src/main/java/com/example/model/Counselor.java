@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.model;
 
 import java.util.*;
 
@@ -9,17 +9,37 @@ public class Counselor {
     private String specialty;
     private String bio;
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getSpecialty() { return specialty; }
-    public void setSpecialty(String specialty) { this.specialty = specialty; }
+    public String getName() {
+        return name;
+    }
 
-    public String getBio() { return bio; }
-    public void setBio(String bio) { this.bio = bio; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
 
     public static List<Counselor> mockCounselors() {
         Counselor c = new Counselor();
@@ -27,6 +47,6 @@ public class Counselor {
         c.setName("Dr. Sarah Mitchell");
         c.setSpecialty("Anxiety & Stress");
         c.setBio("CBT and mindfulness specialist");
-        return List.of(c);
+        return Arrays.asList(c);
     }
 }
