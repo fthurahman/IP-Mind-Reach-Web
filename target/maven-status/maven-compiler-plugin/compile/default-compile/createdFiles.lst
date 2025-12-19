@@ -1,10 +1,12 @@
 com\example\controller\ForumMonitorController.class
+com\example\controller\PageController.class
 com\example\model\Appointment.class
 com\example\controller\CounselingController.class
 com\example\controller\DASSController.class
 com\example\model\UserDAO.class
 com\example\model\Comment.class
 com\example\controller\ResourceController.class
+com\example\model\ReportedPost.class
 com\example\controller\UserController.class
 com\example\model\calculateDASS.class
 com\example\model\Post.class
@@ -12,7 +14,6 @@ com\example\MindReachApplication.class
 com\example\model\DASS.class
 com\example\model\QuickReply.class
 com\example\controller\ChatbotController.class
-com\ipproject\demo\model\ReportedPost.class
 com\example\model\Message.class
 com\example\model\Resource.class
 com\example\controller\ForumController.class
