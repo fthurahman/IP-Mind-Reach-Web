@@ -386,234 +386,178 @@
       </script>
 
       <script>
-        const initialMessages = [
-          {
-            id: "1",
-            type: "bot",
-            content:
-              "Hi there. I'm here to support you. How would you describe today?",
-            quickReplies: [
-              { text: "😰 Overwhelmed", action: "stressed" },
-              { text: "😟 Anxious", action: "anxious" },
-              { text: "😴 Can't sleep", action: "sleep" },
-              { text: "💬 Just want to talk", action: "talk" },
-            ],
-          },
-        ];
+  const initialMessages = [
+    {
+      id: "1",
+      type: "bot",
+      content: "Hi there. I'm here to support you. How would you describe today?",
+      quickReplies: [
+        { text: "😰 Overwhelmed", action: "stressed" },
+        { text: "😟 Anxious", action: "anxious" },
+        { text: "😴 Can't sleep", action: "sleep" },
+        { text: "💬 Just want to talk", action: "talk" },
+      ],
+    },
+  ];
 
-        let messages = [...initialMessages];
+  let messages = [].concat(initialMessages);
 
-        const chatEl = document.getElementById("chat");
-        const inputEl = document.getElementById("input");
-        const sendBtn = document.getElementById("sendBtn");
+  const chatEl = document.getElementById("chat");
+  const inputEl = document.getElementById("input");
+  const sendBtn = document.getElementById("sendBtn");
 
-        function addMessage(type, content, quickReplies) {
-          messages.push({
-            id: String(Date.now()),
-            type,
-            content,
-            quickReplies: quickReplies || null,
-          });
-          render();
-          scrollToBottom();
-        }
+  function addMessage(type, content, quickReplies) {
+    messages.push({
+      id: String(Date.now()),
+      type: type,
+      content: content,
+      quickReplies: quickReplies || null,
+    });
+    render();
+    scrollToBottom();
+  }
 
-        function scrollToBottom() {
-          chatEl.scrollTop = chatEl.scrollHeight;
-        }
+  function scrollToBottom() {
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
 
-        function handleQuickReply(action) {
-          const replyTexts = {
-            stressed: "I'm feeling stressed",
-            anxious: "I'm feeling anxious",
-            sleep: "I'm having trouble sleeping",
-            talk: "I just want to talk",
-          };
+  function render() {
+    chatEl.innerHTML = "";
 
-          addMessage("user", replyTexts[action] || action);
+    messages.forEach((m) => {
+      const msg = document.createElement("div");
+      msg.className = "msg";
 
-          setTimeout(() => {
-            if (action === "stressed") {
-              addMessage(
-                "bot",
-                "I understand that stress can be overwhelming. Here are some things that might help:",
-                [
-                  { text: "🧘 Try breathing exercises", action: "self-help" },
-                  {
-                    text: "📚 Read about stress management",
-                    action: "resources",
-                  },
-                  { text: "🤝 Talk to a counselor", action: "counseling" },
-                  { text: "🆘 This is urgent", action: "urgent" },
-                ]
-              );
-            } else if (action === "anxious") {
-              addMessage(
-                "bot",
-                "Anxiety is tough. Let me help you find support:",
-                [
-                  { text: "🧘 Guided relaxation", action: "self-help" },
-                  { text: "📚 Learn about anxiety", action: "resources" },
-                  { text: "💬 Join the forum", action: "forum" },
-                  { text: "🆘 This is urgent", action: "urgent" },
-                ]
-              );
-            } else if (action === "sleep") {
-              addMessage(
-                "bot",
-                "Sleep is so important for wellbeing. Here's what can help:",
-                [
-                  { text: "📚 Sleep hygiene tips", action: "resources" },
-                  { text: "🧘 Relaxation exercises", action: "self-help" },
-                  { text: "🤝 Speak with counselor", action: "counseling" },
-                ]
-              );
-            } else if (action === "talk") {
-              addMessage("bot", "I'm here to listen. What's on your mind?", [
-                { text: "💬 Join community forum", action: "forum" },
-                { text: "🤝 Book counseling", action: "counseling" },
-                { text: "🧘 Try self-help", action: "self-help" },
-              ]);
-            } else if (action === "self-help") {
-              addMessage(
-                "bot",
-                "Great choice! The Self-Help module has guided breathing exercises, meditation, and reflection activities. Would you like me to take you there?",
-                [
-                  { text: "Yes, take me there", action: "navigate-self-help" },
-                  { text: "Tell me more", action: "more-self-help" },
-                ]
-              );
-            } else if (action === "resources") {
-              addMessage(
-                "bot",
-                "The Resources section has articles and videos on stress, anxiety, sleep, and more. I can guide you there!",
-                [
-                  { text: "Yes, show me", action: "navigate-resources" },
-                  { text: "What topics are covered?", action: "more-resources" },
-                ]
-              );
-            } else if (action === "counseling") {
-              addMessage(
-                "bot",
-                "Talking to a professional counselor can be really helpful. You can book a session with one of our counselors.",
-                [
-                  { text: "📅 Book a session", action: "navigate-counseling" },
-                  { text: "Tell me more", action: "more-counseling" },
-                ]
-              );
-            } else if (action === "forum") {
-              addMessage(
-                "bot",
-                "The forum is a safe, anonymous space where you can connect with peers who understand what you're going through.",
-                [
-                  { text: "💬 Go to forum", action: "navigate-forum" },
-                  { text: "How does it work?", action: "more-forum" },
-                ]
-              );
-            } else if (action === "urgent") {
-              addMessage(
-                "bot",
-                "If you're in crisis or need immediate help, please reach out:\n\n🆘 National Crisis Hotline: 988\n📞 Campus Safety: (555) 123-4567\n\nWould you also like to request a callback from our counseling team?",
-                [
-                  { text: "Yes, request callback", action: "request-callback" },
-                  { text: "No, I'm okay for now", action: "restart" },
-                ]
-              );
-            } else if (action === "request-callback") {
-              addMessage(
-                "bot",
-                "I've submitted your request. A counselor will contact you within 2 hours. In the meantime, please don't hesitate to call the crisis hotline if you need immediate support. Take care of yourself. 💙"
-              );
-            } else if (action === "restart") {
-              addMessage(
-                "bot",
-                "Okay. Remember, I'm here whenever you need support. How else can I help you today?",
-                initialMessages[0].quickReplies
-              );
-            } else if (String(action).startsWith("navigate-")) {
-              addMessage(
-                "bot",
-                "I would navigate you to that module now. (In a real app, this would change the active module.)"
-              );
-            } else if (String(action).startsWith("more-")) {
-              addMessage(
-                "bot",
-                "Here's more information about that feature. (In a real app, this would provide detailed information.)"
-              );
-            }
-          }, 500);
-        }
+      const row = document.createElement("div");
+      row.className = "msg-row " + (m.type === "user" ? "user" : "");
 
-        function render() {
-          chatEl.innerHTML = "";
+      const avatar = document.createElement("div");
+      avatar.className = "avatar " + (m.type === "user" ? "user" : "bot");
+      avatar.textContent = m.type === "user" ? "U" : "B";
 
-          messages.forEach((m) => {
-            const msg = document.createElement("div");
-            msg.className = "msg";
+      const bubble = document.createElement("div");
+      bubble.className = "bubble " + (m.type === "user" ? "user" : "bot");
+      bubble.textContent = m.content;
 
-            const row = document.createElement("div");
-            row.className = "msg-row " + (m.type === "user" ? "user" : "");
+      row.appendChild(avatar);
+      row.appendChild(bubble);
+      msg.appendChild(row);
 
-            const avatar = document.createElement("div");
-            avatar.className = "avatar " + (m.type === "user" ? "user" : "bot");
-            avatar.textContent = m.type === "user" ? "U" : "B";
+      if (m.quickReplies && Array.isArray(m.quickReplies)) {
+        const quick = document.createElement("div");
+        quick.className = "quick";
 
-            const bubble = document.createElement("div");
-            bubble.className = "bubble " + (m.type === "user" ? "user" : "bot");
-            bubble.textContent = m.content;
-
-            row.appendChild(avatar);
-            row.appendChild(bubble);
-            msg.appendChild(row);
-
-            if (m.quickReplies && Array.isArray(m.quickReplies)) {
-              const quick = document.createElement("div");
-              quick.className = "quick";
-
-              m.quickReplies.forEach((q) => {
-                const b = document.createElement("button");
-                b.className = "pill";
-                b.type = "button";
-                b.textContent = q.text;
-                b.addEventListener("click", () => handleQuickReply(q.action));
-                quick.appendChild(b);
-              });
-
-              msg.appendChild(quick);
-            }
-
-            chatEl.appendChild(msg);
-          });
-        }
-
-        function handleSend() {
-          const val = (inputEl.value || "").trim();
-          if (!val) return;
-
-          addMessage("user", val);
-          inputEl.value = "";
-
-          setTimeout(() => {
-            addMessage(
-              "bot",
-              "Thanks for sharing. Based on what you've told me, I recommend exploring our Self-Help exercises or connecting with a counselor. How would you like to proceed?",
-              [
-                { text: "🧘 Self-Help", action: "self-help" },
-                { text: "🤝 Counseling", action: "counseling" },
-                { text: "📚 Resources", action: "resources" },
-              ]
-            );
-          }, 500);
-        }
-
-        sendBtn.addEventListener("click", handleSend);
-        inputEl.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") handleSend();
+        m.quickReplies.forEach((q) => {
+          const b = document.createElement("button");
+          b.className = "pill";
+          b.type = "button";
+          b.textContent = q.text;
+          b.addEventListener("click", () => handleQuickReply(q.action));
+          quick.appendChild(b);
         });
 
-        render();
-        scrollToBottom();
-      </script>
+        msg.appendChild(quick);
+      }
+
+      chatEl.appendChild(msg);
+    });
+  }
+
+  async function fetchBotReply(userText) {
+    const res = await fetch("${pageContext.request.contextPath}/chatbot/message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userText }),
+    });
+
+    const data = await res.json();
+    return data.reply || "Sorry — no reply.";
+  }
+
+  async function sendToAI(userText) {
+    // show typing
+    addMessage("bot", "…");
+    const typingIndex = messages.length - 1;
+
+    try {
+      const reply = await fetchBotReply(userText);
+
+      // replace typing bubble
+      messages[typingIndex].content = reply;
+
+      // add action pills after reply (optional)
+      messages[typingIndex].quickReplies = [
+        { text: "🧘 Self-Help", action: "navigate-self-help" },
+        { text: "🤝 Counseling", action: "navigate-counseling" },
+        { text: "📚 Resources", action: "navigate-resources" },
+        { text: "🆘 Urgent", action: "urgent" },
+      ];
+
+      render();
+      scrollToBottom();
+    } catch (e) {
+      messages[typingIndex].content =
+        "Sorry — I’m having trouble replying right now. Please try again in a moment.";
+      render();
+      scrollToBottom();
+    }
+  }
+
+  function handleQuickReply(action) {
+    // map initial emotion pills to user text
+    const replyTexts = {
+      stressed: "I'm feeling stressed and overwhelmed.",
+      anxious: "I'm feeling anxious.",
+      sleep: "I'm having trouble sleeping.",
+      talk: "I just want to talk.",
+    };
+
+    // navigation actions (you can wire to real pages later)
+    if (String(action).startsWith("navigate-")) {
+      if (action === "navigate-self-help") window.location.href = "homeStudent";
+      else if (action === "navigate-resources") window.location.href = "resources";
+      else if (action === "navigate-counseling") window.location.href = "counseling";
+      return;
+    }
+
+    if (action === "urgent") {
+      addMessage(
+        "bot",
+        "If you’re in immediate danger or feel you might harm yourself, please contact local emergency services right now.\n\nIf you can, reach out to a trusted person nearby.\n\nWould you like to tell me what’s happening in one sentence?",
+        [
+          { text: "I’m safe, just overwhelmed", action: "stressed" },
+          { text: "I need help now", action: "talk" },
+        ]
+      );
+      return;
+    }
+
+    const userText = replyTexts[action] || String(action);
+    addMessage("user", userText);
+
+    // send that userText to AI
+    sendToAI(userText);
+  }
+
+  async function handleSend() {
+    const val = (inputEl.value || "").trim();
+    if (!val) return;
+
+    addMessage("user", val);
+    inputEl.value = "";
+
+    await sendToAI(val);
+  }
+
+  sendBtn.addEventListener("click", handleSend);
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") handleSend();
+  });
+
+  render();
+  scrollToBottom();
+</script>
+
     </body>
 
     </html>
