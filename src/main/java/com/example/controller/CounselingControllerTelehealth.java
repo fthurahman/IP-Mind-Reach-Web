@@ -68,6 +68,24 @@ public class CounselingControllerTelehealth {
         return "telehealth";
     }
 
+    @GetMapping("/telehealthCounselor")
+    public String counselingCounselor(Model model, HttpSession session) {
+        // Get or initialize appointments from session
+        @SuppressWarnings("unchecked")
+        List<AppointmentTelehealth> appointments = (List<AppointmentTelehealth>) session.getAttribute("appointments");
+
+        if (appointments == null) {
+            // In a real app, this might fetch counselor-specific appointments
+            // For now, we reuse the student mock appointments or create specific ones if
+            // needed
+            appointments = mindReachService.initializeStudentAppointments();
+            session.setAttribute("appointments", appointments);
+        }
+
+        model.addAttribute("appointments", appointments);
+        return "telehealthCounselor";
+    }
+
     @PostMapping("/telehealth/book")
     public String bookAppointment(@RequestParam String counselorId,
             @RequestParam String counselorName,
