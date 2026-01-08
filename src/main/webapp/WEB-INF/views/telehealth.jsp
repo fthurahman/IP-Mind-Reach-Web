@@ -79,7 +79,7 @@
               <a href="<c:url value='/resources'/>" class="nav-item">Resources</a>
               <a href="<c:url value='/forum'/>" class="nav-item">Forum</a>
               <a href="<c:url value='/progress'/>" class="nav-item">Progress</a>
-              <a href="<c:url value='/counseling'/>" class="nav-item active">Telehealth Assistance</a>
+              <a href="<c:url value='/telehealth'/>" class="nav-item active">Telehealth Assistance</a>
               <a href="<c:url value='/chatbot'/>" class="nav-item">Chat Support</a>
             </nav>
 
@@ -143,7 +143,7 @@
               <a href="<c:url value='/resources'/>" class="mobile-nav-item">Resources</a>
               <a href="<c:url value='/forum'/>" class="mobile-nav-item">Forum</a>
               <a href="<c:url value='/progress'/>" class="mobile-nav-item">Progress</a>
-              <a href="<c:url value='/counseling'/>" class="mobile-nav-item">Telehealth Assistance</a>
+              <a href="<c:url value='/telehealth'/>" class="mobile-nav-item">Telehealth Assistance</a>
               <a href="<c:url value='/chatbot'/>" class="mobile-nav-item">Chat Support</a>
             </nav>
 
@@ -207,7 +207,7 @@
                   </c:forEach>
                 </div>
 
-                <a href="<c:url value='/counseling'/>"
+                <a href="<c:url value='/telehealth'/>"
                   class="block w-full py-2 px-4 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium text-center">
                   Book a New Session
                 </a>
@@ -280,7 +280,7 @@
                 </div>
 
                 <!-- View Past Sessions Button -->
-                <a href="<c:url value='/counseling/history'/>"
+                <a href="<c:url value='/telehealth/history'/>"
                   class="block w-full py-2 px-4 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium text-center">
                   View Past Sessions
                 </a>
@@ -300,7 +300,7 @@
             </div>
             <p class="text-sm text-gray-600 mb-4">Select an available time slot for your session</p>
 
-            <form id="bookingForm" action="<c:url value='/counseling/book'/>" method="post">
+            <form id="bookingForm" action="<c:url value='/telehealth/book'/>" method="post">
               <input type="hidden" id="counselorId" name="counselorId">
               <input type="hidden" id="counselorName" name="counselorName">
               <input type="hidden" id="slotId" name="slotId">

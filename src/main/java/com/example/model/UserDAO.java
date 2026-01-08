@@ -23,6 +23,7 @@ public class UserDAO {
 
 		// Pre-seed Student (Demo)
 		users.add(new User("Ali", "ali_student@graduate.utm.my", "12345678", "student"));
+		users.add(new User("Mustaqim", "mustaqim@graduate.utm.my", "12345678", "student"));
 	}
 
 	public void save(User user) {

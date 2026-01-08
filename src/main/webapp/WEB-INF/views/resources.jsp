@@ -65,7 +65,7 @@
                       class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Forum</a>
                     <a href="${pageContext.request.contextPath}/progress"
                       class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Progress</a>
-                    <a href="${pageContext.request.contextPath}/counseling"
+                    <a href="${pageContext.request.contextPath}/telehealth"
                       class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Telehealth
                       Assistance</a>
                     <a href="#" class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Chat

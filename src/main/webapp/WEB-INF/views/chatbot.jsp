@@ -262,7 +262,7 @@
             <a href="resources" class="nav-item">Resources</a>
             <a href="forum" class="nav-item">Forum</a>
             <a href="progress" class="nav-item">Progress</a>
-            <a href="counseling" class="nav-item">Telehealth Assistance</a>
+            <a href="telehealth" class="nav-item">Telehealth Assistance</a>
             <a href="chatbot" class="nav-item active">Chat Support</a>
           </nav>
 
@@ -325,7 +325,7 @@
             <a href="resources" class="mobile-nav-item">Resources</a>
             <a href="forum" class="mobile-nav-item">Forum</a>
             <a href="progress" class="mobile-nav-item">Progress</a>
-            <a href="counseling" class="mobile-nav-item">Telehealth Assistance</a>
+            <a href="telehealth" class="mobile-nav-item">Telehealth Assistance</a>
             <a href="chatbot" class="mobile-nav-item active">Chat Support</a>
           </nav>
 
@@ -386,177 +386,177 @@
       </script>
 
       <script>
-  const initialMessages = [
-    {
-      id: "1",
-      type: "bot",
-      content: "Hi there. I'm here to support you. How would you describe today?",
-      quickReplies: [
-        { text: "😰 Overwhelmed", action: "stressed" },
-        { text: "😟 Anxious", action: "anxious" },
-        { text: "😴 Can't sleep", action: "sleep" },
-        { text: "💬 Just want to talk", action: "talk" },
-      ],
-    },
-  ];
+        const initialMessages = [
+          {
+            id: "1",
+            type: "bot",
+            content: "Hi there. I'm here to support you. How would you describe today?",
+            quickReplies: [
+              { text: "😰 Overwhelmed", action: "stressed" },
+              { text: "😟 Anxious", action: "anxious" },
+              { text: "😴 Can't sleep", action: "sleep" },
+              { text: "💬 Just want to talk", action: "talk" },
+            ],
+          },
+        ];
 
-  let messages = [].concat(initialMessages);
+        let messages = [].concat(initialMessages);
 
-  const chatEl = document.getElementById("chat");
-  const inputEl = document.getElementById("input");
-  const sendBtn = document.getElementById("sendBtn");
+        const chatEl = document.getElementById("chat");
+        const inputEl = document.getElementById("input");
+        const sendBtn = document.getElementById("sendBtn");
 
-  function addMessage(type, content, quickReplies) {
-    messages.push({
-      id: String(Date.now()),
-      type: type,
-      content: content,
-      quickReplies: quickReplies || null,
-    });
-    render();
-    scrollToBottom();
-  }
+        function addMessage(type, content, quickReplies) {
+          messages.push({
+            id: String(Date.now()),
+            type: type,
+            content: content,
+            quickReplies: quickReplies || null,
+          });
+          render();
+          scrollToBottom();
+        }
 
-  function scrollToBottom() {
-    chatEl.scrollTop = chatEl.scrollHeight;
-  }
+        function scrollToBottom() {
+          chatEl.scrollTop = chatEl.scrollHeight;
+        }
 
-  function render() {
-    chatEl.innerHTML = "";
+        function render() {
+          chatEl.innerHTML = "";
 
-    messages.forEach((m) => {
-      const msg = document.createElement("div");
-      msg.className = "msg";
+          messages.forEach((m) => {
+            const msg = document.createElement("div");
+            msg.className = "msg";
 
-      const row = document.createElement("div");
-      row.className = "msg-row " + (m.type === "user" ? "user" : "");
+            const row = document.createElement("div");
+            row.className = "msg-row " + (m.type === "user" ? "user" : "");
 
-      const avatar = document.createElement("div");
-      avatar.className = "avatar " + (m.type === "user" ? "user" : "bot");
-      avatar.textContent = m.type === "user" ? "U" : "B";
+            const avatar = document.createElement("div");
+            avatar.className = "avatar " + (m.type === "user" ? "user" : "bot");
+            avatar.textContent = m.type === "user" ? "U" : "B";
 
-      const bubble = document.createElement("div");
-      bubble.className = "bubble " + (m.type === "user" ? "user" : "bot");
-      bubble.textContent = m.content;
+            const bubble = document.createElement("div");
+            bubble.className = "bubble " + (m.type === "user" ? "user" : "bot");
+            bubble.textContent = m.content;
 
-      row.appendChild(avatar);
-      row.appendChild(bubble);
-      msg.appendChild(row);
+            row.appendChild(avatar);
+            row.appendChild(bubble);
+            msg.appendChild(row);
 
-      if (m.quickReplies && Array.isArray(m.quickReplies)) {
-        const quick = document.createElement("div");
-        quick.className = "quick";
+            if (m.quickReplies && Array.isArray(m.quickReplies)) {
+              const quick = document.createElement("div");
+              quick.className = "quick";
 
-        m.quickReplies.forEach((q) => {
-          const b = document.createElement("button");
-          b.className = "pill";
-          b.type = "button";
-          b.textContent = q.text;
-          b.addEventListener("click", () => handleQuickReply(q.action));
-          quick.appendChild(b);
+              m.quickReplies.forEach((q) => {
+                const b = document.createElement("button");
+                b.className = "pill";
+                b.type = "button";
+                b.textContent = q.text;
+                b.addEventListener("click", () => handleQuickReply(q.action));
+                quick.appendChild(b);
+              });
+
+              msg.appendChild(quick);
+            }
+
+            chatEl.appendChild(msg);
+          });
+        }
+
+        async function fetchBotReply(userText) {
+          const res = await fetch("${pageContext.request.contextPath}/chatbot/message", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: userText }),
+          });
+
+          const data = await res.json();
+          return data.reply || "Sorry — no reply.";
+        }
+
+        async function sendToAI(userText) {
+          // show typing
+          addMessage("bot", "…");
+          const typingIndex = messages.length - 1;
+
+          try {
+            const reply = await fetchBotReply(userText);
+
+            // replace typing bubble
+            messages[typingIndex].content = reply;
+
+            // add action pills after reply (optional)
+            messages[typingIndex].quickReplies = [
+              { text: "🧘 Self-Help", action: "navigate-self-help" },
+              { text: "🤝 Counseling", action: "navigate-counseling" },
+              { text: "📚 Resources", action: "navigate-resources" },
+              { text: "🆘 Urgent", action: "urgent" },
+            ];
+
+            render();
+            scrollToBottom();
+          } catch (e) {
+            messages[typingIndex].content =
+              "Sorry — I’m having trouble replying right now. Please try again in a moment.";
+            render();
+            scrollToBottom();
+          }
+        }
+
+        function handleQuickReply(action) {
+          // map initial emotion pills to user text
+          const replyTexts = {
+            stressed: "I'm feeling stressed and overwhelmed.",
+            anxious: "I'm feeling anxious.",
+            sleep: "I'm having trouble sleeping.",
+            talk: "I just want to talk.",
+          };
+
+          // navigation actions (you can wire to real pages later)
+          if (String(action).startsWith("navigate-")) {
+            if (action === "navigate-self-help") window.location.href = "homeStudent";
+            else if (action === "navigate-resources") window.location.href = "resources";
+            else if (action === "navigate-counseling") window.location.href = "telehealth";
+            return;
+          }
+
+          if (action === "urgent") {
+            addMessage(
+              "bot",
+              "If you’re in immediate danger or feel you might harm yourself, please contact local emergency services right now.\n\nIf you can, reach out to a trusted person nearby.\n\nWould you like to tell me what’s happening in one sentence?",
+              [
+                { text: "I’m safe, just overwhelmed", action: "stressed" },
+                { text: "I need help now", action: "talk" },
+              ]
+            );
+            return;
+          }
+
+          const userText = replyTexts[action] || String(action);
+          addMessage("user", userText);
+
+          // send that userText to AI
+          sendToAI(userText);
+        }
+
+        async function handleSend() {
+          const val = (inputEl.value || "").trim();
+          if (!val) return;
+
+          addMessage("user", val);
+          inputEl.value = "";
+
+          await sendToAI(val);
+        }
+
+        sendBtn.addEventListener("click", handleSend);
+        inputEl.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") handleSend();
         });
 
-        msg.appendChild(quick);
-      }
-
-      chatEl.appendChild(msg);
-    });
-  }
-
-  async function fetchBotReply(userText) {
-    const res = await fetch("${pageContext.request.contextPath}/chatbot/message", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: userText }),
-    });
-
-    const data = await res.json();
-    return data.reply || "Sorry — no reply.";
-  }
-
-  async function sendToAI(userText) {
-    // show typing
-    addMessage("bot", "…");
-    const typingIndex = messages.length - 1;
-
-    try {
-      const reply = await fetchBotReply(userText);
-
-      // replace typing bubble
-      messages[typingIndex].content = reply;
-
-      // add action pills after reply (optional)
-      messages[typingIndex].quickReplies = [
-        { text: "🧘 Self-Help", action: "navigate-self-help" },
-        { text: "🤝 Counseling", action: "navigate-counseling" },
-        { text: "📚 Resources", action: "navigate-resources" },
-        { text: "🆘 Urgent", action: "urgent" },
-      ];
-
-      render();
-      scrollToBottom();
-    } catch (e) {
-      messages[typingIndex].content =
-        "Sorry — I’m having trouble replying right now. Please try again in a moment.";
-      render();
-      scrollToBottom();
-    }
-  }
-
-  function handleQuickReply(action) {
-    // map initial emotion pills to user text
-    const replyTexts = {
-      stressed: "I'm feeling stressed and overwhelmed.",
-      anxious: "I'm feeling anxious.",
-      sleep: "I'm having trouble sleeping.",
-      talk: "I just want to talk.",
-    };
-
-    // navigation actions (you can wire to real pages later)
-    if (String(action).startsWith("navigate-")) {
-      if (action === "navigate-self-help") window.location.href = "homeStudent";
-      else if (action === "navigate-resources") window.location.href = "resources";
-      else if (action === "navigate-counseling") window.location.href = "counseling";
-      return;
-    }
-
-    if (action === "urgent") {
-      addMessage(
-        "bot",
-        "If you’re in immediate danger or feel you might harm yourself, please contact local emergency services right now.\n\nIf you can, reach out to a trusted person nearby.\n\nWould you like to tell me what’s happening in one sentence?",
-        [
-          { text: "I’m safe, just overwhelmed", action: "stressed" },
-          { text: "I need help now", action: "talk" },
-        ]
-      );
-      return;
-    }
-
-    const userText = replyTexts[action] || String(action);
-    addMessage("user", userText);
-
-    // send that userText to AI
-    sendToAI(userText);
-  }
-
-  async function handleSend() {
-    const val = (inputEl.value || "").trim();
-    if (!val) return;
-
-    addMessage("user", val);
-    inputEl.value = "";
-
-    await sendToAI(val);
-  }
-
-  sendBtn.addEventListener("click", handleSend);
-  inputEl.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") handleSend();
-  });
-
-  render();
-  scrollToBottom();
-</script>
+        render();
+        scrollToBottom();
+      </script>
 
     </body>
 

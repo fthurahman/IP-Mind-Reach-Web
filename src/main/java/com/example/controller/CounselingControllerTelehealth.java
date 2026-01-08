@@ -21,7 +21,7 @@ public class CounselingControllerTelehealth {
     @Autowired
     private MindReachService mindReachService;
 
-    @GetMapping("/counseling")
+    @GetMapping("/telehealth")
     public String counseling(Model model, HttpSession session) {
         String userRole = "student"; // Default to student view
 
@@ -43,10 +43,10 @@ public class CounselingControllerTelehealth {
         model.addAttribute("appointments", appointments);
         model.addAttribute("showHistory", false);
 
-        return "counseling";
+        return "telehealth";
     }
 
-    @GetMapping("/counseling/history")
+    @GetMapping("/telehealth/history")
     public String counselingHistory(Model model, HttpSession session) {
         String userRole = "student";
 
@@ -65,10 +65,10 @@ public class CounselingControllerTelehealth {
         model.addAttribute("appointments", appointments);
         model.addAttribute("showHistory", true);
 
-        return "counseling";
+        return "telehealth";
     }
 
-    @PostMapping("/counseling/book")
+    @PostMapping("/telehealth/book")
     public String bookAppointment(@RequestParam String counselorId,
             @RequestParam String counselorName,
             @RequestParam String slotId,
@@ -92,6 +92,6 @@ public class CounselingControllerTelehealth {
         appointments.add(newAppointment);
         session.setAttribute("appointments", appointments);
 
-        return "redirect:/counseling";
+        return "redirect:/telehealth";
     }
 }

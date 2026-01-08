@@ -50,7 +50,7 @@
                   class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Forum</a>
                 <a href="${pageContext.request.contextPath}/progress"
                   class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Progress</a>
-                <a href="${pageContext.request.contextPath}/counseling"
+                <a href="${pageContext.request.contextPath}/telehealth"
                   class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Telehealth
                   Assistance</a>
                 <a href="#" class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Chat
@@ -164,7 +164,7 @@
 
         <div class="text-center pt-8">
           <p class="text-sm text-gray-500">Need professional help?</p>
-          <a href="${pageContext.request.contextPath}/counseling"
+          <a href="${pageContext.request.contextPath}/telehealth"
             class="inline-block mt-2 text-[#B4C59B] font-medium hover:underline">Connect with a Counselor</a>
         </div>
 

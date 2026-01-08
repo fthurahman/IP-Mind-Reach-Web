@@ -63,7 +63,7 @@
                 class="text-sm text-[#2D2A28] font-semibold border-b-2 border-[#B4C59B] pb-1 transition-all">Forum</a>
               <a href="${pageContext.request.contextPath}/progress"
                 class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Progress</a>
-              <a href="${pageContext.request.contextPath}/counseling"
+              <a href="${pageContext.request.contextPath}/telehealth"
                 class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Telehealth
                 Assistance</a>
               <a href="#" class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Chat
@@ -100,7 +100,7 @@
               <a href="${pageContext.request.contextPath}/resources" class="text-[#3D3A37] font-medium">Resources</a>
               <a href="${pageContext.request.contextPath}/forum" class="text-[#2D2A28] font-semibold">Forum</a>
               <a href="${pageContext.request.contextPath}/progress" class="text-[#3D3A37] font-medium">Progress</a>
-              <a href="${pageContext.request.contextPath}/counseling" class="text-[#3D3A37] font-medium">Telehealth
+              <a href="${pageContext.request.contextPath}/telehealth" class="text-[#3D3A37] font-medium">Telehealth
                 Assistance</a>
               <a href="#" class="text-[#3D3A37] font-medium">Chat Support</a>
             </nav>
