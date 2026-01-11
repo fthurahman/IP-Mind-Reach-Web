@@ -180,6 +180,56 @@
 				.signin-link:hover {
 					color: var(--primary);
 				}
+
+				/* Role Selection Styles */
+				.role-group {
+					margin-bottom: 1rem;
+				}
+
+				.role-grid {
+					display: grid;
+					grid-template-columns: 1fr 1fr;
+					gap: 0.75rem;
+				}
+
+				.role-btn {
+					padding: 1rem;
+					border-radius: var(--radius-xl);
+					border: 2px solid var(--border);
+					background: transparent;
+					cursor: pointer;
+					transition: all 0.2s ease;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					gap: 0.5rem;
+				}
+
+				.role-btn:hover {
+					border-color: rgba(180, 197, 155, 0.5);
+				}
+
+				.role-btn.active {
+					border-color: var(--primary);
+					background-color: rgba(180, 197, 155, 0.1);
+				}
+
+				.role-icon {
+					width: 24px;
+					height: 24px;
+					color: var(--muted-foreground);
+					transition: color 0.2s;
+				}
+
+				.role-btn.active .role-icon {
+					color: var(--primary);
+				}
+
+				.role-label {
+					font-size: 0.875rem;
+					font-weight: 500;
+					color: var(--foreground);
+				}
 			</style>
 		</head>
 
@@ -194,7 +244,7 @@
 
 				<form action="register" method="post" onsubmit="return validateForm()">
 					<!-- Default role to student as per React design -->
-					<input type="hidden" name="role" value="student">
+					<input type="hidden" id="roleInput" name="role" value="student">
 
 					<div class="form-group">
 						<label for="name">Full Name</label>
@@ -204,6 +254,42 @@
 					<div class="form-group">
 						<label for="email">Email</label>
 						<input type="text" id="email" name="email" placeholder="your.email@example.com" required>
+					</div>
+
+					<div class="form-group role-group">
+						<label>I am a</label>
+						<div class="role-grid">
+							<button type="button" id="btn-student" onclick="setRole('student')" class="role-btn active">
+								<div class="role-icon">
+									<!-- GraduationCap SVG -->
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round">
+										<path
+											d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" />
+										<path d="M22 10v6" />
+										<path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />
+									</svg>
+								</div>
+								<span class="role-label">Student</span>
+							</button>
+
+							<button type="button" id="btn-counselor" onclick="setRole('counselor')" class="role-btn">
+								<div class="role-icon">
+									<!-- Stethoscope SVG -->
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round">
+										<path d="M11 2v2" />
+										<path d="M5 2v2" />
+										<path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1" />
+										<path d="M8 15a6 6 0 0 0 12 0v-3" />
+										<circle cx="20" cy="10" r="2" />
+									</svg>
+								</div>
+								<span class="role-label">Counselor</span>
+							</button>
+						</div>
 					</div>
 
 					<div class="form-group">
@@ -232,6 +318,17 @@
 			</div>
 
 			<script>
+				function setRole(role) {
+					document.getElementById('roleInput').value = role;
+
+					// Reset buttons
+					document.getElementById('btn-student').classList.remove('active');
+					document.getElementById('btn-counselor').classList.remove('active');
+
+					// Activate selected
+					document.getElementById('btn-' + role).classList.add('active');
+				}
+
 				function validateForm() {
 					var email = document.getElementById("email").value;
 					var password = document.getElementById("password").value;
