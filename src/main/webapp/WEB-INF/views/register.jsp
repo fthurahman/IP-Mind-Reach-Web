@@ -333,18 +333,27 @@
 					var email = document.getElementById("email").value;
 					var password = document.getElementById("password").value;
 					var confirmPassword = document.getElementById("confirmPassword").value;
+					var role = document.getElementById("roleInput").value;
 					var errorDiv = document.getElementById("js-error");
 
-					// UTM Student Email Validation
-					var validDomains = ["@graduate.utm.my", "@live.utm.my"];
-					var isValidEmail = validDomains.some(function (domain) {
-						return email.endsWith(domain);
-					});
-
-					if (!isValidEmail) {
-						errorDiv.innerText = "Registration is restricted to UTM Students (@graduate.utm.my, @live.utm.my)";
-						errorDiv.style.display = "block";
-						return false;
+					// Email Validation based on Role
+					var isValidEmail = false;
+					if (role === 'student') {
+						var validDomains = ["@graduate.utm.my", "@live.utm.my"];
+						isValidEmail = validDomains.some(function (domain) {
+							return email.endsWith(domain);
+						});
+						if (!isValidEmail) {
+							errorDiv.innerText = "Students must use a valid UTM email (@graduate.utm.my, @live.utm.my)";
+							errorDiv.style.display = "block";
+							return false;
+						}
+					} else if (role === 'counselor') {
+						if (!email.endsWith("@gmail.com")) {
+							errorDiv.innerText = "Counselors must use a valid Gmail address (@gmail.com)";
+							errorDiv.style.display = "block";
+							return false;
+						}
 					}
 
 					if (password.length < 6) {
