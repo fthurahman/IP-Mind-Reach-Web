@@ -1,68 +1,63 @@
 package com.example.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.ArrayList;
 
 @Repository
 public class UserDAO {
-	private List<User> users = new ArrayList<>();
 
-	public UserDAO() {
-		// Pre-seed Admins
-		users.add(new User("Aman", "aman@utm.my", "12345678", "admin"));
-		users.add(new User("Harith", "harith@utm.my", "12345678", "admin"));
-		users.add(new User("Mustaqim", "mustaqim@utm.my", "12345678", "admin"));
-		users.add(new User("Asilah", "asilah@utm.my", "12345678", "admin"));
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
-		// Pre-seed Counselors
-		users.add(new User("Aman", "aman@gmail.com", "12345678", "mhprofessional"));
-		users.add(new User("Harith", "harith@gmail.com", "12345678", "mhprofessional"));
-		users.add(new User("Mustaqim", "mustaqim@gmail.com", "12345678", "mhprofessional"));
-		users.add(new User("Asilah", "asilah@gmail.com", "12345678", "mhprofessional"));
-
-		// Pre-seed Student (Demo)
-		users.add(new User("Ali", "ali_student@graduate.utm.my", "12345678", "student"));
-		users.add(new User("Mustaqim", "mustaqim@graduate.utm.my", "12345678", "student"));
-	}
+	// RowMapper to map DB rows to User objects
+	private static final RowMapper<User> userRowMapper = new RowMapper<User>() {
+		@Override
+		public User mapRow(@org.springframework.lang.NonNull ResultSet rs, int rowNum) throws SQLException {
+			return new User(
+					rs.getString("name"),
+					rs.getString("email"),
+					rs.getString("password"),
+					rs.getString("role"));
+		}
+	};
 
 	public void save(User user) {
-		// check duplicate emails
-		for (User u : users) {
-			if (user.getEmail().equals(u.getEmail()))
-				throw new RuntimeException("Email already exists");
-		}
-		users.add(user);
+		// Check if user exists (optional, but good practice, though controller might
+		// handle it too)
+		// Usually, we rely on duplicate key exception or check before insert.
+		// For simplicity matching previous logic which checked in controller:
+		String sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
+		jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword(), user.getRole());
 	}
 
-	// find user by email
 	public User findByEmail(String email) {
-		for (User u : users) {
-			if (u.getEmail().equals(email)) {
-				return u;
-			}
+		String sql = "SELECT * FROM users WHERE email = ?";
+		try {
+			return jdbcTemplate.queryForObject(sql, userRowMapper, email);
+		} catch (Exception e) {
+			// EmptyResultDataAccessException or similar
+			return null;
 		}
-		return null;
 	}
 
-	// update existing user
 	public void update(User user) {
-		for (int i = 0; i < users.size(); i++) {
-			if (users.get(i).getEmail().equals(user.getEmail())) {
-				users.set(i, user);
-				return;
-			}
-		}
-		throw new RuntimeException("User not found");
+		String sql = "UPDATE users SET name = ?, password = ?, role = ? WHERE email = ?";
+		jdbcTemplate.update(sql, user.getName(), user.getPassword(), user.getRole(), user.getEmail());
 	}
 
-	// delete user by email
 	public void delete(String email) {
-		users.removeIf(u -> u.getEmail().equals(email));
+		String sql = "DELETE FROM users WHERE email = ?";
+		jdbcTemplate.update(sql, email);
 	}
 
-	// return all users
 	public List<User> findAll() {
-		return users;
+		String sql = "SELECT * FROM users";
+		return jdbcTemplate.query(sql, userRowMapper);
 	}
 }

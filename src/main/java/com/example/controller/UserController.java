@@ -25,16 +25,25 @@ public class UserController {
 	// handle Register
 	@PostMapping("/register")
 	public String register(@ModelAttribute User user, Model model) {
-		// Check for valid UTM Student email domain
-		if (!user.getEmail().endsWith("@graduate.utm.my") && !user.getEmail().endsWith("@live.utm.my")) {
-			model.addAttribute("error", "Registration is restricted to UTM Students (@graduate.utm.my, @live.utm.my)");
+		String email = user.getEmail();
+
+		// Assign role based on email domain
+		if (email.endsWith("@graduate.utm.my") || email.endsWith("@live.utm.my")) {
+			user.setRole("student");
+		} else if (email.endsWith("@gmail.com")) {
+			user.setRole("mhprofessional");
+		} else {
+			model.addAttribute("error",
+					"Registration is restricted to UTM Students (@graduate.utm.my, @live.utm.my) or Counselors (@gmail.com)");
 			return "register";
 		}
 
-		if (userDAO.findByEmail(user.getEmail()) != null) {
+		// Check if email already exists
+		if (userDAO.findByEmail(email) != null) {
 			model.addAttribute("error", "Email already exists!");
 			return "register";
 		}
+
 		userDAO.save(user);
 		return "redirect:/login";
 	}
