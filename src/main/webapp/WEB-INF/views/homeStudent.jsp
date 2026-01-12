@@ -167,7 +167,7 @@
               font-size: 1.5rem;
               margin-bottom: 0.5rem;
             ">
-              Patient Health Questionnaire
+              Patient Health Questionnaire (PHQ-9)
             </h3>
             <p style="
               color: var(--card-foreground);
@@ -175,23 +175,50 @@
               line-height: 1.5;
               margin-bottom: 1.5rem;
             ">
-              Screen for presence and severity of depression. For diagnosis,
-              professional consultation is recommended.
+              Consist of 9-question instrument to screen for presence and severity of depression.
             </p>
-            <a href="assessmentPHQ" style="
-              display: block;
-              width: 100%;
-              padding: 0.75rem;
-              text-align: center;
-              background: var(--primary);
-              color: var(--primary-foreground);
-              text-decoration: none;
-              border-radius: 0.5rem;
-              font-weight: 500;
-              transition: background 0.2s;
-            ">
-              Start Assessment →
-            </a>
+            <c:choose>
+              <c:when test="${hasPHQAssessment}">
+                <a href="assessmentPHQ" style="
+                  display: block;
+                  width: 100%;
+                  padding: 0.75rem;
+                  text-align: center;
+                  background: var(--primary);
+                  color: var(--primary-foreground);
+                  text-decoration: none;
+                  border-radius: 0.5rem;
+                  font-weight: 500;
+                  transition: background 0.2s;
+                ">
+                  Retake Assessment
+                </a>
+                <div style="text-align: center; margin-top: 10px;">
+                  <a href="resultPHQ" style="font-size: 0.875rem; color: #5a5653; text-decoration: underline;">
+                    View Latest Result
+                  </a>
+                  <div style="font-size: 0.75rem; color: #8c8784; margin-top: 4px;">
+                    Last taken: ${latestPHQDate}
+                  </div>
+                </div>
+              </c:when>
+              <c:otherwise>
+                <a href="assessmentPHQ" style="
+                  display: block;
+                  width: 100%;
+                  padding: 0.75rem;
+                  text-align: center;
+                  background: var(--primary);
+                  color: var(--primary-foreground);
+                  text-decoration: none;
+                  border-radius: 0.5rem;
+                  font-weight: 500;
+                  transition: background 0.2s;
+                ">
+                  Start Assessment →
+                </a>
+              </c:otherwise>
+            </c:choose>
           </div>
         </div>
       </main>

@@ -73,19 +73,19 @@
                     color: #9a3412;
                 }
 
-                /* Orange */
+                /* Light Orange */
                 .level-Severe {
+                    background-color: #ffccbc;
+                    color: #bf360c;
+                }
+
+                /* Orange (Distinct from Red) */
+                .level-Extremely {
                     background-color: #fee2e2;
                     color: #b91c1c;
                 }
 
                 /* Red */
-                .level-Extremely {
-                    background-color: #fecaca;
-                    color: #7f1d1d;
-                }
-
-                /* Dark Red */
             </style>
         </head>
 

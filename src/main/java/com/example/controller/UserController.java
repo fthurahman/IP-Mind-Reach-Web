@@ -104,11 +104,9 @@ public class UserController {
         if (user == null) return "redirect:/login";
 
         // Check for latest DASS assessment
-        String sql = "SELECT assessment_date FROM dass_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";
-        
+        String sqlDASS = "SELECT assessment_date FROM dass_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";
         try {
-            java.sql.Timestamp latestDate = jdbcTemplate.queryForObject(sql, new Object[]{user.getEmail()}, java.sql.Timestamp.class);
-            
+            java.sql.Timestamp latestDate = jdbcTemplate.queryForObject(sqlDASS, new Object[]{user.getEmail()}, java.sql.Timestamp.class);
             if (latestDate != null) {
                 java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMM yyyy");
                 model.addAttribute("hasAssessment", true);
@@ -116,6 +114,19 @@ public class UserController {
             }
         } catch (org.springframework.dao.EmptyResultDataAccessException e) {
             model.addAttribute("hasAssessment", false);
+        }
+
+        // Check for latest PHQ assessment
+        String sqlPHQ = "SELECT assessment_date FROM phq_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";
+        try {
+            java.sql.Timestamp latestDatePHQ = jdbcTemplate.queryForObject(sqlPHQ, new Object[]{user.getEmail()}, java.sql.Timestamp.class);
+            if (latestDatePHQ != null) {
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMM yyyy");
+                model.addAttribute("hasPHQAssessment", true);
+                model.addAttribute("latestPHQDate", sdf.format(latestDatePHQ));
+            }
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            model.addAttribute("hasPHQAssessment", false);
         }
 
         return "homeStudent";

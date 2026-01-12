@@ -17,3 +17,13 @@ CREATE TABLE IF NOT EXISTS dass_results (
     assessment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS phq_results (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_email VARCHAR(255) NOT NULL,
+    total_score INT,
+    severity VARCHAR(50),
+    flagged_suicide BOOLEAN DEFAULT FALSE,
+    assessment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE CASCADE
+);
