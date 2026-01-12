@@ -253,7 +253,7 @@
 
 					<div class="form-group">
 						<label for="email">Email</label>
-						<input type="text" id="email" name="email" placeholder="your.email@example.com" required>
+						<input type="text" id="email" name="email" placeholder="name@example.com" required>
 					</div>
 
 					<div class="form-group role-group">
@@ -349,8 +349,9 @@
 							return false;
 						}
 					} else if (role === 'counselor') {
-						if (!email.endsWith("@gmail.com")) {
-							errorDiv.innerText = "Counselors must use a valid Gmail address (@gmail.com)";
+						// Logic Update: Counselors can use any email domain
+						if (email.trim() === "") {
+							errorDiv.innerText = "Please enter a valid email address";
 							errorDiv.style.display = "block";
 							return false;
 						}

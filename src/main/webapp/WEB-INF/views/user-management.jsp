@@ -13,10 +13,44 @@
 
         <body class="bg-[#F7F3EF] min-h-screen">
 
-            <!-- Admin Header -->
-            <jsp:include page="layout/header.jsp">
-                <jsp:param name="activePage" value="user-management" />
-            </jsp:include>
+            <!-- Admin Header (Matching homeAdmin.jsp) -->
+            <header class="bg-white border-b border-[#E9E4DF] sticky top-0 z-50 h-[72px] flex justify-center">
+                <div class="w-full max-w-[1200px] px-8 flex items-center justify-between h-full">
+                    <a href="${pageContext.request.contextPath}/homeAdmin"
+                        class="font-serif text-2xl text-[#3D3A37] hover:opacity-80">MindReach</a>
+                    <nav class="hidden lg:flex items-center gap-6">
+                        <!-- Analytics -->
+                        <a href="${pageContext.request.contextPath}/homeAdmin"
+                            class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Analytics</a>
+
+                        <!-- Resources -->
+                        <a href="${pageContext.request.contextPath}/resources"
+                            class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Resources</a>
+
+                        <!-- Forum Monitor -->
+                        <a href="${pageContext.request.contextPath}/forum-monitor"
+                            class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Forum
+                            Monitor</a>
+
+                        <!-- User Management (Active) -->
+                        <a href="${pageContext.request.contextPath}/user-management"
+                            class="text-sm text-[#2D2A28] font-semibold border-b-2 border-[#B4C59B] pb-1 transition-all">User
+                            Management</a>
+                    </nav>
+                    <div class="hidden lg:flex items-center gap-3">
+                        <div class="text-right">
+                            <div class="text-sm text-[#3D3A37] font-medium">${loggedUser.name}</div>
+                            <div class="text-xs text-gray-500 capitalize">${loggedUser.role}</div>
+                        </div>
+                        <div
+                            class="w-10 h-10 rounded-full bg-[#B4C59B]/20 flex items-center justify-center text-[#B4C59B]">
+                            <i data-lucide="user"></i>
+                        </div>
+                        <a href="${pageContext.request.contextPath}/logout"
+                            class="ml-4 text-sm text-red-500 hover:text-red-700">Logout</a>
+                    </div>
+                </div>
+            </header>
 
             <main class="max-w-[1200px] mx-auto px-6 py-8 space-y-8 pt-8">
 
@@ -60,13 +94,26 @@
                                 <h3 class="font-medium text-lg text-[#3D3A37] mb-1">${user.name}</h3>
                                 <p class="text-sm text-gray-500 mb-4">${user.email}</p>
 
-                                <form action="${pageContext.request.contextPath}/approve-user" method="post">
-                                    <input type="hidden" name="email" value="${user.email}">
-                                    <button type="submit"
-                                        class="w-full py-2 px-4 bg-[#B4C59B] text-[#3D3A37] font-medium rounded-xl hover:bg-[#9AAF86] transition-colors flex items-center justify-center gap-2">
-                                        <i data-lucide="check" class="w-4 h-4"></i> Approve Access
-                                    </button>
-                                </form>
+                                <div class="flex flex-col gap-3 mt-4">
+                                    <form action="${pageContext.request.contextPath}/approve-user" method="post"
+                                        class="w-full">
+                                        <input type="hidden" name="email" value="${user.email}">
+                                        <button type="submit"
+                                            class="w-full py-2 px-4 bg-[#B4C59B] text-[#3D3A37] font-medium rounded-xl hover:bg-[#9AAF86] transition-colors flex items-center justify-center gap-2">
+                                            <i data-lucide="check" class="w-4 h-4"></i> Approve Access
+                                        </button>
+                                    </form>
+
+                                    <form action="${pageContext.request.contextPath}/reject-user" method="post"
+                                        class="w-full"
+                                        onsubmit="return confirm('Are you sure you want to reject this user?');">
+                                        <input type="hidden" name="email" value="${user.email}">
+                                        <button type="submit"
+                                            class="w-full py-2 px-4 bg-red-50 text-red-600 font-medium rounded-xl border border-red-100 hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
+                                            <i data-lucide="x" class="w-4 h-4"></i> Reject Request
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </c:forEach>
                     </div>

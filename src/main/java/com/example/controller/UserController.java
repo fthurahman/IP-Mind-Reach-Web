@@ -31,13 +31,10 @@ public class UserController {
 		if (email.endsWith("@graduate.utm.my") || email.endsWith("@live.utm.my")) {
 			user.setRole("student");
 			user.setStatus("active");
-		} else if (email.endsWith("@gmail.com")) {
+		} else {
+			// Any other email domain is treated as a potential Counselor
 			user.setRole("mhprofessional");
 			user.setStatus("pending"); // Counselors need approval
-		} else {
-			model.addAttribute("error",
-					"Registration is restricted to UTM Students (@graduate.utm.my, @live.utm.my) or Counselors (@gmail.com)");
-			return "register";
 		}
 
 		// Check if email already exists
@@ -199,6 +196,20 @@ public class UserController {
 		
 		return "redirect:/user-management";
 	}
+
+	// Reject User
+	@PostMapping("/reject-user")
+	public String rejectUser(@RequestParam("email") String email, HttpSession session) {
+		User admin = (User) session.getAttribute("loggedUser");
+		if (admin == null || !"admin".equals(admin.getRole())) {
+			return "redirect:/login";
+		}
+		
+		// "Reject" means removing them from the system
+		userDAO.delete(email);
+		
+		return "redirect:/user-management";
+	}
 	
 	// Pending Approval Page
 	@GetMapping("/approval-pending")
@@ -213,6 +224,25 @@ public class UserController {
 		model.addAttribute("currentTopic", "all");
 		return "homeMProfessional"; // maps to homeMProfessional.jsp
 	}
+
+    @GetMapping("/counselor/student-results")
+    public String counselorStudentResults(@RequestParam(name = "search", required = false) String search, HttpSession session, Model model) {
+        User user = (User) session.getAttribute("loggedUser");
+        // Ensure user is logged in AND is a counselor
+        if (user == null || !"mhprofessional".equals(user.getRole())) {
+             return "redirect:/login";
+        }
+        
+        // Fetch all attempts for DASS and PHQ with search
+        java.util.List<java.util.Map<String, Object>> dassResults = userDAO.getAllDassResults(search);
+        java.util.List<java.util.Map<String, Object>> phqResults = userDAO.getAllPhqResults(search);
+        
+        model.addAttribute("dassResults", dassResults);
+        model.addAttribute("phqResults", phqResults);
+        model.addAttribute("searchQuery", search); // Return search query to view
+        
+        return "counselor-results";
+    }
 
 	// forgot password
 	@GetMapping("/forgotPassword")

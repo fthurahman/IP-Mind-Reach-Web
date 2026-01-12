@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UserDAO {
@@ -61,4 +62,70 @@ public class UserDAO {
 		String sql = "SELECT * FROM users";
 		return jdbcTemplate.query(sql, userRowMapper);
 	}
+
+    // Fetch all students with their latest assessment results
+    public List<StudentAssessmentDTO> getAllStudentAssessments() {
+        String sql = "SELECT u.name, u.email, " +
+                     "d.depression_score, d.anxiety_score, d.stress_score, " +
+                     "d.level_depression, d.level_anxiety, d.level_stress, d.assessment_date as dass_date, " +
+                     "p.total_score, p.severity, p.flagged_suicide, p.assessment_date as phq_date " +
+                     "FROM users u " +
+                     "LEFT JOIN (SELECT * FROM dass_results WHERE assessment_date IN (SELECT MAX(assessment_date) FROM dass_results GROUP BY user_email)) d ON u.email = d.user_email " +
+                     "LEFT JOIN (SELECT * FROM phq_results WHERE assessment_date IN (SELECT MAX(assessment_date) FROM phq_results GROUP BY user_email)) p ON u.email = p.user_email " +
+                     "WHERE u.role = 'student'";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            StudentAssessmentDTO dto = new StudentAssessmentDTO();
+            dto.setName(rs.getString("name"));
+            dto.setEmail(rs.getString("email"));
+            
+            // DASS
+            dto.setDepressionScore(rs.getInt("depression_score"));
+            dto.setAnxietyScore(rs.getInt("anxiety_score"));
+            dto.setStressScore(rs.getInt("stress_score"));
+            dto.setLevelDepression(rs.getString("level_depression"));
+            dto.setLevelAnxiety(rs.getString("level_anxiety"));
+            dto.setLevelStress(rs.getString("level_stress"));
+            dto.setDassDate(rs.getTimestamp("dass_date"));
+            
+            // PHQ
+            dto.setPhqScore(rs.getInt("total_score"));
+            dto.setPhqSeverity(rs.getString("severity"));
+            dto.setPhqFlagged(rs.getBoolean("flagged_suicide"));
+            dto.setPhqDate(rs.getTimestamp("phq_date"));
+            return dto;
+        });
+    }
+
+    // Fetch all student assessment results (DASS) with optional search
+    public List<Map<String, Object>> getAllDassResults(String search) {
+        String sql = "SELECT u.name, u.email, d.* " +
+                     "FROM dass_results d " +
+                     "JOIN users u ON d.user_email = u.email ";
+        
+        if (search != null && !search.trim().isEmpty()) {
+            sql += "WHERE u.name LIKE ? ";
+            sql += "ORDER BY d.assessment_date DESC";
+            return jdbcTemplate.queryForList(sql, "%" + search.trim() + "%");
+        } else {
+            sql += "ORDER BY d.assessment_date DESC";
+            return jdbcTemplate.queryForList(sql);
+        }
+    }
+
+    // Fetch all student assessment results (PHQ) with optional search
+    public List<Map<String, Object>> getAllPhqResults(String search) {
+        String sql = "SELECT u.name, u.email, p.* " +
+                     "FROM phq_results p " +
+                     "JOIN users u ON p.user_email = u.email ";
+                     
+        if (search != null && !search.trim().isEmpty()) {
+            sql += "WHERE u.name LIKE ? ";
+            sql += "ORDER BY p.assessment_date DESC";
+            return jdbcTemplate.queryForList(sql, "%" + search.trim() + "%");
+        } else {
+            sql += "ORDER BY p.assessment_date DESC";
+            return jdbcTemplate.queryForList(sql);
+        }
+    }
 }

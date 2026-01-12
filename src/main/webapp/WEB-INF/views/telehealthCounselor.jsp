@@ -60,6 +60,9 @@
                             <a href="${pageContext.request.contextPath}/telehealthCounselor"
                                 class="text-sm text-[#2D2A28] font-semibold border-b-2 border-[#B4C59B] pb-1 transition-all">Telehealth
                                 Assistance</a>
+                            <a href="${pageContext.request.contextPath}/counselor/student-results"
+                                class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Student
+                                Assessment</a>
                         </nav>
                         <div class="hidden lg:flex items-center gap-3">
                             <div class="text-right">
