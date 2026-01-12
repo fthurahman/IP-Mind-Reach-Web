@@ -63,70 +63,12 @@
       <body>
 
         <!-- Top Navigation Bar -->
-        <header class="bg-white border-b border-[#E9E4DF] sticky top-0 z-50 h-[72px] flex justify-center">
-          <div class="w-full max-w-[1200px] px-8 flex items-center justify-between h-full">
-            <a href="${pageContext.request.contextPath}/homeStudent"
-              class="font-serif text-2xl text-[#3D3A37] hover:opacity-80">MindReach</a>
-            <nav class="hidden lg:flex items-center gap-6">
-              <a href="${pageContext.request.contextPath}/homeStudent"
-                class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Self-Help</a>
-              <a href="${pageContext.request.contextPath}/resources"
-                class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Resources</a>
-              <a href="${pageContext.request.contextPath}/forum"
-                class="text-sm text-[#2D2A28] font-semibold border-b-2 border-[#B4C59B] pb-1 transition-all">Forum</a>
-              <a href="${pageContext.request.contextPath}/progress"
-                class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Progress</a>
-              <a href="${pageContext.request.contextPath}/telehealth"
-                class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Telehealth
-                Assistance</a>
-              <a href="#" class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Chat
-                Support</a>
-            </nav>
-            <div class="hidden lg:flex items-center gap-3">
-              <div class="text-right">
-                <div class="text-sm text-[#3D3A37] font-medium uppercase">${loggedUser.name}</div>
-                <div class="text-xs text-gray-500 capitalize">${loggedUser.role}</div>
-              </div>
-              <div class="w-10 h-10 rounded-full bg-[#B4C59B]/20 flex items-center justify-center text-[#B4C59B]">
-                <i data-lucide="user"></i>
-              </div>
-              <a href="${pageContext.request.contextPath}/logout"
-                class="ml-4 text-sm text-red-500 hover:text-red-700">Logout</a>
-            </div>
-            <!-- Mobile Menu Button -->
-            <button class="lg:hidden p-2 text-[#3D3A37]" onclick="toggleMobileMenu()">
-              <i data-lucide="menu"></i>
-            </button>
-          </div>
-        </header>
-
-        <!-- Mobile Menu Sheet -->
-        <div id="mobileSheet" class="fixed inset-0 z-[60] hidden">
-          <!-- Backdrop -->
-          <div class="absolute inset-0 bg-black/20 backdrop-blur-sm" onclick="toggleMobileMenu()"></div>
-          <!-- Content -->
-          <div class="absolute right-0 top-0 bottom-0 w-[280px] bg-white p-6 shadow-2xl flex flex-col gap-6">
-            <div>
-              <h3 class="font-serif text-xl text-[#3D3A37] mb-2">Navigation</h3>
-              <p class="text-sm text-gray-500">Access MindReach sections</p>
-            </div>
-            <nav class="flex flex-col gap-4">
-              <a href="${pageContext.request.contextPath}/homeStudent" class="text-[#3D3A37] font-medium">Self-Help</a>
-              <a href="${pageContext.request.contextPath}/resources" class="text-[#3D3A37] font-medium">Resources</a>
-              <a href="${pageContext.request.contextPath}/forum" class="text-[#2D2A28] font-semibold">Forum</a>
-              <a href="${pageContext.request.contextPath}/progress" class="text-[#3D3A37] font-medium">Progress</a>
-              <a href="${pageContext.request.contextPath}/telehealth" class="text-[#3D3A37] font-medium">Telehealth
-                Assistance</a>
-              <a href="#" class="text-[#3D3A37] font-medium">Chat Support</a>
-            </nav>
-            <div class="border-t border-gray-100 pt-6 mt-auto">
-              <a href="${pageContext.request.contextPath}/logout" class="text-gray-500 hover:text-[#3D3A37]">Log out</a>
-            </div>
-          </div>
-        </div>
+        <jsp:include page="layout/header.jsp">
+          <jsp:param name="activePage" value="forum" />
+        </jsp:include>
 
         <!-- Main Content -->
-        <main class="max-w-[1200px] mx-auto px-6 pt-6 pb-8 space-y-6">
+        <main class="max-w-[1200px] mx-auto px-6 pt-24 pb-8 space-y-6">
 
           <!-- Hero Header -->
           <div class="hero-card bg-gradient-forum">
@@ -240,15 +182,7 @@
         <script>
           lucide.createIcons();
 
-          // --- Mobile Menu Logic ---
-          function toggleMobileMenu() {
-            const sheet = document.getElementById("mobileSheet");
-            if (sheet.classList.contains("hidden")) {
-              sheet.classList.remove("hidden");
-            } else {
-              sheet.classList.add("hidden");
-            }
-          }
+
 
           // --- Modal Logic ---
           function openCreateModal() {

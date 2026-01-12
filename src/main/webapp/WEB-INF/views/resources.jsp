@@ -28,67 +28,94 @@
 
         <!-- Header (Simple Include or Hardcoded if header.jsp is missing) -->
         <!-- Assuming header.jsp logic or simplified header -->
-        <header class="bg-white border-b border-[#E9E4DF] sticky top-0 z-50 h-[72px] flex justify-center">
-          <div class="w-full max-w-[1200px] px-8 flex items-center justify-between h-full">
-            <c:choose>
-              <c:when test="${loggedUser.role == 'admin'}">
-                <a href="${pageContext.request.contextPath}/homeAdmin"
-                  class="font-serif text-2xl text-[#3D3A37] hover:opacity-80">MindReach</a>
-                <nav class="hidden lg:flex items-center gap-6">
-                  <!-- Analytics (Inactive) -->
-                  <a href="${pageContext.request.contextPath}/homeAdmin"
-                    class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Analytics</a>
-
-                  <!-- Resources (Active) -->
-                  <a href="${pageContext.request.contextPath}/resources"
-                    class="text-sm text-[#2D2A28] font-semibold border-b-2 border-[#B4C59B] pb-1 transition-all">Resources</a>
-
-                  <!-- Forum Monitor (Inactive) -->
-                  <a href="${pageContext.request.contextPath}/forum-monitor"
-                    class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Forum Monitor</a>
-
-                  <!-- User Management (Inactive) -->
-                  <a href="#" class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">User
-                    Management</a>
+        <c:choose>
+          <c:when test="${loggedUser.role == 'admin'}">
+            <!-- Admin Header -->
+            <header class="header">
+              <div class="header-container">
+                <a href="${pageContext.request.contextPath}/homeAdmin" class="logo-btn"> MindReach </a>
+                <nav class="nav-desktop">
+                  <a href="${pageContext.request.contextPath}/homeAdmin" class="nav-item">Analytics</a>
+                  <a href="${pageContext.request.contextPath}/resources" class="nav-item active">Resources</a>
+                  <a href="${pageContext.request.contextPath}/forum-monitor" class="nav-item">Forum Monitor</a>
+                  <a href="#" class="nav-item">User Management</a>
                 </nav>
-              </c:when>
-              <c:otherwise>
-                <%-- Non-Admin Header (Unchanged) --%>
-                  <a href="${pageContext.request.contextPath}/homeStudent"
-                    class="font-serif text-2xl text-[#3D3A37] hover:opacity-80">MindReach</a>
-                  <nav class="hidden lg:flex items-center gap-6">
-                    <a href="${pageContext.request.contextPath}/homeStudent"
-                      class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Self-Help</a>
-                    <a href="${pageContext.request.contextPath}/resources"
-                      class="text-sm text-[#2D2A28] font-semibold border-b-2 border-[#B4C59B] pb-1 transition-all">Resources</a>
-                    <a href="${pageContext.request.contextPath}/forum"
-                      class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Forum</a>
-                    <a href="${pageContext.request.contextPath}/progress"
-                      class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Progress</a>
-                    <a href="${pageContext.request.contextPath}/telehealth"
-                      class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Telehealth
-                      Assistance</a>
-                    <a href="#" class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Chat
-                      Support</a>
-                  </nav>
-              </c:otherwise>
-            </c:choose>
-            <div class="hidden lg:flex items-center gap-3">
-              <div class="text-right">
-                <div class="text-sm text-[#3D3A37] font-medium">${loggedUser.name}</div>
-                <div class="text-xs text-gray-500 capitalize">${loggedUser.role}</div>
-              </div>
-              <div class="w-10 h-10 rounded-full bg-[#B4C59B]/20 flex items-center justify-center text-[#B4C59B]">
-                <!-- User Icon -->
-                <i data-lucide="user"></i>
-              </div>
-              <a href="${pageContext.request.contextPath}/logout"
-                class="ml-4 text-sm text-red-500 hover:text-red-700">Logout</a>
-            </div>
-          </div>
-        </header>
 
-        <main class="max-w-[1200px] mx-auto px-6 pb-8 pt-4 space-y-6">
+                <div class="user-section-desktop">
+                  <div class="avatar-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <circle cx="12" cy="10" r="3" />
+                      <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
+                    </svg>
+                  </div>
+                  <div class="user-info">
+                    <p class="user-name">${loggedUser.name}</p>
+                    <p class="user-role" style="text-transform: capitalize;">${loggedUser.role}</p>
+                  </div>
+                  <a href="${pageContext.request.contextPath}/logout" class="btn-ghost">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="margin-right: 8px">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                      <polyline points="16 17 21 12 16 7" />
+                      <line x1="21" x2="9" y1="12" y2="12" />
+                    </svg>
+                    Log out
+                  </a>
+                </div>
+
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" x2="20" y1="12" y2="12" />
+                    <line x1="4" x2="20" y1="6" y2="6" />
+                    <line x1="4" x2="20" y1="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+            </header>
+
+            <div id="mobileSheet" class="sheet-overlay">
+              <div class="sheet-content">
+                <h3 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-serif); font-size: 1.25rem;">
+                  Navigation
+                </h3>
+                <p style="margin: 0; font-size: 0.875rem; color: #8c8784">
+                  Access MindReach sections
+                </p>
+                <nav class="mobile-nav">
+                  <a href="${pageContext.request.contextPath}/homeAdmin" class="mobile-nav-item">Analytics</a>
+                  <a href="${pageContext.request.contextPath}/resources" class="mobile-nav-item active">Resources</a>
+                  <a href="${pageContext.request.contextPath}/forum-monitor" class="mobile-nav-item">Forum Monitor</a>
+                  <a href="#" class="mobile-nav-item">User Management</a>
+                </nav>
+                <div class="mobile-separator"></div>
+                <a href="${pageContext.request.contextPath}/logout" class="mobile-nav-item" style="color: #5a5653">Log
+                  out</a>
+              </div>
+            </div>
+            <script>
+              function toggleMobileMenu() {
+                const sheet = document.getElementById("mobileSheet");
+                if (sheet.classList.contains("open")) {
+                  sheet.classList.remove("open");
+                } else {
+                  sheet.classList.add("open");
+                }
+              }
+            </script>
+          </c:when>
+          <c:otherwise>
+            <!-- Student Header (Shared) -->
+            <jsp:include page="layout/header.jsp">
+              <jsp:param name="activePage" value="resources" />
+            </jsp:include>
+          </c:otherwise>
+        </c:choose>
+
+        <main class="max-w-[1200px] mx-auto px-6 pb-8 pt-24 space-y-6">
           <!-- Hero Header -->
           <div
             class="bg-gradient-to-r from-[#B4C59B] to-[#CADBB7] rounded-2xl p-8 shadow-[0_4px_20px_rgba(180,197,155,0.15)] flex items-center justify-between">
