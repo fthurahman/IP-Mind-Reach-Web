@@ -88,17 +88,38 @@ public class UserController {
 		}
 	}
 
-	// handle logout
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate();
-		return "redirect:/login";
-	}
+    @Autowired
+    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
-	@GetMapping("/homeStudent")
-	public String homeStudent() {
-		return "homeStudent"; // maps to homeStudent.jsp
-	}
+    // handle logout
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
+
+    @GetMapping("/homeStudent")
+    public String homeStudent(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("loggedUser");
+        if (user == null) return "redirect:/login";
+
+        // Check for latest DASS assessment
+        String sql = "SELECT assessment_date FROM dass_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";
+        
+        try {
+            java.sql.Timestamp latestDate = jdbcTemplate.queryForObject(sql, new Object[]{user.getEmail()}, java.sql.Timestamp.class);
+            
+            if (latestDate != null) {
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMM yyyy");
+                model.addAttribute("hasAssessment", true);
+                model.addAttribute("latestAssessmentDate", sdf.format(latestDate));
+            }
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            model.addAttribute("hasAssessment", false);
+        }
+
+        return "homeStudent";
+    }
 
 	@GetMapping("/homeAdmin")
 	public String homeAdmin() {

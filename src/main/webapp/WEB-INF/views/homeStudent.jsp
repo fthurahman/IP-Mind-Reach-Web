@@ -106,20 +106,48 @@
               Measure the current mental health and emotional states, identifying
               Depression, Anxiety or Stress.
             </p>
-            <a href="DASS" style="
-              display: block;
-              width: 100%;
-              padding: 0.75rem;
-              text-align: center;
-              background: var(--primary);
-              color: var(--primary-foreground);
-              text-decoration: none;
-              border-radius: 0.5rem;
-              font-weight: 500;
-              transition: background 0.2s;
-            ">
-              Start Assessment →
-            </a>
+            <c:choose>
+              <c:when test="${hasAssessment}">
+                <a href="DASS" style="
+                  display: block;
+                  width: 100%;
+                  padding: 0.75rem;
+                  text-align: center;
+                  background: var(--primary);
+                  color: var(--primary-foreground);
+                  text-decoration: none;
+                  border-radius: 0.5rem;
+                  font-weight: 500;
+                  transition: background 0.2s;
+                ">
+                  Retake Assessment
+                </a>
+                <div style="text-align: center; margin-top: 10px;">
+                  <a href="resultDASS" style="font-size: 0.875rem; color: #5a5653; text-decoration: underline;">
+                    View Latest Result
+                  </a>
+                  <div style="font-size: 0.75rem; color: #8c8784; margin-top: 4px;">
+                    Last taken: ${latestAssessmentDate}
+                  </div>
+                </div>
+              </c:when>
+              <c:otherwise>
+                <a href="DASS" style="
+                  display: block;
+                  width: 100%;
+                  padding: 0.75rem;
+                  text-align: center;
+                  background: var(--primary);
+                  color: var(--primary-foreground);
+                  text-decoration: none;
+                  border-radius: 0.5rem;
+                  font-weight: 500;
+                  transition: background 0.2s;
+                ">
+                  Start Assessment →
+                </a>
+              </c:otherwise>
+            </c:choose>
           </div>
 
           <!-- PHQ Card -->

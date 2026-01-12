@@ -67,7 +67,36 @@ public class DASSController {
     }
     
     @GetMapping("/resultDASS")
-    public String loadDASSResult() {
-        return "resultDASS";
+    public ModelAndView loadDASSResult(HttpServletRequest request) {
+        ModelAndView mv = new ModelAndView("resultDASS");
+        
+        com.example.model.User user = (com.example.model.User) request.getSession().getAttribute("loggedUser");
+        if (user == null) return new ModelAndView("redirect:/login");
+
+        String sql = "SELECT * FROM dass_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";
+        
+        try {
+            java.util.Map<String, Object> latestResult = jdbcTemplate.queryForMap(sql, user.getEmail());
+            
+            DASS dassResult = new DASS();
+            dassResult.setDepression((Integer) latestResult.get("depression_score"));
+            dassResult.setAnxiety((Integer) latestResult.get("anxiety_score"));
+            dassResult.setStress((Integer) latestResult.get("stress_score"));
+            dassResult.setLevelDepression((String) latestResult.get("level_depression"));
+            dassResult.setLevelAnxiety((String) latestResult.get("level_anxiety"));
+            dassResult.setLevelStress((String) latestResult.get("level_stress"));
+            
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a");
+            String formattedDate = sdf.format((java.sql.Timestamp) latestResult.get("assessment_date"));
+
+            mv.addObject("result", dassResult);
+            mv.addObject("assessmentDate", formattedDate);
+            
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            // No result found, redirect to assessment
+            return new ModelAndView("redirect:/DASS");
+        }
+
+        return mv;
     }
 }

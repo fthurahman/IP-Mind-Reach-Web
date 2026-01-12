@@ -4,6 +4,9 @@ public class DASS{
     private int depression, anxiety, stress;
     private String levelDepression, levelAnxiety, levelStress;
 
+    // Default Constructor
+    public DASS() {}
+
     // Constructor
     public DASS(int depression, int anxiety, int stress, String levelDepression, String levelAnxiety, String levelStress) {
         this.depression = depression;
@@ -32,5 +35,25 @@ public class DASS{
     }
     public String getLevelStress() { 
     	return levelStress; 
+    }
+    
+    // Setters
+    public void setDepression(int depression) {
+        this.depression = depression;
+    }
+    public void setAnxiety(int anxiety) {
+        this.anxiety = anxiety;
+    }
+    public void setStress(int stress) {
+        this.stress = stress;
+    }
+    public void setLevelDepression(String levelDepression) {
+        this.levelDepression = levelDepression;
+    }
+    public void setLevelAnxiety(String levelAnxiety) {
+        this.levelAnxiety = levelAnxiety;
+    }
+    public void setLevelStress(String levelStress) {
+        this.levelStress = levelStress;
     }
 }
