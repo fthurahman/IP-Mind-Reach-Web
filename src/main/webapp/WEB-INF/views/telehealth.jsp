@@ -12,8 +12,12 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
         <style>
-          /* Override global body styles */
-
+          /* Override global body styles from style.css that lock scrolling */
+          body {
+            display: block !important;
+            overflow-y: auto !important;
+            height: auto !important;
+          }
 
           .modal {
             display: none;
@@ -63,55 +67,52 @@
         </style>
       </head>
 
-      <body>
+      <body class="bg-gray-50 min-h-screen">
         <!-- Top Navigation Bar -->
         <jsp:include page="layout/header.jsp">
           <jsp:param name="activePage" value="telehealth" />
         </jsp:include>
 
-        <main class="dashboard-content" style="padding-top: 96px !important;">
-          <!-- Hero Header -->
-          <div
-            class="bg-gradient-to-r from-[#B4C59B] to-[#CADBB7] rounded-2xl p-8 shadow-[0_4px_20px_rgba(180,197,155,0.15)] mb-6">
-            <h1 class="text-3xl text-white mb-2">Telehealth Assistance</h1>
-            <p class="text-white/90">Connect with professional support providers</p>
-          </div>
-
-          <!-- Main Content -->
+        <main class="dashboard-content">
           <c:choose>
             <c:when test="${showHistory}">
               <!-- Past Sessions Content -->
-              <div>
+              <div class="w-full">
                 <div class="mb-6">
-                  <h1 class="text-3xl mb-2">Past Sessions</h1>
-                  <p class="text-gray-600">Review your completed counseling sessions</p>
+                  <h1 class="text-3xl font-serif text-[#3D3A37] mb-2">Past Sessions</h1>
+                  <p class="text-[#5A5653]">Review your completed counseling sessions</p>
                 </div>
 
-                <div class="space-y-4">
+                <h2 class="text-xl font-medium text-[#3D3A37] mb-4">Past Sessions</h2>
+
+                <div class="space-y-4 mb-6">
+                  <c:set var="hasCompleted" value="false" />
                   <c:forEach var="appointment" items="${appointments}">
                     <c:if test="${appointment.status == 'completed'}">
-                      <div class="bg-white p-6 border-0 shadow-lg rounded-2xl">
-                        <div class="flex items-start justify-between mb-4">
+                      <c:set var="hasCompleted" value="true" />
+                      <div class="bg-white p-6 border-0 shadow-sm rounded-2xl">
+                        <div class="flex items-start justify-between mb-6">
                           <div>
-                            <p class="font-medium">${appointment.counselorName}</p>
-                            <p class="text-sm text-gray-600">
+                            <p class="font-medium text-[#3D3A37] text-lg">${appointment.counselorName}</p>
+                            <p class="text-sm text-[#5A5653]">
                               <fmt:parseDate value="${appointment.date}" pattern="yyyy-MM-dd" var="parsedDate" />
-                              <fmt:formatDate value="${parsedDate}" pattern="MMMM d, yyyy" /> at ${appointment.time}
+                              <fmt:formatDate value="${parsedDate}" pattern="EEEE, MMMM d, yyyy" /> at
+                              ${appointment.time}
                             </p>
                           </div>
                           <span
-                            class="border border-gray-300 text-gray-600 px-3 py-1 rounded-full text-sm">Completed</span>
+                            class="border border-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-medium">Completed</span>
                         </div>
                         <c:if test="${not empty appointment.summary}">
-                          <div class="bg-gray-50 rounded-xl p-4 space-y-3">
+                          <div class="bg-[#F9FAFB] rounded-xl p-6 space-y-4">
                             <div>
-                              <p class="text-sm mb-1 font-medium">Session Summary:</p>
-                              <p class="text-sm text-gray-700">${appointment.summary}</p>
+                              <p class="text-sm text-[#5A5653] font-medium mb-1">Session Summary:</p>
+                              <p class="text-sm text-[#3D3A37] leading-relaxed">${appointment.summary}</p>
                             </div>
                             <c:if test="${not empty appointment.recommendations}">
                               <div>
-                                <p class="text-sm mb-1 font-medium">Recommendations:</p>
-                                <p class="text-sm text-gray-700">
+                                <p class="text-sm text-[#5A5653] font-medium mb-1">Recommendations:</p>
+                                <p class="text-sm text-[#3D3A37] leading-relaxed">
                                   ${appointment.recommendations}</p>
                               </div>
                             </c:if>
@@ -120,15 +121,32 @@
                       </div>
                     </c:if>
                   </c:forEach>
+
+                  <c:if test="${not hasCompleted}">
+                    <div class="bg-white p-8 border-0 shadow-sm rounded-2xl text-center">
+                      <div class="w-16 h-16 bg-[#F7F3EF] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-history text-[#B4C59B] text-2xl"></i>
+                      </div>
+                      <h3 class="text-lg font-medium text-[#3D3A37] mb-2">No Past Sessions</h3>
+                      <p class="text-[#5A5653]">You haven't completed any telehealth sessions yet.</p>
+                    </div>
+                  </c:if>
                 </div>
 
                 <a href="<c:url value='/telehealth'/>"
-                  class="block w-full py-2 px-4 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium text-center">
+                  class="block w-full py-3 px-4 rounded-xl bg-[#E5E7EB] hover:bg-gray-300 text-[#3D3A37] font-medium text-center transition-colors">
                   Book a New Session
                 </a>
               </div>
             </c:when>
             <c:otherwise>
+              <!-- Hero Header -->
+              <div
+                class="bg-gradient-to-r from-[#B4C59B] to-[#CADBB7] rounded-2xl p-8 shadow-[0_4px_20px_rgba(180,197,155,0.15)] mb-6">
+                <h1 class="text-3xl text-white mb-2">Telehealth Assistance</h1>
+                <p class="text-white/90">Connect with professional support providers</p>
+              </div>
+
               <!-- Main Booking Content -->
               <div>
                 <!-- Upcoming Appointments -->
@@ -236,21 +254,21 @@
         </div>
 
         <script id="counselorData" type="application/json">
-                    {
-                        <c:forEach var="counselor" items="${counselors}" varStatus="cLoop">
-                            "${counselor.id}": [
-                                <c:forEach var="slot" items="${counselor.availableSlots}" varStatus="sLoop">
-                                    {
-                                        "id": "${slot.id}",
-                                        "date": "${slot.date}",
-                                        "time": "${slot.time}",
-                                        "available": ${slot.available}
-                                    }<c:if test="${!sLoop.last}">,</c:if>
-                                </c:forEach>
-                            ]<c:if test="${!cLoop.last}">,</c:if>
-                        </c:forEach>
-                    }
-                </script>
+          {
+            <c:forEach var="counselor" items="${counselors}" varStatus="cLoop">
+              "${counselor.id}": [
+              <c:forEach var="slot" items="${counselor.availableSlots}" varStatus="sLoop">
+                {
+                "id": "${slot.id}",
+                "date": "${slot.date}",
+                "time": "${slot.time}",
+                "available": ${slot.available}
+                }<c:if test="${!sLoop.last}">,</c:if>
+              </c:forEach>
+              ]<c:if test="${!cLoop.last}">,</c:if>
+            </c:forEach>
+          }
+        </script>
         <script>
           // Time slots data parsed from the JSON block
           const counselorTimeSlots = JSON.parse(document.getElementById('counselorData').textContent);

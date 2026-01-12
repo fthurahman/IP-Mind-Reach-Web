@@ -138,44 +138,8 @@
                             </c:forEach>
 
                             <c:if test="${not hasUpcoming}">
-                                <!-- Mock data for upcoming sessions -->
-                                <div class="session-card bg-white p-6 border-0 shadow-lg rounded-2xl">
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex-1">
-                                            <p class="font-medium text-[#3D3A37] mb-1">Alex Johnson</p>
-                                            <p class="text-sm text-[#5A5653]">Saturday, November 8, 2025 at 10:00 AM</p>
-                                        </div>
-                                        <div class="flex items-center gap-3">
-                                            <span
-                                                class="bg-[#CADBB7] text-[#3D3A37] px-3 py-1 rounded-full text-sm font-medium">
-                                                Upcoming
-                                            </span>
-                                            <button
-                                                onclick="openDetailsModal('c1', 'Alex Johnson', '2025-11-08', '10:00 AM', 'upcoming')"
-                                                class="px-4 py-2 rounded-xl bg-[#B4C59B] hover:bg-[#9AAF86] text-white font-medium text-sm transition-colors">
-                                                View Details
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="session-card bg-white p-6 border-0 shadow-lg rounded-2xl">
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex-1">
-                                            <p class="font-medium text-[#3D3A37] mb-1">Jordan Lee</p>
-                                            <p class="text-sm text-[#5A5653]">Sunday, November 9, 2025 at 2:00 PM</p>
-                                        </div>
-                                        <div class="flex items-center gap-3">
-                                            <span
-                                                class="bg-[#CADBB7] text-[#3D3A37] px-3 py-1 rounded-full text-sm font-medium">
-                                                Upcoming
-                                            </span>
-                                            <button
-                                                onclick="openDetailsModal('c2', 'Jordan Lee', '2025-11-09', '2:00 PM', 'upcoming')"
-                                                class="px-4 py-2 rounded-xl bg-[#B4C59B] hover:bg-[#9AAF86] text-white font-medium text-sm transition-colors">
-                                                View Details
-                                            </button>
-                                        </div>
-                                    </div>
+                                <div class="bg-white p-6 border-0 shadow-lg rounded-2xl text-center py-8">
+                                    <p class="text-[#5A5653]">No upcoming sessions scheduled</p>
                                 </div>
                             </c:if>
                         </div>
@@ -220,45 +184,8 @@
                             </c:forEach>
 
                             <c:if test="${not hasCompleted}">
-                                <!-- Mock data for completed sessions -->
-                                <div class="session-card bg-white p-6 border-0 shadow-lg rounded-2xl">
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex-1">
-                                            <p class="font-medium text-[#3D3A37] mb-1">Taylor Smith</p>
-                                            <p class="text-sm text-[#5A5653]">Wednesday, November 5, 2025 at 11:00 AM
-                                            </p>
-                                        </div>
-                                        <div class="flex items-center gap-3">
-                                            <span
-                                                class="border border-[#B4C59B] text-[#3D3A37] px-3 py-1 rounded-full text-sm font-medium">
-                                                Completed
-                                            </span>
-                                            <button
-                                                onclick="openDetailsModal('c3', 'Taylor Smith', '2025-11-05', '11:00 AM', 'completed')"
-                                                class="px-4 py-2 rounded-xl bg-[#B4C59B] hover:bg-[#9AAF86] text-white font-medium text-sm transition-colors">
-                                                View Details
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="session-card bg-white p-6 border-0 shadow-lg rounded-2xl">
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex-1">
-                                            <p class="font-medium text-[#3D3A37] mb-1">Morgan Davis</p>
-                                            <p class="text-sm text-[#5A5653]">Monday, November 3, 2025 at 3:00 PM</p>
-                                        </div>
-                                        <div class="flex items-center gap-3">
-                                            <span
-                                                class="border border-[#B4C59B] text-[#3D3A37] px-3 py-1 rounded-full text-sm font-medium">
-                                                Completed
-                                            </span>
-                                            <button
-                                                onclick="openDetailsModal('c4', 'Morgan Davis', '2025-11-03', '3:00 PM', 'completed')"
-                                                class="px-4 py-2 rounded-xl bg-[#B4C59B] hover:bg-[#9AAF86] text-white font-medium text-sm transition-colors">
-                                                View Details
-                                            </button>
-                                        </div>
-                                    </div>
+                                <div class="bg-white p-6 border-0 shadow-lg rounded-2xl text-center py-8">
+                                    <p class="text-[#5A5653]">No completed sessions yet</p>
                                 </div>
                             </c:if>
                         </div>
