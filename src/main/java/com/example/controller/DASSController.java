@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -24,7 +25,7 @@ public class DASSController {
     }
 
     @PostMapping("/DASS")
-    public ModelAndView processDASS(HttpServletRequest request) {
+    public ModelAndView processDASS(HttpServletRequest request, @ModelAttribute("loggedUser") com.example.model.User user) {
 
         int[] scores = new int[21];
 
@@ -35,9 +36,8 @@ public class DASSController {
         // Call service to compute and interpret
         DASS dassResult = dassService.calculate(scores);
         
-        // Get user from session
-        com.example.model.User user = (com.example.model.User) request.getSession().getAttribute("loggedUser");
-        String userEmail = (user != null) ? user.getEmail() : "guest@legacy.com"; // Fallback if session issue
+        // Get user from model
+        String userEmail = (user != null) ? user.getEmail() : "guest@legacy.com";
 
         // Save to Database
         String sql = "INSERT INTO dass_results (user_email, depression_score, anxiety_score, stress_score, " +
@@ -67,10 +67,9 @@ public class DASSController {
     }
     
     @GetMapping("/resultDASS")
-    public ModelAndView loadDASSResult(HttpServletRequest request) {
+    public ModelAndView loadDASSResult(@ModelAttribute("loggedUser") com.example.model.User user) {
         ModelAndView mv = new ModelAndView("resultDASS");
         
-        com.example.model.User user = (com.example.model.User) request.getSession().getAttribute("loggedUser");
         if (user == null) return new ModelAndView("redirect:/login");
 
         String sql = "SELECT * FROM dass_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";

@@ -345,8 +345,17 @@
 						<input type="password" id="password" name="password" placeholder="••••••••" required>
 					</div>
 
-					<c:if test="${not empty error}">
-						<div class="error-alert">${error}</div>
+					<c:if test="${not empty error or param.error != null}">
+						<div class="error-alert">
+							<c:choose>
+								<c:when test="${not empty sessionScope.SPRING_SECURITY_LAST_EXCEPTION}">
+									${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}
+								</c:when>
+								<c:otherwise>
+									Invalid email or password.
+								</c:otherwise>
+							</c:choose>
+						</div>
 					</c:if>
 
 					<button type="submit" class="btn-primary">Sign In</button>

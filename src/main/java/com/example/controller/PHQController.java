@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ public class PHQController {
     }
 
     @PostMapping("/assessmentPHQ")
-    public ModelAndView processPHQ(HttpServletRequest request) {
+    public ModelAndView processPHQ(HttpServletRequest request, @ModelAttribute("loggedUser") User user) {
         int totalScore = 0;
         int q9 = 0;
 
@@ -48,7 +49,6 @@ public class PHQController {
         PHQ result = new PHQ(totalScore, severity, flaggedSuicide);
 
         // Save to Database
-        User user = (User) request.getSession().getAttribute("loggedUser");
         String userEmail = (user != null) ? user.getEmail() : "guest@legacy.com";
 
         String sql = "INSERT INTO phq_results (user_email, total_score, severity, flagged_suicide, assessment_date) VALUES (?, ?, ?, ?, ?)";
@@ -68,9 +68,8 @@ public class PHQController {
     }
 
     @GetMapping("/resultPHQ")
-    public ModelAndView loadPHQResult(HttpServletRequest request) {
+    public ModelAndView loadPHQResult(@ModelAttribute("loggedUser") User user) {
         ModelAndView mv = new ModelAndView("resultPHQ");
-        User user = (User) request.getSession().getAttribute("loggedUser");
         if (user == null) return new ModelAndView("redirect:/login");
 
         String sql = "SELECT * FROM phq_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";

@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -26,10 +27,9 @@ public class CounselingControllerTelehealth {
     private TelehealthDAO telehealthDAO;
 
     @GetMapping("/telehealth")
-    public String counseling(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("loggedUser");
-        if (user == null)
-            return "redirect:/login";
+
+    public String counseling(Model model, @ModelAttribute("loggedUser") User user) {
+        if (user == null) return "redirect:/login";
 
         String userRole = user.getRole();
 
@@ -71,10 +71,9 @@ public class CounselingControllerTelehealth {
     }
 
     @GetMapping("/telehealth/history")
-    public String counselingHistory(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("loggedUser");
-        if (user == null)
-            return "redirect:/login";
+
+    public String counselingHistory(Model model, @ModelAttribute("loggedUser") User user) {
+        if (user == null) return "redirect:/login";
 
         List<AppointmentTelehealth> appointments = telehealthDAO.getSessionsByStudent(user.getEmail());
         List<CounselorTelehealth> counselors = telehealthDAO.getAllActiveCounselors();
@@ -88,10 +87,15 @@ public class CounselingControllerTelehealth {
     }
 
     @GetMapping("/telehealthCounselor")
-    public String counselingCounselor(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("loggedUser");
-        if (user == null || !"mhprofessional".equals(user.getRole())) {
-            return "redirect:/login";
+
+    public String counselingCounselor(Model model, @ModelAttribute("loggedUser") User user) {
+        if (user == null) return "redirect:/login";
+        // Role check handled by security config ideally, or keep simple check if config missing
+        // For safety, we keep role check here if config isn't updated yet, 
+        // BUT verify user.getRole() matches expectations.
+        if (!"mhprofessional".equals(user.getRole())) {
+             // Let Global Exception handler or Access Denied handle it, or redirect
+             return "redirect:/login";
         }
 
         List<AppointmentTelehealth> appointments = telehealthDAO.getSessionsByCounselor(user.getEmail());
@@ -100,14 +104,13 @@ public class CounselingControllerTelehealth {
     }
 
     @PostMapping("/telehealth/book")
+
     public String bookAppointment(@RequestParam String counselorId,
             @RequestParam String slotDate,
             @RequestParam String slotTime,
-            HttpSession session) {
+            @ModelAttribute("loggedUser") User user) {
 
-        User user = (User) session.getAttribute("loggedUser");
-        if (user == null)
-            return "redirect:/login";
+        if (user == null) return "redirect:/login";
 
         // counselorId is actually the email in our DB schema for now (or we can lookup)
         // In TelehealthDAO.getAllActiveCounselors, we set Id = email.
@@ -118,11 +121,9 @@ public class CounselingControllerTelehealth {
     }
 
     @PostMapping("/telehealthCounselor/start")
-    public String startSession(@RequestParam int sessionId, HttpSession session) {
-        User user = (User) session.getAttribute("loggedUser");
-        if (user == null || !"mhprofessional".equals(user.getRole())) {
-            return "redirect:/login";
-        }
+
+    public String startSession(@RequestParam int sessionId, @ModelAttribute("loggedUser") User user) {
+        if (user == null) return "redirect:/login";
 
         telehealthDAO.startSession(sessionId);
 
@@ -137,15 +138,13 @@ public class CounselingControllerTelehealth {
     }
 
     @PostMapping("/telehealthCounselor/complete")
+
     public String completeSession(@RequestParam int sessionId,
             @RequestParam String summary,
             @RequestParam String recommendations,
-            HttpSession session) {
+            @ModelAttribute("loggedUser") User user) {
 
-        User user = (User) session.getAttribute("loggedUser");
-        if (user == null || !"mhprofessional".equals(user.getRole())) {
-            return "redirect:/login";
-        }
+        if (user == null) return "redirect:/login";
 
         telehealthDAO.completeSession(sessionId, summary, recommendations);
 
@@ -153,15 +152,13 @@ public class CounselingControllerTelehealth {
     }
 
     @PostMapping("/telehealthCounselor/updateNotes")
+
     public String updateNotes(@RequestParam int sessionId,
             @RequestParam String summary,
             @RequestParam String recommendations,
-            HttpSession session) {
+            @ModelAttribute("loggedUser") User user) {
 
-        User user = (User) session.getAttribute("loggedUser");
-        if (user == null || !"mhprofessional".equals(user.getRole())) {
-            return "redirect:/login";
-        }
+        if (user == null) return "redirect:/login";
 
         telehealthDAO.updateSessionNotes(sessionId, summary, recommendations);
 

@@ -19,10 +19,13 @@ public class EmailService {
         message.setText(text);
         
         try {
+            System.out.println("Attempting to send email to: " + to);
             mailSender.send(message);
+            System.out.println("Email sent successfully!");
         } catch (Exception e) {
-            e.printStackTrace(); // Log email errors
-            throw new RuntimeException("Failed to send email: " + e.getMessage());
+            System.err.println("EMAIL SENDING FAILED: " + e.getMessage());
+            e.printStackTrace();
+            // Don't throw exception to avoid breaking the user flow, just log it.
         }
     }
 }

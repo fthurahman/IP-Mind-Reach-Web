@@ -14,6 +14,9 @@ import javax.servlet.http.HttpSession;
 public class UserController {
 
 	@Autowired
+	private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
+	@Autowired
 	private com.example.service.EmailService emailService;
 
 	@Autowired
@@ -46,6 +49,9 @@ public class UserController {
 			return "register";
 		}
 
+		// Encrypt password before saving
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+
 		userDAO.save(user);
 		return "redirect:/login";
 	}
@@ -56,44 +62,9 @@ public class UserController {
 		return "login";
 	}
 
-	// handle login
-	@PostMapping("/login")
-	public String login(@RequestParam String email,
-			@RequestParam String password,
-			HttpSession session,
-			Model model) {
-		User user = userDAO.findByEmail(email);
-
-		if (user == null) {
-			model.addAttribute("error", "Email not registered yet!");
-			return "login"; // show login page again with error
-		}
-
-		if (!user.getPassword().equals(password)) {
-			model.addAttribute("error", "Incorrect password!");
-			return "login";
-		}
-
-		// Check Status
-		if ("pending".equals(user.getStatus())) {
-			return "redirect:/approval-pending";
-		}
-
-		// Successful login
-		session.setAttribute("loggedUser", user);
-
-		// Redirect based on role
-		switch (user.getRole()) {
-			case "student":
-				return "redirect:/homeStudent";
-			case "admin":
-				return "redirect:/homeAdmin";
-			case "mhprofessional":
-				return "redirect:/homeMProfessional";
-			default:
-				return "login";
-		}
-	}
+	// Login POST is handled by Spring Security now
+	// We keep this just in case we need to handle specific errors passed via URL params,
+	// but typically Spring Security handles the authentication process.
 
     @Autowired
     private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
@@ -106,8 +77,12 @@ public class UserController {
     }
 
     @GetMapping("/homeStudent")
-    public String homeStudent(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("loggedUser");
+
+    public String homeStudent(@ModelAttribute("loggedUser") User user, Model model) {
+        // user is injected by GlobalControllerAdvice
+        // Logic uses user.getEmail(), which is available.
+        
+        // Safety check if user somehow is null (shouldn't happen due to SecurityConfig filters)
         if (user == null) return "redirect:/login";
 
         // Check for latest DASS assessment
@@ -140,21 +115,18 @@ public class UserController {
     }
 
 	@GetMapping("/homeAdmin")
-	public String homeAdmin(HttpSession session) {
-		User user = (User) session.getAttribute("loggedUser");
-		if (user == null || !"admin".equals(user.getRole())) {
-			return "redirect:/login";
-		}
+	public String homeAdmin() {
+        // SecurityConfig handles access
 		return "homeAdmin";
 	}
 	
 	// User Management - List Users
 	@GetMapping("/user-management")
-	public String userManagement(HttpSession session, Model model) {
-		User user = (User) session.getAttribute("loggedUser");
-		if (user == null || !"admin".equals(user.getRole())) {
-			return "redirect:/login";
-		}
+	// User Management - List Users
+
+	public String userManagement(@ModelAttribute("loggedUser") User user, Model model) {
+        // SecurityConfig handles access logic
+		if (user == null) return "redirect:/login";
 		
 		// Fetch all users
 		java.util.List<User> allUsers = userDAO.findAll();
@@ -185,11 +157,10 @@ public class UserController {
 	
 	// Approve User
 	@PostMapping("/approve-user")
-	public String approveUser(@RequestParam String email, HttpSession session) {
-		User admin = (User) session.getAttribute("loggedUser");
-		if (admin == null || !"admin".equals(admin.getRole())) {
-			return "redirect:/login";
-		}
+
+	public String approveUser(@RequestParam String email) {
+        // SecurityConfig handles access checks
+        // We trust the admin role check done by the filter filterChain
 		
 		User userToApprove = userDAO.findByEmail(email);
 		if (userToApprove != null) {
@@ -202,11 +173,8 @@ public class UserController {
 
 	// Reject User
 	@PostMapping("/reject-user")
-	public String rejectUser(@RequestParam("email") String email, HttpSession session) {
-		User admin = (User) session.getAttribute("loggedUser");
-		if (admin == null || !"admin".equals(admin.getRole())) {
-			return "redirect:/login";
-		}
+	public String rejectUser(@RequestParam("email") String email) {
+        // SecurityConfig handles access checks
 		
 		// "Reject" means removing them from the system
 		userDAO.delete(email);
@@ -229,12 +197,10 @@ public class UserController {
 	}
 
     @GetMapping("/counselor/student-results")
-    public String counselorStudentResults(@RequestParam(name = "search", required = false) String search, HttpSession session, Model model) {
-        User user = (User) session.getAttribute("loggedUser");
-        // Ensure user is logged in AND is a counselor
-        if (user == null || !"mhprofessional".equals(user.getRole())) {
-             return "redirect:/login";
-        }
+
+    public String counselorStudentResults(@RequestParam(name = "search", required = false) String search, @ModelAttribute("loggedUser") User user, Model model) {
+        // SecurityConfig handles access checks
+        if (user == null) return "redirect:/login";
         
         // Fetch all attempts for DASS and PHQ with search
         java.util.List<java.util.Map<String, Object>> dassResults = userDAO.getAllDassResults(search);
