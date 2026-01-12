@@ -372,6 +372,7 @@
         }
     }
 
+
     .nav-item {
         position: relative !important;
         padding-bottom: 0.25rem !important;
@@ -439,6 +440,36 @@
         margin: 0 !important;
         text-transform: capitalize !important;
         line-height: 1.25 !important;
+    }
+
+    /* Profile Section */
+    .profile-section {
+        display: none !important;
+    }
+
+    @media (min-width: 1024px) {
+        .profile-section {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.75rem !important;
+        }
+    }
+
+    .profile-info {
+        text-align: right !important;
+        display: block !important;
+        margin-right: 0.5rem !important;
+    }
+
+    .profile-icon {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+        border-radius: 9999px !important;
+        background-color: rgba(180, 197, 155, 0.2) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #B4C59B !important;
     }
 
     .btn-ghost {
@@ -816,4 +847,22 @@
             triggerToast();
         }
     })();
+</script>
+
+<!-- Lucide Icons Script -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    // Initialize Lucide icons on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+    });
+
+    // Re-initialize icons when potentially dynamic content loads (optional backup)
+    window.initLucide = function () {
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+    };
 </script>
