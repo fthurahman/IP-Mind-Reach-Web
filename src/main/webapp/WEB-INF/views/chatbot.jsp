@@ -7,247 +7,247 @@
       <meta charset="UTF-8" />
       <title>Chat Support | MindReach</title>
       <script src="https://cdn.tailwindcss.com"></script>
-      <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
-      <style>
-        /* Fonts */
-        @import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+      <%@ include file="layout/css-include.jsp" %>
+        <style>
+          /* Fonts */
+          @import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 
-        :root {
-          /* Colors from global.css */
-          --font-family-serif: "DM Serif Display", serif;
-          --font-family-sans: "Work Sans", sans-serif;
+          :root {
+            /* Colors from global.css */
+            --font-family-serif: "DM Serif Display", serif;
+            --font-family-sans: "Work Sans", sans-serif;
 
-          --background: #f7f3ef;
-          --foreground: #3d3a37;
-          --card: #ffffff;
-          --card-foreground: #5a5653;
-          --primary: #b4c59b;
-          --primary-hover: #9aaf86;
-          --primary-foreground: #3d3a37;
-          --muted-foreground: #8c8784;
-          --border: #e9e4df;
+            --background: #f7f3ef;
+            --foreground: #3d3a37;
+            --card: #ffffff;
+            --card-foreground: #5a5653;
+            --primary: #b4c59b;
+            --primary-hover: #9aaf86;
+            --primary-foreground: #3d3a37;
+            --muted-foreground: #8c8784;
+            --border: #e9e4df;
 
-          --radius-xl: 0.75rem;
+            --radius-xl: 0.75rem;
 
-          /* Chatbot specific */
-          --olive: #b4c59b;
-          --olive-2: #cadbb7;
-          --ink: #3d3a37;
-          --text: #5a5653;
-          --paper: #f7f3ef;
-          --rose: #d8a79e;
-          --shadow: 0 4px 20px rgba(180, 197, 155, 0.15);
-          --radius: 24px;
-        }
+            /* Chatbot specific */
+            --olive: #b4c59b;
+            --olive-2: #cadbb7;
+            --ink: #3d3a37;
+            --text: #5a5653;
+            --paper: #f7f3ef;
+            --rose: #d8a79e;
+            --shadow: 0 4px 20px rgba(180, 197, 155, 0.15);
+            --radius: 24px;
+          }
 
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: var(--font-family-sans);
-          background-color: var(--background);
-          color: var(--foreground);
-          min-height: 100vh;
-        }
+          body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family-sans);
+            background-color: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+          }
 
-        /* Chatbot styles */
-        * {
-          box-sizing: border-box;
-        }
+          /* Chatbot styles */
+          * {
+            box-sizing: border-box;
+          }
 
-        .wrap {
-          max-width: 900px;
-          margin: 32px auto;
-          padding: 0 16px;
-        }
+          .wrap {
+            max-width: 900px;
+            margin: 32px auto;
+            padding: 0 16px;
+          }
 
-        .space-y-6>*+* {
-          margin-top: 24px;
-        }
+          .space-y-6>*+* {
+            margin-top: 24px;
+          }
 
-        .chat-card {
-          background: #fff;
-          border: 1px solid var(--border);
-          border-radius: var(--radius);
-          box-shadow: var(--shadow);
-          overflow: hidden;
-        }
+          .chat-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+          }
 
-        /* ✅ IMPORTANT: renamed from .header to .chat-header to avoid clashing with navbar .header */
-        .chat-header {
-          padding: 24px;
-          background: linear-gradient(135deg, var(--olive), var(--olive-2));
-        }
+          /* ✅ IMPORTANT: renamed from .header to .chat-header to avoid clashing with navbar .header */
+          .chat-header {
+            padding: 24px;
+            background: linear-gradient(135deg, var(--olive), var(--olive-2));
+          }
 
-        .chat-header-row {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
+          .chat-header-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+          }
 
-        .bot-badge {
-          width: 48px;
-          height: 48px;
-          background: rgba(255, 255, 255, 0.4);
-          border-radius: 999px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 900;
-          color: #fff;
-        }
+          .bot-badge {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: #fff;
+          }
 
-        .chat-header h1 {
-          margin: 0;
-          font-size: 32px;
-          color: #fff;
-        }
+          .chat-header h1 {
+            margin: 0;
+            font-size: 32px;
+            color: #fff;
+          }
 
-        .chat-header p {
-          margin: 4px 0 0 0;
-          font-size: 13px;
-          color: rgba(255, 255, 255, 0.9);
-        }
+          .chat-header p {
+            margin: 4px 0 0 0;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+          }
 
-        .chat {
-          height: 500px;
-          overflow-y: auto;
-          padding: 24px;
-          background: rgba(247, 243, 239, 0.5);
-        }
+          .chat {
+            height: 500px;
+            overflow-y: auto;
+            padding: 24px;
+            background: rgba(247, 243, 239, 0.5);
+          }
 
-        .msg {
-          margin-bottom: 14px;
-        }
+          .msg {
+            margin-bottom: 14px;
+          }
 
-        .msg-row {
-          display: flex;
-          gap: 12px;
-          align-items: flex-start;
-        }
+          .msg-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+          }
 
-        .msg-row.user {
-          flex-direction: row-reverse;
-        }
+          .msg-row.user {
+            flex-direction: row-reverse;
+          }
 
-        .avatar {
-          width: 32px;
-          height: 32px;
-          border-radius: 999px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          color: var(--ink);
-          font-weight: 900;
-        }
+          .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--ink);
+            font-weight: 900;
+          }
 
-        .avatar.bot {
-          background: rgba(202, 219, 183, 0.4);
-        }
+          .avatar.bot {
+            background: rgba(202, 219, 183, 0.4);
+          }
 
-        .avatar.user {
-          background: rgba(216, 167, 158, 0.4);
-        }
+          .avatar.user {
+            background: rgba(216, 167, 158, 0.4);
+          }
 
-        .bubble {
-          max-width: 70%;
-          border-radius: 24px;
-          padding: 14px 16px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-          border: 1px solid var(--border);
-          font-size: 13px;
-          line-height: 1.55;
-          white-space: pre-line;
-        }
+          .bubble {
+            max-width: 70%;
+            border-radius: 24px;
+            padding: 14px 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            font-size: 13px;
+            line-height: 1.55;
+            white-space: pre-line;
+          }
 
-        .bubble.bot {
-          background: #fff;
-          color: var(--text);
-        }
+          .bubble.bot {
+            background: #fff;
+            color: var(--text);
+          }
 
-        .bubble.user {
-          background: #d9e4cc;
-          color: #2a2928;
-        }
+          .bubble.user {
+            background: #d9e4cc;
+            color: #2a2928;
+          }
 
-        .quick {
-          margin-left: 44px;
-          margin-top: 10px;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-        }
+          .quick {
+            margin-left: 44px;
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+          }
 
-        .pill {
-          border: 1px solid var(--border);
-          background: #fff;
-          border-radius: 999px;
-          padding: 8px 12px;
-          cursor: pointer;
-          font-weight: 700;
-          font-size: 12px;
-          color: var(--ink);
-        }
+          .pill {
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 999px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+            color: var(--ink);
+          }
 
-        .pill:hover {
-          background: rgba(202, 219, 183, 0.3);
-        }
+          .pill:hover {
+            background: rgba(202, 219, 183, 0.3);
+          }
 
-        .composer {
-          padding: 16px;
-          background: #fff;
-          border-top: 1px solid var(--border);
-          display: flex;
-          gap: 10px;
-        }
+          .composer {
+            padding: 16px;
+            background: #fff;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+          }
 
-        .input {
-          flex: 1;
-          border: 1px solid var(--border);
-          border-radius: 14px;
-          padding: 10px 12px;
-          font-size: 14px;
-          outline: none;
-        }
+          .input {
+            flex: 1;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 10px 12px;
+            font-size: 14px;
+            outline: none;
+          }
 
-        .send {
-          border: 0;
-          border-radius: 14px;
-          background: var(--olive);
-          color: var(--ink);
-          font-weight: 900;
-          padding: 10px 14px;
-          cursor: pointer;
-          box-shadow: 0 4px 12px rgba(180, 197, 155, 0.25);
-        }
+          .send {
+            border: 0;
+            border-radius: 14px;
+            background: var(--olive);
+            color: var(--ink);
+            font-weight: 900;
+            padding: 10px 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(180, 197, 155, 0.25);
+          }
 
-        .send:hover {
-          background: #9aaf86;
-        }
+          .send:hover {
+            background: #9aaf86;
+          }
 
-        .crisis {
-          background: rgba(216, 167, 158, 0.1);
-          padding: 24px;
-          border-radius: var(--radius);
-          border: 1px solid var(--border);
-          box-shadow: var(--shadow);
-        }
+          .crisis {
+            background: rgba(216, 167, 158, 0.1);
+            padding: 24px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+          }
 
-        .crisis h3 {
-          margin: 0 0 12px 0;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
+          .crisis h3 {
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
 
-        .crisis p {
-          margin: 6px 0;
-          color: var(--text);
-          font-size: 13px;
-        }
-      </style>
+          .crisis p {
+            margin: 6px 0;
+            color: var(--text);
+            font-size: 13px;
+          }
+        </style>
 
-      <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
+        </style>
     </head>
 
     <body>

@@ -10,61 +10,61 @@
         <title>MindReach - Telehealth Assistance</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
-        <style>
-          /* Override global body styles from style.css that lock scrolling */
-          body {
-            display: block !important;
-            overflow-y: auto !important;
-            height: auto !important;
-          }
+        <%@ include file="layout/css-include.jsp" %>
+          <style>
+            /* Override global body styles from style.css that lock scrolling */
+            body {
+              display: block !important;
+              overflow-y: auto !important;
+              height: auto !important;
+            }
 
-          .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-          }
+            .modal {
+              display: none;
+              position: fixed;
+              z-index: 1000;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(0, 0, 0, 0.5);
+            }
 
-          .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
+            .modal.show {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
 
-          .modal-content {
-            background-color: white;
-            border-radius: 1rem;
-            max-width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-          }
+            .modal-content {
+              background-color: white;
+              border-radius: 1rem;
+              max-width: 90%;
+              max-height: 90vh;
+              overflow-y: auto;
+            }
 
-          .time-slot {
-            transition: all 0.3s ease;
-          }
+            .time-slot {
+              transition: all 0.3s ease;
+            }
 
-          .time-slot:hover {
-            border-color: #B4C59B;
-          }
+            .time-slot:hover {
+              border-color: #B4C59B;
+            }
 
-          .time-slot.selected {
-            border-color: #B4C59B;
-            background-color: rgba(180, 197, 155, 0.1);
-          }
+            .time-slot.selected {
+              border-color: #B4C59B;
+              background-color: rgba(180, 197, 155, 0.1);
+            }
 
-          .counselor-card {
-            transition: all 0.3s ease;
-          }
+            .counselor-card {
+              transition: all 0.3s ease;
+            }
 
-          .counselor-card:hover {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-          }
-        </style>
+            .counselor-card:hover {
+              box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+          </style>
       </head>
 
       <body class="bg-gray-50 min-h-screen">

@@ -13,40 +13,40 @@
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
                 <!-- Include global styles -->
-                <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
+                <%@ include file="layout/css-include.jsp" %>
 
-                <style>
-                    .mood-button {
-                        transition: all 0.3s ease;
-                    }
+                    <style>
+                        .mood-button {
+                            transition: all 0.3s ease;
+                        }
 
-                    .mood-button:hover {
-                        transform: scale(1.05);
-                    }
+                        .mood-button:hover {
+                            transform: scale(1.05);
+                        }
 
-                    .mood-button.selected {
-                        border-color: #B4C59B;
-                        background-color: rgba(180, 197, 155, 0.1);
-                        transform: scale(1.05);
-                    }
+                        .mood-button.selected {
+                            border-color: #B4C59B;
+                            background-color: rgba(180, 197, 155, 0.1);
+                            transform: scale(1.05);
+                        }
 
-                    .progress-bar {
-                        transition: width 0.5s ease;
-                    }
+                        .progress-bar {
+                            transition: width 0.5s ease;
+                        }
 
-                    .chart-container {
-                        position: relative;
-                        height: 300px;
-                        width: 100%;
-                    }
+                        .chart-container {
+                            position: relative;
+                            height: 300px;
+                            width: 100%;
+                        }
 
-                    /* Override global body styles from style.css that lock scrolling */
-                    body {
-                        display: block !important;
-                        overflow-y: auto !important;
-                        height: auto !important;
-                    }
-                </style>
+                        /* Override global body styles from style.css that lock scrolling */
+                        body {
+                            display: block !important;
+                            overflow-y: auto !important;
+                            height: auto !important;
+                        }
+                    </style>
             </head>
 
             <body class="bg-gray-50 min-h-screen">

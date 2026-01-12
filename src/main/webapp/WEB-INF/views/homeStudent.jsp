@@ -7,45 +7,43 @@
       <meta charset="UTF-8" />
       <title>Dashboard | MindReach</title>
       <script src="https://cdn.tailwindcss.com"></script>
-      <!-- Use the embedded CSS approach since we appended dashboard styles to style.css -->
-      <!-- But also include the updated style.css linkage -->
-      <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
-      <style>
-        /* Fonts */
-        @import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+      <%@ include file="layout/css-include.jsp" %>
+        <style>
+          /* Fonts */
+          @import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 
-        :root {
-          /* Colors from global.css */
-          --font-family-serif: "DM Serif Display", serif;
-          --font-family-sans: "Work Sans", sans-serif;
+          :root {
+            /* Colors from global.css */
+            --font-family-serif: "DM Serif Display", serif;
+            --font-family-sans: "Work Sans", sans-serif;
 
-          --background: #f7f3ef;
-          --foreground: #3d3a37;
-          --card: #ffffff;
-          --card-foreground: #5a5653;
-          --primary: #b4c59b;
-          --primary-hover: #9aaf86;
-          --primary-foreground: #3d3a37;
-          --muted-foreground: #8c8784;
-          --border: #e9e4df;
+            --background: #f7f3ef;
+            --foreground: #3d3a37;
+            --card: #ffffff;
+            --card-foreground: #5a5653;
+            --primary: #b4c59b;
+            --primary-hover: #9aaf86;
+            --primary-foreground: #3d3a37;
+            --muted-foreground: #8c8784;
+            --border: #e9e4df;
 
-          --radius-xl: 0.75rem;
-        }
+            --radius-xl: 0.75rem;
+          }
 
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: var(--font-family-sans);
-          background-color: var(--background);
-          color: var(--foreground);
-          min-height: 100vh;
-        }
+          body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family-sans);
+            background-color: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+          }
 
-        /* Include the dashboard styles directly here if strictly needed, 
+          /* Include the dashboard styles directly here if strictly needed, 
            but relying on style.css is better if the file update worked. 
            For safety/speed, I will rely on the style.css update I just did. */
-      </style>
-      <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
+        </style>
+        </style>
     </head>
 
     <body>
