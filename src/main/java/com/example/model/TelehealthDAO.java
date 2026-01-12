@@ -70,4 +70,33 @@ public class TelehealthDAO {
             return c;
         });
     }
+
+    // Start a session (set status to in_progress)
+    public void startSession(int sessionId) {
+        String sql = "UPDATE telehealth_sessions SET status = 'in_progress' WHERE id = ?";
+        jdbcTemplate.update(sql, sessionId);
+    }
+
+    // Complete a session and save notes/recommendations
+    public void completeSession(int sessionId, String summary, String recommendations) {
+        String sql = "UPDATE telehealth_sessions SET status = 'completed', summary = ?, recommendations = ? WHERE id = ?";
+        jdbcTemplate.update(sql, summary, recommendations, sessionId);
+    }
+
+    // Update session notes/recommendations only (for already completed sessions)
+    public void updateSessionNotes(int sessionId, String summary, String recommendations) {
+        String sql = "UPDATE telehealth_sessions SET summary = ?, recommendations = ? WHERE id = ?";
+        jdbcTemplate.update(sql, summary, recommendations, sessionId);
+    }
+
+    // Get a single session by ID
+    public AppointmentTelehealth getSessionById(int sessionId) {
+        String sql = "SELECT ts.*, c.name as counselor_name, s.name as student_name " +
+                "FROM telehealth_sessions ts " +
+                "JOIN users c ON ts.counselor_email = c.email " +
+                "JOIN users s ON ts.student_email = s.email " +
+                "WHERE ts.id = ?";
+        List<AppointmentTelehealth> results = jdbcTemplate.query(sql, appointmentMapper, sessionId);
+        return results.isEmpty() ? null : results.get(0);
+    }
 }

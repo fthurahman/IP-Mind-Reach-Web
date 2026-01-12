@@ -116,4 +116,55 @@ public class CounselingControllerTelehealth {
 
         return "redirect:/telehealth";
     }
+
+    @PostMapping("/telehealthCounselor/start")
+    public String startSession(@RequestParam int sessionId, HttpSession session) {
+        User user = (User) session.getAttribute("loggedUser");
+        if (user == null || !"mhprofessional".equals(user.getRole())) {
+            return "redirect:/login";
+        }
+
+        telehealthDAO.startSession(sessionId);
+
+        // We return 200 OK implicitly if we don't return a view name for AJAX,
+        // but since this is a Spring MVC Controller returning String (view name),
+        // and we want to use AJAX, we should probably annotate with @ResponseBody
+        // or just return a simple Success string if we want to stay simple.
+        // However, to keep it consistent with other methods returning redirects,
+        // but consumed by AJAX, we can just return a simple HTTP OK status.
+        // Let's annotate this method with @ResponseBody to return a simple string.
+        return "redirect:/telehealthCounselor";
+    }
+
+    @PostMapping("/telehealthCounselor/complete")
+    public String completeSession(@RequestParam int sessionId,
+            @RequestParam String summary,
+            @RequestParam String recommendations,
+            HttpSession session) {
+
+        User user = (User) session.getAttribute("loggedUser");
+        if (user == null || !"mhprofessional".equals(user.getRole())) {
+            return "redirect:/login";
+        }
+
+        telehealthDAO.completeSession(sessionId, summary, recommendations);
+
+        return "redirect:/telehealthCounselor";
+    }
+
+    @PostMapping("/telehealthCounselor/updateNotes")
+    public String updateNotes(@RequestParam int sessionId,
+            @RequestParam String summary,
+            @RequestParam String recommendations,
+            HttpSession session) {
+
+        User user = (User) session.getAttribute("loggedUser");
+        if (user == null || !"mhprofessional".equals(user.getRole())) {
+            return "redirect:/login";
+        }
+
+        telehealthDAO.updateSessionNotes(sessionId, summary, recommendations);
+
+        return "redirect:/telehealthCounselor";
+    }
 }
