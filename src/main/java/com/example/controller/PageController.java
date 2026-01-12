@@ -14,7 +14,7 @@ public class PageController {
 
   @GetMapping("/")
   public String home() {
-    return "index";
+    return "redirect:/login";
   }
 
   @GetMapping("/analytics")
