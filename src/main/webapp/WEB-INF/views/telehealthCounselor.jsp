@@ -460,7 +460,9 @@
 
                     function startTelehealthSession() {
                         // Integrate with video call platform
-                        alert('Starting telehealth video session with the student...\n\nThis would typically open a video call interface.');
+                        if (!confirm('Start telehealth video session with the student?\n\nThis will mark the session as started.')) {
+                            return;
+                        }
 
                         // Update backend via AJAX
                         fetch('${pageContext.request.contextPath}/telehealthCounselor/start', {
