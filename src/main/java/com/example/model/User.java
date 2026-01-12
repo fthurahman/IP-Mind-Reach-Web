@@ -50,4 +50,24 @@ public class User{
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+    // Reset Token Fields
+    private String resetToken;
+    private java.sql.Timestamp resetTokenExpiry;
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public java.sql.Timestamp getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(java.sql.Timestamp resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
+    }
 }

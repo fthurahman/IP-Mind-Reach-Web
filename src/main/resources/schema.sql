@@ -3,7 +3,9 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL,
-    status VARCHAR(20) DEFAULT 'active'
+    status VARCHAR(20) DEFAULT 'active',
+    reset_token VARCHAR(255),
+    reset_token_expiry TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS dass_results (

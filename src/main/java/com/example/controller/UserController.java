@@ -14,6 +14,9 @@ import javax.servlet.http.HttpSession;
 public class UserController {
 
 	@Autowired
+	private com.example.service.EmailService emailService;
+
+	@Autowired
 	private UserDAO userDAO;
 
 	// register page
@@ -252,33 +255,81 @@ public class UserController {
 
 	// email checking for forgot password
 	@PostMapping("/forgotPassword")
-	public String checkEmail(@RequestParam String email, Model model) {
+	public String checkEmail(@RequestParam String email, RedirectAttributes redirectAttributes) {
 		User user = userDAO.findByEmail(email);
 
 		if (user == null) {
-			model.addAttribute("error", "Email not registered yet!");
-			return "forgotPassword"; // show forgot password page again with error
+			redirectAttributes.addFlashAttribute("error", "Email not registered yet!");
+			return "redirect:/login"; 
 		}
 
-		model.addAttribute("email", email);
+        // Generate Token
+        String token = java.util.UUID.randomUUID().toString();
+        user.setResetToken(token);
+        // Expiry 24 hours from now
+        user.setResetTokenExpiry(new java.sql.Timestamp(System.currentTimeMillis() + 24 * 60 * 60 * 1000));
+        userDAO.update(user);
+        
+        // Send Email
+        String resetLink = "http://localhost:8081/resetPassword?token=" + token;
+        String message = "Hello " + user.getName() + ",\n\n" +
+                         "You have requested to reset your password.\n" +
+                         "Click the link below to reset your password:\n" +
+                         resetLink + "\n\n" +
+                         "If you did not request this, please ignore this email.\n\n" +
+                         "Best regards,\nMindReach Team";
+        
+        try {
+            emailService.sendEmail(email, "Password Reset Request", message);
+            redirectAttributes.addFlashAttribute("successMessage", "A password reset link has been sent to your email.");
+        } catch (Exception e) {
+             System.err.println("Failed to send email to " + email);
+             e.printStackTrace();
+             redirectAttributes.addFlashAttribute("error", "Failed to send email. Verification: " + e.getMessage());
+             return "redirect:/login";
+        }
+
+		return "redirect:/login";
+	}
+
+    // Show Reset Password Page (Validate Token)
+	@GetMapping("/resetPassword")
+	public String showResetPassword(@RequestParam(required = false) String token, Model model) {
+        if (token == null || token.isEmpty()) {
+            model.addAttribute("error", "Invalid password reset token.");
+            return "login";
+        }
+        
+        User user = userDAO.findByResetToken(token);
+        if (user == null || user.getResetTokenExpiry().before(new java.sql.Timestamp(System.currentTimeMillis()))) {
+             model.addAttribute("error", "Invalid or expired password reset token.");
+             return "login";
+        }
+        
+        model.addAttribute("token", token);
 		return "resetPassword";
 	}
 
 	// handle password reset
 	@PostMapping("/resetPassword")
-	public String resetPassword(@RequestParam String email, @RequestParam String newPassword,
+	public String resetPassword(@RequestParam String token, @RequestParam String newPassword,
 			RedirectAttributes redirectAttribute) {
-		User user = userDAO.findByEmail(email);
+		
+        User user = userDAO.findByResetToken(token);
 
-		if (user != null) {
+		if (user != null && user.getResetTokenExpiry().after(new java.sql.Timestamp(System.currentTimeMillis()))) {
 			user.setPassword(newPassword);
+            user.setResetToken(null);
+            user.setResetTokenExpiry(null);
+            
 			userDAO.update(user);
 			redirectAttribute.addFlashAttribute("successMessage",
 					"Password successfully updated! You can now login with your new password.");
 			return "redirect:/login";
 		}
-		redirectAttribute.addFlashAttribute("message", "Email not found.");
-		return "resetPassword";
+        
+		redirectAttribute.addFlashAttribute("error", "Invalid or expired token.");
+		return "redirect:/login";
 	}
 
 }

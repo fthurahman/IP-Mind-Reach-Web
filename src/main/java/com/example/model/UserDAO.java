@@ -20,12 +20,15 @@ public class UserDAO {
 	private static final RowMapper<User> userRowMapper = new RowMapper<User>() {
 		@Override
 		public User mapRow(@org.springframework.lang.NonNull ResultSet rs, int rowNum) throws SQLException {
-			return new User(
+			User user = new User(
 					rs.getString("name"),
 					rs.getString("email"),
 					rs.getString("password"),
 					rs.getString("role"),
 					rs.getString("status"));
+			user.setResetToken(rs.getString("reset_token"));
+			user.setResetTokenExpiry(rs.getTimestamp("reset_token_expiry"));
+			return user;
 		}
 	};
 
@@ -34,8 +37,8 @@ public class UserDAO {
 		// handle it too)
 		// Usually, we rely on duplicate key exception or check before insert.
 		// For simplicity matching previous logic which checked in controller:
-		String sql = "INSERT INTO users (name, email, password, role, status) VALUES (?, ?, ?, ?, ?)";
-		jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword(), user.getRole(), user.getStatus());
+		String sql = "INSERT INTO users (name, email, password, role, status, reset_token, reset_token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword(), user.getRole(), user.getStatus(), user.getResetToken(), user.getResetTokenExpiry());
 	}
 
 	public User findByEmail(String email) {
@@ -49,9 +52,18 @@ public class UserDAO {
 	}
 
 	public void update(User user) {
-		String sql = "UPDATE users SET name = ?, password = ?, role = ?, status = ? WHERE email = ?";
-		jdbcTemplate.update(sql, user.getName(), user.getPassword(), user.getRole(), user.getStatus(), user.getEmail());
+		String sql = "UPDATE users SET name = ?, password = ?, role = ?, status = ?, reset_token = ?, reset_token_expiry = ? WHERE email = ?";
+		jdbcTemplate.update(sql, user.getName(), user.getPassword(), user.getRole(), user.getStatus(), user.getResetToken(), user.getResetTokenExpiry(), user.getEmail());
 	}
+    
+    public User findByResetToken(String token) {
+        String sql = "SELECT * FROM users WHERE reset_token = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, userRowMapper, token);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 	public void delete(String email) {
 		String sql = "DELETE FROM users WHERE email = ?";

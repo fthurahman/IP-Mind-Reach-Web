@@ -376,11 +376,11 @@
 					<p class="dialog-description">No worries! Enter your email and we'll send you a password reset link.
 					</p>
 
-					<form action="forgotPassword" method="get">
-						<!-- Assuming GET for demo simplicity or map to POST logic -->
+					<form action="forgotPassword" method="post">
 						<div class="form-group">
 							<label for="recoveryEmail">Email</label>
-							<input type="email" id="recoveryEmail" placeholder="your.email@example.com" required>
+							<input type="email" id="recoveryEmail" name="email" placeholder="your.email@example.com"
+								required>
 						</div>
 
 						<div class="dialog-actions">
