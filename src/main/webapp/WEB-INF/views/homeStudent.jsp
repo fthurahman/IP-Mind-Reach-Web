@@ -56,18 +56,31 @@
       <main class="dashboard-content" style="padding-top: 96px !important;">
         <!-- Re-implementing the original "Self Assessment" content within the new layout -->
 
-        <div style="text-align: center; margin-bottom: 3rem">
-          <h1 style="
-            font-family: var(--font-family-serif);
-            font-size: 2.5rem;
-            color: var(--foreground);
-            margin-bottom: 0.5rem;
-          ">
-            Mental Health Self-Assessment
-          </h1>
-          <p style="color: var(--muted-foreground)">
-            Take the first step towards understanding your mental wellbeing
-          </p>
+        <!-- Hero Header -->
+        <div style="
+            background: linear-gradient(to right, #B4C59B, #CADBB7);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 20px rgba(180, 197, 155, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        ">
+          <div>
+            <h1 style="
+                font-family: var(--font-family-serif);
+                font-size: 1.875rem; 
+                color: white; 
+                margin-bottom: 0.5rem;
+                margin-top: 0;
+            ">
+              Mental Health Self-Assessment
+            </h1>
+            <p style="color: rgba(255, 255, 255, 0.9); margin: 0;">
+              Take the first step towards understanding your mental wellbeing
+            </p>
+          </div>
         </div>
 
         <div style="

@@ -65,11 +65,12 @@
 
                 <main class="max-w-[1200px] mx-auto px-6 py-8 space-y-8 pt-8">
 
-                    <!-- Header -->
-                    <div class="flex items-center justify-between">
+                    <!-- Hero Header -->
+                    <div
+                        class="bg-gradient-to-r from-[#B4C59B] to-[#CADBB7] rounded-2xl p-8 shadow-[0_4px_20px_rgba(180,197,155,0.15)] flex items-center justify-between">
                         <div>
-                            <h1 class="text-3xl font-serif text-[#3D3A37]">User Management</h1>
-                            <p class="text-gray-600">Manage counselor approvals and student accounts</p>
+                            <h1 class="text-3xl text-white mb-2 font-serif">User Management</h1>
+                            <p class="text-white/90">Manage counselor approvals and student accounts</p>
                         </div>
                     </div>
 

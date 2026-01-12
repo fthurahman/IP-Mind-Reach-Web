@@ -89,11 +89,15 @@
                         </div>
                     </header>
 
-                    <main class="max-w-[1000px] mx-auto px-6 py-8 pt-8">
+                    <main class="max-w-[1200px] mx-auto px-6 pb-8 pt-4 space-y-6">
 
-                        <div class="mb-8 text-center">
-                            <h1 class="text-3xl font-serif text-[#3D3A37] mb-2">Student Assessment Result</h1>
-                            <p class="text-gray-500">View assessment history and results</p>
+                        <!-- Hero Header -->
+                        <div
+                            class="bg-gradient-to-r from-[#B4C59B] to-[#CADBB7] rounded-2xl p-8 mb-8 shadow-[0_4px_20px_rgba(180,197,155,0.15)] flex items-center justify-between">
+                            <div>
+                                <h1 class="text-3xl text-white mb-2 font-serif">Student Assessment Result</h1>
+                                <p class="text-white/90">View assessment history and results</p>
+                            </div>
                         </div>
 
                         <!-- Search Bar -->
