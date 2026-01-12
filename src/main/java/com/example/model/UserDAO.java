@@ -23,7 +23,8 @@ public class UserDAO {
 					rs.getString("name"),
 					rs.getString("email"),
 					rs.getString("password"),
-					rs.getString("role"));
+					rs.getString("role"),
+					rs.getString("status"));
 		}
 	};
 
@@ -32,8 +33,8 @@ public class UserDAO {
 		// handle it too)
 		// Usually, we rely on duplicate key exception or check before insert.
 		// For simplicity matching previous logic which checked in controller:
-		String sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
-		jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword(), user.getRole());
+		String sql = "INSERT INTO users (name, email, password, role, status) VALUES (?, ?, ?, ?, ?)";
+		jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword(), user.getRole(), user.getStatus());
 	}
 
 	public User findByEmail(String email) {
@@ -47,8 +48,8 @@ public class UserDAO {
 	}
 
 	public void update(User user) {
-		String sql = "UPDATE users SET name = ?, password = ?, role = ? WHERE email = ?";
-		jdbcTemplate.update(sql, user.getName(), user.getPassword(), user.getRole(), user.getEmail());
+		String sql = "UPDATE users SET name = ?, password = ?, role = ?, status = ? WHERE email = ?";
+		jdbcTemplate.update(sql, user.getName(), user.getPassword(), user.getRole(), user.getStatus(), user.getEmail());
 	}
 
 	public void delete(String email) {

@@ -30,8 +30,10 @@ public class UserController {
 		// Assign role based on email domain
 		if (email.endsWith("@graduate.utm.my") || email.endsWith("@live.utm.my")) {
 			user.setRole("student");
+			user.setStatus("active");
 		} else if (email.endsWith("@gmail.com")) {
 			user.setRole("mhprofessional");
+			user.setStatus("pending"); // Counselors need approval
 		} else {
 			model.addAttribute("error",
 					"Registration is restricted to UTM Students (@graduate.utm.my, @live.utm.my) or Counselors (@gmail.com)");
@@ -70,6 +72,11 @@ public class UserController {
 		if (!user.getPassword().equals(password)) {
 			model.addAttribute("error", "Incorrect password!");
 			return "login";
+		}
+
+		// Check Status
+		if ("pending".equals(user.getStatus())) {
+			return "redirect:/approval-pending";
 		}
 
 		// Successful login
@@ -133,8 +140,70 @@ public class UserController {
     }
 
 	@GetMapping("/homeAdmin")
-	public String homeAdmin() {
-		return "homeAdmin"; // maps to homeAdmin.jsp
+	public String homeAdmin(HttpSession session) {
+		User user = (User) session.getAttribute("loggedUser");
+		if (user == null || !"admin".equals(user.getRole())) {
+			return "redirect:/login";
+		}
+		return "homeAdmin";
+	}
+	
+	// User Management - List Users
+	@GetMapping("/user-management")
+	public String userManagement(HttpSession session, Model model) {
+		User user = (User) session.getAttribute("loggedUser");
+		if (user == null || !"admin".equals(user.getRole())) {
+			return "redirect:/login";
+		}
+		
+		// Fetch all users
+		java.util.List<User> allUsers = userDAO.findAll();
+		
+		// Separate lists
+		java.util.List<User> pendingCounselors = new java.util.ArrayList<>();
+		java.util.List<User> activeCounselors = new java.util.ArrayList<>();
+		java.util.List<User> students = new java.util.ArrayList<>();
+		
+		for(User u : allUsers) {
+			if ("mhprofessional".equals(u.getRole())) {
+				if ("pending".equals(u.getStatus())) {
+					pendingCounselors.add(u);
+				} else {
+					activeCounselors.add(u);
+				}
+			} else if ("student".equals(u.getRole())) {
+				students.add(u);
+			}
+		}
+		
+		model.addAttribute("pendingCounselors", pendingCounselors);
+		model.addAttribute("activeCounselors", activeCounselors);
+		model.addAttribute("students", students);
+		
+		return "user-management";
+	}
+	
+	// Approve User
+	@PostMapping("/approve-user")
+	public String approveUser(@RequestParam String email, HttpSession session) {
+		User admin = (User) session.getAttribute("loggedUser");
+		if (admin == null || !"admin".equals(admin.getRole())) {
+			return "redirect:/login";
+		}
+		
+		User userToApprove = userDAO.findByEmail(email);
+		if (userToApprove != null) {
+			userToApprove.setStatus("active");
+			userDAO.update(userToApprove);
+		}
+		
+		return "redirect:/user-management";
+	}
+	
+	// Pending Approval Page
+	@GetMapping("/approval-pending")
+	public String showApprovalPending() {
+		return "approval-pending";
 	}
 
 	@GetMapping("/homeMProfessional")

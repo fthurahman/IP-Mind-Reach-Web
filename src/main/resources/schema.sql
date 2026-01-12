@@ -1,8 +1,12 @@
-CREATE TABLE IF NOT EXISTS users (
+DROP TABLE IF EXISTS dass_results;
+DROP TABLE IF EXISTS phq_results;
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
     email VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL
+    role VARCHAR(50) NOT NULL,
+    status VARCHAR(20) DEFAULT 'active'
 );
 
 CREATE TABLE IF NOT EXISTS dass_results (

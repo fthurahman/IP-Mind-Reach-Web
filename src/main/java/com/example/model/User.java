@@ -5,14 +5,16 @@ public class User{
 	private String email;
 	private String password;
 	private String role;
+	private String status;
 	
 	//Constructors
 	public User() {}
-	public User(String name, String email, String password, String role) {
+	public User(String name, String email, String password, String role, String status) {
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.role = role;
+		this.status = status;
 	}
 	
 	//getter
@@ -28,6 +30,9 @@ public class User{
 	public String getRole() {
 		return role;
 	}
+	public String getStatus() {
+		return status;
+	}
 	
 	//setter
 	public void setName(String name) {
@@ -41,5 +46,8 @@ public class User{
 	}
 	public void setRole(String role) {
 		this.role = role;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }
