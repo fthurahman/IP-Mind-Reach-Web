@@ -38,6 +38,20 @@
                   Management</a>
               </nav>
             </c:when>
+            <c:when test="${loggedUser.role == 'mhprofessional'}">
+              <a href="${pageContext.request.contextPath}/homeMProfessional"
+                class="font-serif text-2xl text-[#3D3A37] hover:opacity-80">MindReach</a>
+              <nav class="hidden lg:flex items-center gap-6">
+                <a href="${pageContext.request.contextPath}/homeMProfessional"
+                  class="text-sm text-[#2D2A28] font-semibold border-b-2 border-[#B4C59B] pb-1 transition-all">Resources</a>
+                <a href="${pageContext.request.contextPath}/telehealthCounselor"
+                  class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Telehealth
+                  Assistance</a>
+                <a href="${pageContext.request.contextPath}/counselor/student-results"
+                  class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Student
+                  Assessment</a>
+              </nav>
+            </c:when>
             <c:otherwise>
               <a href="${pageContext.request.contextPath}/homeStudent"
                 class="font-serif text-2xl text-[#3D3A37] hover:opacity-80">MindReach</a>
@@ -126,12 +140,67 @@
             <c:choose>
               <c:when test="${resource.type == 'video'}">
                 <!-- Video Placeholder -->
-                <div class="aspect-video bg-gray-200 rounded-xl flex items-center justify-center mb-6">
-                  <div class="text-center text-gray-500">
-                    <i data-lucide="video" class="mx-auto mb-2 w-12 h-12 opacity-50"></i>
-                    <p class="font-medium">Video Player Placeholder</p>
+                <!-- Video Player Container -->
+                <div id="video-container" class="aspect-video bg-black rounded-xl overflow-hidden mb-6 relative"
+                  data-video-url="${resource.videoUrl}">
+                  <!-- Default Placeholder (will be replaced if video loads or kept if no URL) -->
+                  <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <div class="text-center text-gray-500">
+                      <i data-lucide="video" class="mx-auto mb-2 w-12 h-12 opacity-50"></i>
+                      <p class="font-medium">Video loading...</p>
+                    </div>
                   </div>
                 </div>
+
+                <script>
+                  document.addEventListener("DOMContentLoaded", function () {
+                    const container = document.getElementById('video-container');
+                    const videoUrl = container.getAttribute('data-video-url');
+
+                    if (!videoUrl || videoUrl.trim() === '') {
+                      container.innerHTML = `
+                             <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                 <div class="text-center text-gray-500">
+                                     <i data-lucide="video-off" class="mx-auto mb-2 w-12 h-12 opacity-50"></i>
+                                     <p class="font-medium">No video source available</p>
+                                 </div>
+                             </div>`;
+                      lucide.createIcons();
+                      return;
+                    }
+
+                    // Helper to extract YouTube ID
+                    function getYoutubeId(url) {
+                      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                      const match = url.match(regExp);
+                      return (match && match[2].length === 11) ? match[2] : null;
+                    }
+
+                    const youtubeId = getYoutubeId(videoUrl);
+
+                    if (youtubeId) {
+                      // Render YouTube Iframe
+                      container.innerHTML = `
+                            <iframe 
+                               width="100%" 
+                               height="100%" 
+                               src="https://www.youtube.com/embed/` + youtubeId + `" 
+                               title="YouTube video player" 
+                               frameborder="0" 
+                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                               referrerpolicy="strict-origin-when-cross-origin" 
+                               allowfullscreen>
+                            </iframe>`;
+                    } else {
+                      // Assume direct video file (mp4, webm, etc.)
+                      container.innerHTML = `
+                            <video controls class="w-full h-full">
+                               <source src="` + videoUrl + `" type="video/mp4">
+                               Your browser does not support the video tag.
+                            </video>`;
+                    }
+                  });
+                </script>
                 <div class="space-y-4">
                   <h3 class="text-xl font-semibold text-[#3D3A37]">About this Video</h3>
                   <p>${resource.content}</p>
