@@ -107,3 +107,33 @@ CREATE TABLE IF NOT EXISTS moderation_reports (
     FOREIGN KEY (reported_by) REFERENCES users (email) ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS forum_posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    author VARCHAR(255),
+    topic VARCHAR(255),
+    content TEXT,
+    status VARCHAR(50),
+    reported BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS forum_comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT,
+    author VARCHAR(255),
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES forum_posts (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS resources (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    type VARCHAR(50),
+    topic VARCHAR(100),
+    content TEXT,
+    duration VARCHAR(50),
+    video_url VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
