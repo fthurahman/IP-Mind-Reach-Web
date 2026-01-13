@@ -80,6 +80,7 @@ public class Resource {
 
     public static List<Resource> mockResources() {
         if (resources == null) {
+            System.out.println("DEBUG: Initializing mock resources...");
             resources = new ArrayList<>();
             Resource r1 = new Resource();
             r1.setId(1);
@@ -136,6 +137,7 @@ public class Resource {
             r6.setTopic("depression");
             r6.setContent("Depression is more than feeling sad...");
             resources.add(r6);
+            System.out.println("DEBUG: Mock resources initialized. Count: " + resources.size());
         }
         return resources;
     }
@@ -159,6 +161,4 @@ public class Resource {
     }
 
     public static void deleteResource(int id) {
-        mockResources().removeIf(r -> r.getId() == id);
-    }
-}
+        System.out.println("DEBUG: Deleting resource with ID: " + id);
