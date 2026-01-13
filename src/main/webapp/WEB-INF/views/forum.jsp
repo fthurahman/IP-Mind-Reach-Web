@@ -51,7 +51,7 @@
             }
 
             .bg-gradient-forum {
-              background: linear-gradient(to right, #F59E0B, #FCD34D);
+              background: linear-gradient(to right, #B4C59B, #CADBB7);
               /* Amber gradient */
               padding: 2rem;
               border-radius: 1rem;
@@ -79,7 +79,7 @@
                 <p style="color: rgba(255,255,255,0.9); margin: 0;">Connect with peers anonymously in a safe space</p>
               </div>
               <button onclick="openCreateModal()"
-                style="background: white; color: #F59E0B; border: none; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: transform 0.2s;">
+              style="background: white; color: #B4C59B; border: none; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: transform 0.2s;">
                 Create Post
               </button>
             </div>
