@@ -53,7 +53,7 @@ public class HfChatbotService {
 
     // Tuning
     body.put("temperature", Double.valueOf(risk == RiskLevel.MEDIUM ? 0.6 : 0.7));
-    body.put("max_tokens", Integer.valueOf(180));
+    body.put("max_tokens", Integer.valueOf(800)); // Generous limit for longer responses when needed
 
     try {
       ResponseEntity<Map> res = rest.postForEntity(
@@ -64,6 +64,7 @@ public class HfChatbotService {
 
       String content = extractChatContent(res.getBody());
       content = sanitize(content);
+      content = trimToLastCompleteSentence(content); // Ensure complete sentences only
 
       if (content == null || content.trim().length() == 0) {
         return "Sorry — I couldn’t generate a reply just now. Please try again.";
@@ -79,15 +80,18 @@ public class HfChatbotService {
   private String buildSystemPrompt(RiskLevel risk) {
     String base =
       "You are MindReach Assistant, a calm and supportive mental wellbeing companion for students.\n" +
-      "Be warm, non-judgmental, and concise.\n" +
+      "Be warm, non-judgmental, and helpful.\n" +
       "Do not diagnose. Do not provide medical advice.\n" +
-      "Avoid long answers. Ask at most one gentle question.\n" +
+      "CRITICAL: Always complete your sentences with proper punctuation (. ! ?).\n" +
+      "CRITICAL: Never end mid-sentence. If running out of space, finish your current sentence and stop there.\n" +
+      "Keep responses concise when appropriate, but provide step-by-step guidance when needed.\n" +
+      "Ask at most one gentle question.\n" +
       "Never output <think> or any internal reasoning. Only output the final answer.\n";
 
     if (risk == RiskLevel.MEDIUM) {
       return base +
         "The user may be distressed. Use extra soothing tone.\n" +
-        "Offer 1 small grounding step (e.g. slow breathing or name 5 things they see).\n" +
+        "Offer small grounding steps (e.g. slow breathing or name 5 things they see).\n" +
         "Encourage reaching out to a trusted friend or campus counselor if needed.\n";
     }
 
@@ -127,16 +131,47 @@ public class HfChatbotService {
 
   String cleaned = text;
 
-  // case 1: proper <think>...</think>
+  // Remove proper <think>...</think> blocks
   cleaned = cleaned.replaceAll("(?s)<think>.*?</think>", "").trim();
 
-  // case 2: leaked <think> without closing tag (remove from <think> to end)
-  cleaned = cleaned.replaceAll("(?s)<think>.*$", "").trim();
-
-  // extra: some models leak other tags
-  cleaned = cleaned.replaceAll("(?s)<\\/?think>", "").trim();
+  // If there's an unclosed <think>, remove ONLY the tag itself (not everything after)
+  cleaned = cleaned.replaceAll("(?i)</?think>", "").trim();
 
   return cleaned;
 }
+
+  /**
+   * Trims the response to the last complete sentence.
+   * If the text doesn't end with proper punctuation (. ! ?), 
+   * we trim back to the last sentence that does.
+   */
+  private String trimToLastCompleteSentence(String text) {
+    if (text == null || text.trim().isEmpty()) {
+      return text;
+    }
+
+    String trimmed = text.trim();
+    
+    // Check if already ends with sentence-ending punctuation
+    if (trimmed.matches(".*[.!?]\\s*$")) {
+      return trimmed;
+    }
+
+    // Find the last occurrence of sentence-ending punctuation
+    int lastPeriod = trimmed.lastIndexOf('.');
+    int lastExclamation = trimmed.lastIndexOf('!');
+    int lastQuestion = trimmed.lastIndexOf('?');
+    
+    int lastSentenceEnd = Math.max(lastPeriod, Math.max(lastExclamation, lastQuestion));
+    
+    // If we found a sentence ending, trim to that point
+    if (lastSentenceEnd > 0) {
+      return trimmed.substring(0, lastSentenceEnd + 1).trim();
+    }
+    
+    // If no sentence ending found at all, return as-is (edge case)
+    return trimmed;
+  }
+
 
 }
