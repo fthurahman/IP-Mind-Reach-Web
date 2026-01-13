@@ -26,6 +26,11 @@ public class ResourceController {
         com.example.model.User user = (com.example.model.User) session.getAttribute("loggedUser");
         String userEmail = (principal != null) ? principal.getName() : "anonymous";
 
+        System.out.println("DEBUG: ResourceController handleRequest");
+        System.out.println("DEBUG: Method: " + req.getMethod());
+        System.out.println("DEBUG: Action: " + action);
+        System.out.println("DEBUG: User Role: " + (user != null ? user.getRole() : "null"));
+
         // LOGGING: General module usage when visiting main page or detail
         if ("GET".equals(req.getMethod())) {
             if (analyticsDAO != null && principal != null) {
