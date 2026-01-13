@@ -15,11 +15,21 @@ import java.util.stream.Collectors;
 @RequestMapping("/forum")
 public class ForumController {
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.example.model.AnalyticsDAO analyticsDAO;
+
     @RequestMapping
-    public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res) {
+    public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res, java.security.Principal principal) {
 
         String action = req.getParameter("action");
         String idParam = req.getParameter("id");
+
+        // LOGGING: Forum module usage
+        if ("GET".equals(req.getMethod())) {
+            if (analyticsDAO != null && principal != null) {
+                 analyticsDAO.logActivityProgress("Forum", principal.getName());
+            }
+        }
 
         if ("GET".equals(req.getMethod())) {
             if ("detail".equals(action) && idParam != null) {

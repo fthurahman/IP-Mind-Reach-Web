@@ -21,8 +21,16 @@ public class ProgressController {
     @Autowired
     private ProgressDAO progressDAO;
 
+    @Autowired
+    private com.example.model.AnalyticsDAO analyticsDAO;
+
     @GetMapping("/progress")
-    public String progress(Model model, @ModelAttribute("loggedUser") User user) {
+    public String progress(Model model, @ModelAttribute("loggedUser") User user, java.security.Principal principal) {
+             // LOGGING: Progress module usage
+             if (analyticsDAO != null && principal != null) {
+                 analyticsDAO.logActivityProgress("Progress", principal.getName());
+             }
+
         if (user == null) {
             return "redirect:/login";
         }

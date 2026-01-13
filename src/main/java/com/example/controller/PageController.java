@@ -1,16 +1,18 @@
 package com.example.controller;
 
-import com.example.model.ReportedPost;
+import com.example.model.AnalyticsDAO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 @Controller
 public class PageController {
+
+  @Autowired
+  private AnalyticsDAO analyticsDAO;
 
   @GetMapping("/")
   public String home() {
@@ -19,36 +21,35 @@ public class PageController {
 
   @GetMapping("/analytics")
   public String analytics(Model model) {
-    List<ReportedPost> reportedPosts = new ArrayList<>();
-    reportedPosts.add(new ReportedPost(
-        "1",
-        "This is a potentially inappropriate post that was flagged by users.",
-        "Anonymous Fox",
-        "Inappropriate content",
-        "Anonymous Owl",
-        new Date(System.currentTimeMillis() - 2L * 60 * 60 * 1000),
-        "pending"));
-    reportedPosts.add(new ReportedPost(
-        "2",
-        "Another post that was reported for containing harmful advice.",
-        "Anonymous Bear",
-        "Harmful advice",
-        "Anonymous Butterfly",
-        new Date(System.currentTimeMillis() - 5L * 60 * 60 * 1000),
-        "pending"));
+    // 1. Key Metrics
+    int weeklyActiveUsers = analyticsDAO.getWeeklyActiveUsers();
+    int totalSessions = analyticsDAO.getTotalSessionsLastWeek();
+    int counselingBookings = analyticsDAO.getCounselingBookingsLastWeek();
+    int pendingReports = analyticsDAO.getPendingReportsCount();
 
-    int pendingReports = 0;
-    for (ReportedPost p : reportedPosts) {
-      if ("pending".equalsIgnoreCase(p.getStatus()))
-        pendingReports++;
+    model.addAttribute("weeklyActiveUsers", weeklyActiveUsers);
+    model.addAttribute("totalSessions", totalSessions);
+    model.addAttribute("counselingBookings", counselingBookings);
+    model.addAttribute("pendingReports", pendingReports);
+
+    // 2. Charts Data (Converted to JSON)
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      model.addAttribute("engagementData", mapper.writeValueAsString(analyticsDAO.getEngagementTrend()));
+      model.addAttribute("moduleUsageData", mapper.writeValueAsString(analyticsDAO.getModuleUsage()));
+      model.addAttribute("completionRatesData", mapper.writeValueAsString(analyticsDAO.getCompletionRates()));
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+      // Fallback empty arrays
+      model.addAttribute("engagementData", "[]");
+      model.addAttribute("moduleUsageData", "[]");
+      model.addAttribute("completionRatesData", "[]");
     }
 
-    model.addAttribute("reportedPosts", reportedPosts);
-    model.addAttribute("pendingReports", pendingReports);
+    // 3. Lists
+    model.addAttribute("topResources", analyticsDAO.getTopResources());
+    model.addAttribute("reportedPosts", analyticsDAO.getReportedPosts());
+
     return "analytics";
   }
-
-  // ⚠️ BUANG method ni terus:
-  // @GetMapping("/chatbot")
-  // public String chatbot() { return "chatbot"; }
 }

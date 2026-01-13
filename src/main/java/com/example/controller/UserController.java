@@ -116,12 +116,48 @@ public class UserController {
 			model.addAttribute("hasPHQAssessment", false);
 		}
 
+		// LOGGING: Self-Help module usage
+		if (analyticsDAO != null) {
+			analyticsDAO.logActivityProgress("Self-Help", user.getEmail());
+		}
+
 		return "homeStudent";
 	}
 
+	@Autowired
+	private com.example.model.AnalyticsDAO analyticsDAO;
+
 	@GetMapping("/homeAdmin")
-	public String homeAdmin() {
-		// SecurityConfig handles access
+	public String homeAdmin(Model model) {
+		// 1. Key Metrics
+		int weeklyActiveUsers = analyticsDAO.getWeeklyActiveUsers();
+		int totalSessions = analyticsDAO.getTotalSessionsLastWeek();
+		int counselingBookings = analyticsDAO.getCounselingBookingsLastWeek();
+		int pendingReports = analyticsDAO.getPendingReportsCount();
+
+		model.addAttribute("weeklyActiveUsers", weeklyActiveUsers);
+		model.addAttribute("totalSessions", totalSessions);
+		model.addAttribute("counselingBookings", counselingBookings);
+		model.addAttribute("pendingReports", pendingReports);
+
+		// 2. Charts Data (Converted to JSON)
+		com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+		try {
+			model.addAttribute("engagementData", mapper.writeValueAsString(analyticsDAO.getEngagementTrend()));
+			model.addAttribute("moduleUsageData", mapper.writeValueAsString(analyticsDAO.getModuleUsage()));
+			model.addAttribute("completionRatesData", mapper.writeValueAsString(analyticsDAO.getCompletionRates()));
+		} catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+			e.printStackTrace();
+			// Fallback empty arrays
+			model.addAttribute("engagementData", "[]");
+			model.addAttribute("moduleUsageData", "[]");
+			model.addAttribute("completionRatesData", "[]");
+		}
+
+		// 3. Lists
+		model.addAttribute("topResources", analyticsDAO.getTopResources());
+		model.addAttribute("reportedPosts", analyticsDAO.getReportedPosts());
+
 		return "homeAdmin";
 	}
 

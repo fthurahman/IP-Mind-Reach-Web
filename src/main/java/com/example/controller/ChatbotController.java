@@ -25,8 +25,16 @@ public class ChatbotController {
     this.hfChatbotService = hfChatbotService;
   }
 
+  @org.springframework.beans.factory.annotation.Autowired
+  private com.example.model.AnalyticsDAO analyticsDAO;
+
   @GetMapping("/chatbot")
-  public ModelAndView chatbot() {
+  public ModelAndView chatbot(javax.servlet.http.HttpServletRequest req, java.security.Principal principal) {
+    // LOGGING: Chatbot module usage
+    if (analyticsDAO != null && principal != null) {
+        analyticsDAO.logActivityProgress("Chatbot", principal.getName());
+    }
+
     ModelAndView mv = new ModelAndView("chatbot");
 
     List<Message> initialMessages = new ArrayList<Message>();

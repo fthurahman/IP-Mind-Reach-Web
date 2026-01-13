@@ -102,8 +102,8 @@
 									<i data-lucide="users" class="text-[#B4C59B] w-6 h-6"></i>
 									<span class="text-sm text-gray-600">Weekly Active Users</span>
 								</div>
-								<div class="text-3xl font-semibold text-[#3D3A37]">342</div>
-								<p class="text-sm text-green-600 mt-1">↑ 12% from last week</p>
+								<div class="text-3xl font-semibold text-[#3D3A37]">${weeklyActiveUsers}</div>
+								<p class="text-sm text-gray-400 mt-1">Last 7 Days</p>
 							</div>
 
 							<!-- Total Sessions -->
@@ -112,8 +112,8 @@
 									<i data-lucide="trending-up" class="text-blue-600 w-6 h-6"></i>
 									<span class="text-sm text-gray-600">Total Sessions</span>
 								</div>
-								<div class="text-3xl font-semibold text-[#3D3A37]">2,785</div>
-								<p class="text-sm text-green-600 mt-1">↑ 8% from last week</p>
+								<div class="text-3xl font-semibold text-[#3D3A37]">${totalSessions}</div>
+								<p class="text-sm text-gray-400 mt-1">Last 7 Days</p>
 							</div>
 
 							<!-- Counseling Bookings -->
@@ -123,8 +123,8 @@
 									<i data-lucide="calendar" class="text-green-600 w-6 h-6"></i>
 									<span class="text-sm text-gray-600">Counseling Bookings</span>
 								</div>
-								<div class="text-3xl font-semibold text-[#3D3A37]">67</div>
-								<p class="text-sm text-green-600 mt-1">↑ 15% from last week</p>
+								<div class="text-3xl font-semibold text-[#3D3A37]">${counselingBookings}</div>
+								<p class="text-sm text-gray-400 mt-1">Last 7 Days</p>
 							</div>
 
 							<!-- Pending Reports -->
@@ -133,7 +133,7 @@
 									<i data-lucide="flag" class="text-red-600 w-6 h-6"></i>
 									<span class="text-sm text-gray-600">Pending Reports</span>
 								</div>
-								<div class="text-3xl font-semibold text-[#3D3A37]" id="pendingCount">2</div>
+								<div class="text-3xl font-semibold text-[#3D3A37]" id="pendingCount">${pendingReports}</div>
 								<p class="text-sm text-gray-600 mt-1">Requires attention</p>
 							</div>
 						</div>
@@ -186,55 +186,31 @@
 								<div class="bg-white p-6 rounded-2xl shadow-lg">
 									<h3 class="text-xl mb-4 font-serif text-[#3D3A37]">Most Viewed Resources</h3>
 									<div class="space-y-6">
-										<!-- Resource Item 1 -->
-										<div class="flex items-center gap-4">
-											<div
-												class="w-8 h-8 bg-[#B4C59B]/20 rounded-full flex items-center justify-center flex-shrink-0 text-[#3D3A37] font-bold">
-												#1</div>
-											<div class="flex-1">
-												<p class="font-medium text-[#3D3A37]">Understanding Anxiety</p>
-												<div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-													<div class="bg-[#B4C59B] h-2 rounded-full" style="width: 100%">
+										<c:choose>
+											<c:when test="${not empty topResources}">
+												<c:forEach var="resource" items="${topResources}" varStatus="status">
+													<div class="flex items-center gap-4">
+														<div class="w-8 h-8 bg-[#B4C59B]/20 rounded-full flex items-center justify-center flex-shrink-0 text-[#3D3A37] font-bold">
+															#${status.count}
+														</div>
+														<div class="flex-1">
+															<p class="font-medium text-[#3D3A37]">${resource.title}</p>
+															<!-- Visual bar (mock based on views relative to max, or just static style) -->
+															<div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+																<div class="bg-[#B4C59B] h-2 rounded-full" style="width: 80%"></div>
+															</div>
+														</div>
+														<div class="flex items-center gap-2 text-sm text-gray-600">
+															<i data-lucide="book-open" class="w-4 h-4"></i>
+															<span>${resource.views} views</span>
+														</div>
 													</div>
-												</div>
-											</div>
-											<div class="flex items-center gap-2 text-sm text-gray-600">
-												<i data-lucide="book-open" class="w-4 h-4"></i>
-												<span>234 views</span>
-											</div>
-										</div>
-										<!-- Resource Item 2 -->
-										<div class="flex items-center gap-4">
-											<div
-												class="w-8 h-8 bg-[#B4C59B]/20 rounded-full flex items-center justify-center flex-shrink-0 text-[#3D3A37] font-bold">
-												#2</div>
-											<div class="flex-1">
-												<p class="font-medium text-[#3D3A37]">Sleep Hygiene Tips</p>
-												<div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-													<div class="bg-[#B4C59B] h-2 rounded-full" style="width: 85%"></div>
-												</div>
-											</div>
-											<div class="flex items-center gap-2 text-sm text-gray-600">
-												<i data-lucide="book-open" class="w-4 h-4"></i>
-												<span>198 views</span>
-											</div>
-										</div>
-										<!-- Resource Item 3 -->
-										<div class="flex items-center gap-4">
-											<div
-												class="w-8 h-8 bg-[#B4C59B]/20 rounded-full flex items-center justify-center flex-shrink-0 text-[#3D3A37] font-bold">
-												#3</div>
-											<div class="flex-1">
-												<p class="font-medium text-[#3D3A37]">Managing Stress</p>
-												<div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-													<div class="bg-[#B4C59B] h-2 rounded-full" style="width: 80%"></div>
-												</div>
-											</div>
-											<div class="flex items-center gap-2 text-sm text-gray-600">
-												<i data-lucide="book-open" class="w-4 h-4"></i>
-												<span>187 views</span>
-											</div>
-										</div>
+												</c:forEach>
+											</c:when>
+											<c:otherwise>
+												<p class="text-gray-500">No resources viewed yet.</p>
+											</c:otherwise>
+										</c:choose>
 									</div>
 								</div>
 							</div>
@@ -359,21 +335,26 @@
 						// -- CHART INITIALIZATION --
 						document.addEventListener('DOMContentLoaded', () => {
 							// 1. Engagement Chart (Line)
+							const engagementData = ${engagementData};
+							if (!engagementData || engagementData.length === 0) {
+								console.warn('No engagement data');
+							}
+							
 							const ctx1 = document.getElementById('engagementChart').getContext('2d');
 							new Chart(ctx1, {
 								type: 'line',
 								data: {
-									labels: ['11/1', '11/2', '11/3', '11/4', '11/5', '11/6'],
+									labels: engagementData.map(d => d.date),
 									datasets: [{
 										label: 'Active Users',
-										data: [245, 268, 290, 310, 325, 342],
+										data: engagementData.map(d => d.users),
 										borderColor: '#B4C59B',
 										backgroundColor: '#B4C59B',
 										tension: 0.4,
 										borderWidth: 3
 									}, {
 										label: 'Sessions',
-										data: [380, 420, 450, 485, 510, 540],
+										data: engagementData.map(d => d.sessions),
 										borderColor: '#3b82f6',
 										backgroundColor: '#3b82f6',
 										tension: 0.4,
@@ -394,13 +375,14 @@
 							});
 
 							// 2. Module Usage (Pie)
+							const moduleUsageData = ${moduleUsageData};
 							const ctx2 = document.getElementById('modulePieChart').getContext('2d');
 							new Chart(ctx2, {
 								type: 'pie',
 								data: {
-									labels: ['Self-Help', 'Resources', 'Forum', 'Progress', 'Counseling', 'Chatbot'],
+									labels: moduleUsageData.map(d => d.name),
 									datasets: [{
-										data: [450, 380, 290, 420, 180, 520],
+										data: moduleUsageData.map(d => d.value),
 										backgroundColor: ['#B4C59B', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
 									}]
 								},
@@ -411,14 +393,15 @@
 							});
 
 							// 3. Completion Rates (Bar)
+							const completionRatesData = ${completionRatesData};
 							const ctx3 = document.getElementById('moduleBarChart').getContext('2d');
 							new Chart(ctx3, {
 								type: 'bar',
 								data: {
-									labels: ['Self-Help', 'Resources', 'Forum', 'Progress', 'Counseling', 'Chatbot'],
+									labels: completionRatesData.map(d => d.name),
 									datasets: [{
 										label: 'Completion',
-										data: [450, 380, 290, 420, 180, 520],
+										data: completionRatesData.map(d => d.value),
 										backgroundColor: '#B4C59B',
 										borderRadius: 6
 									}]

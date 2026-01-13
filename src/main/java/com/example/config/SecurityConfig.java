@@ -76,12 +76,20 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.example.model.AnalyticsDAO analyticsDAO;
+
     @Bean
     public AuthenticationSuccessHandler myAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
             System.out.println("DEBUG: Authentication Successful!");
             var authorities = authentication.getAuthorities();
             System.out.println("DEBUG: User Authorities: " + authorities);
+
+            // ✅ Log analytics session
+            if (analyticsDAO != null) {
+                analyticsDAO.logSession(authentication.getName());
+            }
 
             String redirectUrl = "/login";
 

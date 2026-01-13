@@ -337,8 +337,8 @@
                 <span class="dot"></span>
                 <span>Weekly Active Users</span>
               </div>
-              <p class="metricValue">342</p>
-              <p class="metricNote">↑ 12% from last week</p>
+              <p class="metricValue">${weeklyActiveUsers}</p>
+              <p class="metricNote muted">Last 7 Days</p>
             </div>
 
             <div class="card metric blue">
@@ -346,8 +346,8 @@
                 <span class="dot blue"></span>
                 <span>Total Sessions</span>
               </div>
-              <p class="metricValue">2,785</p>
-              <p class="metricNote">↑ 8% from last week</p>
+              <p class="metricValue">${totalSessions}</p>
+              <p class="metricNote muted">Last 7 Days</p>
             </div>
 
             <div class="card metric green">
@@ -355,8 +355,8 @@
                 <span class="dot green"></span>
                 <span>Counseling Bookings</span>
               </div>
-              <p class="metricValue">67</p>
-              <p class="metricNote">↑ 15% from last week</p>
+              <p class="metricValue">${counselingBookings}</p>
+              <p class="metricNote muted">Last 7 Days</p>
             </div>
 
             <div class="card metric red">
@@ -411,33 +411,18 @@
             <div class="card panelCard">
               <h3 class="panelTitle">Most Viewed Resources</h3>
 
-              <div class="listItem">
-                <div>
-                  <strong>Understanding Anxiety</strong>
-                  <div class="small">234 views</div>
+              <c:forEach var="res" items="${topResources}">
+                <div class="listItem">
+                  <div>
+                    <strong>${res.title}</strong>
+                    <div class="small">${res.views} views</div>
+                  </div>
                 </div>
-              </div>
-
-              <div class="listItem">
-                <div>
-                  <strong>Sleep Hygiene Tips</strong>
-                  <div class="small">198 views</div>
-                </div>
-              </div>
-
-              <div class="listItem">
-                <div>
-                  <strong>Managing Stress</strong>
-                  <div class="small">187 views</div>
-                </div>
-              </div>
-
-              <div class="listItem">
-                <div>
-                  <strong>Mindfulness Guide</strong>
-                  <div class="small">165 views</div>
-                </div>
-              </div>
+              </c:forEach>
+              
+              <c:if test="${empty topResources}">
+                <div class="empty">No data available</div>
+              </c:if>
             </div>
           </div>
 
@@ -566,33 +551,9 @@
           })();
 
           // ===== Data =====
-          const engagementData = [
-            { date: "11/1", users: 245, sessions: 380 },
-            { date: "11/2", users: 268, sessions: 420 },
-            { date: "11/3", users: 290, sessions: 450 },
-            { date: "11/4", users: 310, sessions: 485 },
-            { date: "11/5", users: 325, sessions: 510 },
-            { date: "11/6", users: 342, sessions: 540 },
-          ];
-
-          const moduleUsageData = [
-            { name: "Self-Help", value: 450 },
-            { name: "Resources", value: 380 },
-            { name: "Forum", value: 290 },
-            { name: "Progress", value: 420 },
-            { name: "Counseling", value: 180 },
-            { name: "Chatbot", value: 520 },
-          ];
-
-          // ✅ Completion Rates should be % (0–100), not same as usage counts
-          const completionRatesData = [
-            { name: "Self-Help", value: 78 },
-            { name: "Resources", value: 64 },
-            { name: "Forum", value: 58 },
-            { name: "Progress", value: 71 },
-            { name: "Counseling", value: 49 },
-            { name: "Chatbot", value: 83 },
-          ];
+          const engagementData = ${engagementData};
+          const moduleUsageData = ${moduleUsageData};
+          const completionRatesData = ${completionRatesData};
 
           const COLORS = [
             "#B4C59B",

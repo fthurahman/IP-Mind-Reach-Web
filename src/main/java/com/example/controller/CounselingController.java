@@ -12,10 +12,19 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/counseling")
 public class CounselingController {
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.example.model.AnalyticsDAO analyticsDAO;
+
     @RequestMapping
     public ModelAndView handleRequest(
             HttpServletRequest request,
-            HttpServletResponse response) {
+            HttpServletResponse response,
+            java.security.Principal principal) {
+        
+        // LOGGING: Counseling module usage
+        if (analyticsDAO != null && principal != null) {
+                analyticsDAO.logActivityProgress("Counseling", principal.getName());
+        }
 
         ModelAndView mv = new ModelAndView();
 

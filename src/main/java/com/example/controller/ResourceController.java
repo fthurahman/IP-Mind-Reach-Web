@@ -13,16 +13,29 @@ import java.util.stream.Collectors;
 @RequestMapping("/resources")
 public class ResourceController {
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.example.model.AnalyticsDAO analyticsDAO;
+
     @RequestMapping
-    public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res) {
+    public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res, java.security.Principal principal) {
         String action = req.getParameter("action");
         String idParam = req.getParameter("id");
 
         HttpSession session = req.getSession();
         com.example.model.User user = (com.example.model.User) session.getAttribute("loggedUser");
+        String userEmail = (principal != null) ? principal.getName() : "anonymous";
+
+        // LOGGING: General module usage when visiting main page or detail
+        if ("GET".equals(req.getMethod())) {
+             if (analyticsDAO != null && principal != null) {
+                 analyticsDAO.logActivityProgress("Resources", userEmail);
+             }
+        }
 
         if ("POST".equals(req.getMethod())) {
             // Check permissions (Only mhprofessional can manage resources)
+            // Note: For permission check, we still use the session 'user' object if it contains role info, 
+            // or we could fetch it from DB using principal. For now, we trust session for Role, but Principal for Logging identity.
             if (user == null || !"mhprofessional".equals(user.getRole())) {
                 return new ModelAndView("redirect:resources?error=unauthorized");
             }
@@ -64,6 +77,11 @@ public class ResourceController {
                 int id = Integer.parseInt(idParam);
                 Resource resource = Resource.findById(id);
                 if (resource != null) {
+                    // LOGGING: Specific resource view
+                    if (analyticsDAO != null && principal != null) {
+                        analyticsDAO.logResourceView(resource.getTitle(), userEmail);
+                    }
+                    
                     ModelAndView mv = new ModelAndView();
                     mv.addObject("resource", resource);
                     mv.setViewName("resource-detail");
