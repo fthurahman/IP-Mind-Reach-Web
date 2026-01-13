@@ -141,7 +141,11 @@
                                                         </c:choose>
                                                     </span>
                                                     <button id="view-details-btn-${appointment.id}"
-                                                        onclick="openDetailsModal('${appointment.id}', '${appointment.studentName}', '${appointment.date}', '${appointment.time}', '${appointment.status}')"
+                                                        data-id="${appointment.id}"
+                                                        data-student-name="${fn:escapeXml(appointment.studentName)}"
+                                                        data-date="${appointment.date}" data-time="${appointment.time}"
+                                                        data-status="${appointment.status}"
+                                                        onclick="openDetailsModal(this)"
                                                         class="px-4 py-2 rounded-xl bg-[#B4C59B] hover:bg-[#9AAF86] text-white font-medium text-sm transition-colors">
                                                         View Details
                                                     </button>
@@ -190,8 +194,12 @@
                                                         class="border border-[#B4C59B] text-[#3D3A37] px-3 py-1 rounded-full text-sm font-medium">
                                                         Completed
                                                     </span>
-                                                    <button
-                                                        onclick="openNotesModal('${appointment.id}', '${appointment.studentName}', '${appointment.date}', '${appointment.time}', '${appointment.summary}', '${appointment.recommendations}')"
+                                                    <button data-id="${appointment.id}"
+                                                        data-student-name="${fn:escapeXml(appointment.studentName)}"
+                                                        data-date="${appointment.date}" data-time="${appointment.time}"
+                                                        data-summary="${fn:escapeXml(appointment.summary)}"
+                                                        data-recommendations="${fn:escapeXml(appointment.recommendations)}"
+                                                        onclick="openNotesModal(this)"
                                                         class="px-4 py-2 rounded-xl border border-[#B4C59B] hover:bg-[#B4C59B]/10 text-[#3D3A37] font-medium text-sm transition-colors">
                                                         <i data-lucide="edit-3" class="w-4 h-4 inline mr-1"></i>
                                                         Edit Notes
@@ -419,16 +427,19 @@
                             return date.toLocaleDateString('en-US', options);
                         }
 
-                        // Details Modal Functions (for upcoming sessions)
-                        function openDetailsModal(id, studentName, date, time, status) {
-                            currentSessionId = id;
-                            currentStudentName = studentName;
-                            currentDate = date;
-                            currentTime = time;
 
-                            document.getElementById('detailsStudentName').textContent = studentName || 'Student';
-                            document.getElementById('detailsDate').textContent = formatDate(date);
-                            document.getElementById('detailsTime').textContent = time;
+                        // Details Modal Functions (for upcoming sessions)
+                        function openDetailsModal(btn) {
+                            const dataset = btn.dataset;
+                            currentSessionId = dataset.id;
+                            currentStudentName = dataset.studentName;
+                            currentDate = dataset.date;
+                            currentTime = dataset.time;
+                            const status = dataset.status;
+
+                            document.getElementById('detailsStudentName').textContent = currentStudentName || 'Student';
+                            document.getElementById('detailsDate').textContent = formatDate(currentDate);
+                            document.getElementById('detailsTime').textContent = currentTime;
 
                             // Reset buttons to initial state or in-progress state based on status
                             if (status === 'in_progress') {
@@ -503,10 +514,8 @@
 
                                         const detailsBtn = document.getElementById('view-details-btn-' + currentSessionId);
                                         if (detailsBtn) {
-                                            // Update the onclick attribute to pass 'in_progress' so re-opening works correctly
-                                            // Use setAttribute to update the inline handler
-                                            detailsBtn.setAttribute('onclick',
-                                                "openDetailsModal('" + currentSessionId + "', '" + (currentStudentName || '') + "', '" + (currentDate || '') + "', '" + (currentTime || '') + "', 'in_progress')");
+                                            // Update the data-status attribute
+                                            detailsBtn.dataset.status = 'in_progress';
                                         }
                                     } else {
                                         console.error('Failed to start session on server');
@@ -536,8 +545,17 @@
                             document.getElementById('completeModal').classList.remove('show');
                         }
 
+
                         // Edit Notes Modal Functions (for completed sessions)
-                        function openNotesModal(id, studentName, date, time, summary, recommendations) {
+                        function openNotesModal(btn) {
+                            const dataset = btn.dataset;
+                            const id = dataset.id;
+                            const studentName = dataset.studentName;
+                            const date = dataset.date;
+                            const time = dataset.time;
+                            const summary = dataset.summary;
+                            const recommendations = dataset.recommendations;
+
                             document.getElementById('notesSessionId').value = id;
                             document.getElementById('notesStudentName').textContent = studentName || 'Student';
                             document.getElementById('notesDate').textContent = formatDate(date);

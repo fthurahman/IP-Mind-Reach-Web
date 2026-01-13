@@ -33,7 +33,8 @@ public class SecurityConfig {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider.setHideUserNotFoundExceptions(false); // Allow distinguishing between user not found and bad credentials
+        authProvider.setHideUserNotFoundExceptions(false); // Allow distinguishing between user not found and bad
+                                                           // credentials
         return authProvider;
     }
 
@@ -45,43 +46,45 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable() // Disabling CSRF for now to simplify testing, enable in production!
-            .authorizeRequests()
+                .csrf().disable() // Disabling CSRF for now to simplify testing, enable in production!
+                .authorizeRequests()
                 .antMatchers("/resources/**", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-                .antMatchers("/register", "/login", "/forgotPassword", "/check-email", "/resetPassword", "/WEB-INF/views/**").permitAll() // Allow views if direct access needed (though usually behind controller)
+                .antMatchers("/register", "/login", "/forgotPassword", "/check-email", "/resetPassword",
+                        "/WEB-INF/views/**", "/debug/**")
+                .permitAll() // Allow views if direct access needed (though usually behind controller)
                 .antMatchers("/homeStudent/**").hasRole("STUDENT")
                 .antMatchers("/homeAdmin/**", "/user-management/**").hasRole("ADMIN")
                 .antMatchers("/homeMProfessional/**", "/counselor/**").hasRole("MHPROFESSIONAL")
                 .anyRequest().authenticated()
-            .and()
-            .formLogin()
+                .and()
+                .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/login") // Spring Security intercepts POST to this URL
-                .usernameParameter("email")   // Our form uses 'email' not 'username'
+                .usernameParameter("email") // Our form uses 'email' not 'username'
                 .passwordParameter("password")
                 .successHandler(myAuthenticationSuccessHandler())
                 .failureUrl("/login?error=true")
                 .permitAll()
-            .and()
-            .logout()
+                .and()
+                .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll();
-        
+
         return http.build();
     }
 
     @Bean
-    public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
+    public AuthenticationSuccessHandler myAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
             System.out.println("DEBUG: Authentication Successful!");
             var authorities = authentication.getAuthorities();
             System.out.println("DEBUG: User Authorities: " + authorities);
-            
+
             String redirectUrl = "/login";
-            
+
             if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"))) {
                 redirectUrl = "/homeStudent";
             } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
@@ -89,7 +92,7 @@ public class SecurityConfig {
             } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_MHPROFESSIONAL"))) {
                 redirectUrl = "/homeMProfessional";
             }
-            
+
             System.out.println("DEBUG: Redirecting to: " + redirectUrl);
             response.sendRedirect(request.getContextPath() + redirectUrl);
         };

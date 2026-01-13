@@ -37,10 +37,18 @@ CREATE TABLE IF NOT EXISTS telehealth_sessions (
     counselor_email VARCHAR(255) NOT NULL,
     session_date DATE NOT NULL,
     session_time VARCHAR(20) NOT NULL,
-    status VARCHAR(20) DEFAULT 'upcoming', -- upcoming, completed, cancelled
+    status VARCHAR(20) DEFAULT 'upcoming', -- upcoming, inprogress, completed
     summary TEXT,
     recommendations TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_email) REFERENCES users (email) ON DELETE CASCADE,
     FOREIGN KEY (counselor_email) REFERENCES users (email) ON DELETE CASCADE
 );
+
+-- Ensure users table has reset_token columns (for existing databases)
+-- Note: 'IF NOT EXISTS' requires MySQL 8.0.12+ or MariaDB 10.2.1+
+-- If using an older version, these might fail if columns exist, but standard practice suggests keeping schema up to date.
+ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255);
+
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS reset_token_expiry TIMESTAMP;

@@ -63,80 +63,86 @@ public class UserController {
 	}
 
 	// Login POST is handled by Spring Security now
-	// We keep this just in case we need to handle specific errors passed via URL params,
+	// We keep this just in case we need to handle specific errors passed via URL
+	// params,
 	// but typically Spring Security handles the authentication process.
 
-    @Autowired
-    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+	@Autowired
+	private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
-    // handle logout
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/login";
-    }
+	// handle logout
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "redirect:/login";
+	}
 
-    @GetMapping("/homeStudent")
+	@GetMapping("/homeStudent")
 
-    public String homeStudent(@ModelAttribute("loggedUser") User user, Model model) {
-        // user is injected by GlobalControllerAdvice
-        // Logic uses user.getEmail(), which is available.
-        
-        // Safety check if user somehow is null (shouldn't happen due to SecurityConfig filters)
-        if (user == null) return "redirect:/login";
+	public String homeStudent(@ModelAttribute("loggedUser") User user, Model model) {
+		// user is injected by GlobalControllerAdvice
+		// Logic uses user.getEmail(), which is available.
 
-        // Check for latest DASS assessment
-        String sqlDASS = "SELECT assessment_date FROM dass_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";
-        try {
-            java.sql.Timestamp latestDate = jdbcTemplate.queryForObject(sqlDASS, new Object[]{user.getEmail()}, java.sql.Timestamp.class);
-            if (latestDate != null) {
-                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMM yyyy");
-                model.addAttribute("hasAssessment", true);
-                model.addAttribute("latestAssessmentDate", sdf.format(latestDate));
-            }
-        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
-            model.addAttribute("hasAssessment", false);
-        }
+		// Safety check if user somehow is null (shouldn't happen due to SecurityConfig
+		// filters)
+		if (user == null)
+			return "redirect:/login";
 
-        // Check for latest PHQ assessment
-        String sqlPHQ = "SELECT assessment_date FROM phq_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";
-        try {
-            java.sql.Timestamp latestDatePHQ = jdbcTemplate.queryForObject(sqlPHQ, new Object[]{user.getEmail()}, java.sql.Timestamp.class);
-            if (latestDatePHQ != null) {
-                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMM yyyy");
-                model.addAttribute("hasPHQAssessment", true);
-                model.addAttribute("latestPHQDate", sdf.format(latestDatePHQ));
-            }
-        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
-            model.addAttribute("hasPHQAssessment", false);
-        }
+		// Check for latest DASS assessment
+		String sqlDASS = "SELECT assessment_date FROM dass_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";
+		try {
+			java.sql.Timestamp latestDate = jdbcTemplate.queryForObject(sqlDASS, new Object[] { user.getEmail() },
+					java.sql.Timestamp.class);
+			if (latestDate != null) {
+				java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMM yyyy");
+				model.addAttribute("hasAssessment", true);
+				model.addAttribute("latestAssessmentDate", sdf.format(latestDate));
+			}
+		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
+			model.addAttribute("hasAssessment", false);
+		}
 
-        return "homeStudent";
-    }
+		// Check for latest PHQ assessment
+		String sqlPHQ = "SELECT assessment_date FROM phq_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";
+		try {
+			java.sql.Timestamp latestDatePHQ = jdbcTemplate.queryForObject(sqlPHQ, new Object[] { user.getEmail() },
+					java.sql.Timestamp.class);
+			if (latestDatePHQ != null) {
+				java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMM yyyy");
+				model.addAttribute("hasPHQAssessment", true);
+				model.addAttribute("latestPHQDate", sdf.format(latestDatePHQ));
+			}
+		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
+			model.addAttribute("hasPHQAssessment", false);
+		}
+
+		return "homeStudent";
+	}
 
 	@GetMapping("/homeAdmin")
 	public String homeAdmin() {
-        // SecurityConfig handles access
+		// SecurityConfig handles access
 		return "homeAdmin";
 	}
-	
+
 	// User Management - List Users
 	@GetMapping("/user-management")
 	// User Management - List Users
 
 	public String userManagement(@ModelAttribute("loggedUser") User user, Model model) {
-        // SecurityConfig handles access logic
-		if (user == null) return "redirect:/login";
-		
+		// SecurityConfig handles access logic
+		if (user == null)
+			return "redirect:/login";
+
 		// Fetch all users
 		java.util.List<User> allUsers = userDAO.findAll();
-		
+
 		// Separate lists
 		java.util.List<User> pendingCounselors = new java.util.ArrayList<>();
 		java.util.List<User> activeCounselors = new java.util.ArrayList<>();
 		java.util.List<User> students = new java.util.ArrayList<>();
-		
-		for(User u : allUsers) {
+
+		for (User u : allUsers) {
 			if ("mhprofessional".equals(u.getRole())) {
 				if ("pending".equals(u.getStatus())) {
 					pendingCounselors.add(u);
@@ -147,41 +153,41 @@ public class UserController {
 				students.add(u);
 			}
 		}
-		
+
 		model.addAttribute("pendingCounselors", pendingCounselors);
 		model.addAttribute("activeCounselors", activeCounselors);
 		model.addAttribute("students", students);
-		
+
 		return "user-management";
 	}
-	
+
 	// Approve User
 	@PostMapping("/approve-user")
 
 	public String approveUser(@RequestParam String email) {
-        // SecurityConfig handles access checks
-        // We trust the admin role check done by the filter filterChain
-		
+		// SecurityConfig handles access checks
+		// We trust the admin role check done by the filter filterChain
+
 		User userToApprove = userDAO.findByEmail(email);
 		if (userToApprove != null) {
 			userToApprove.setStatus("active");
 			userDAO.update(userToApprove);
 		}
-		
+
 		return "redirect:/user-management";
 	}
 
 	// Reject User
 	@PostMapping("/reject-user")
 	public String rejectUser(@RequestParam("email") String email) {
-        // SecurityConfig handles access checks
-		
+		// SecurityConfig handles access checks
+
 		// "Reject" means removing them from the system
 		userDAO.delete(email);
-		
+
 		return "redirect:/user-management";
 	}
-	
+
 	// Pending Approval Page
 	@GetMapping("/approval-pending")
 	public String showApprovalPending() {
@@ -196,22 +202,24 @@ public class UserController {
 		return "homeMProfessional"; // maps to homeMProfessional.jsp
 	}
 
-    @GetMapping("/counselor/student-results")
+	@GetMapping("/counselor/student-results")
 
-    public String counselorStudentResults(@RequestParam(name = "search", required = false) String search, @ModelAttribute("loggedUser") User user, Model model) {
-        // SecurityConfig handles access checks
-        if (user == null) return "redirect:/login";
-        
-        // Fetch all attempts for DASS and PHQ with search
-        java.util.List<java.util.Map<String, Object>> dassResults = userDAO.getAllDassResults(search);
-        java.util.List<java.util.Map<String, Object>> phqResults = userDAO.getAllPhqResults(search);
-        
-        model.addAttribute("dassResults", dassResults);
-        model.addAttribute("phqResults", phqResults);
-        model.addAttribute("searchQuery", search); // Return search query to view
-        
-        return "counselor-results";
-    }
+	public String counselorStudentResults(@RequestParam(name = "search", required = false) String search,
+			@ModelAttribute("loggedUser") User user, Model model) {
+		// SecurityConfig handles access checks
+		if (user == null)
+			return "redirect:/login";
+
+		// Fetch all attempts for DASS and PHQ with search
+		java.util.List<java.util.Map<String, Object>> dassResults = userDAO.getAllDassResults(search);
+		java.util.List<java.util.Map<String, Object>> phqResults = userDAO.getAllPhqResults(search);
+
+		model.addAttribute("dassResults", dassResults);
+		model.addAttribute("phqResults", phqResults);
+		model.addAttribute("searchQuery", search); // Return search query to view
+
+		return "counselor-results";
+	}
 
 	// forgot password
 	@GetMapping("/forgotPassword")
@@ -222,65 +230,66 @@ public class UserController {
 	// email checking for forgot password
 	@PostMapping("/forgotPassword")
 	public String checkEmail(@RequestParam String email, RedirectAttributes redirectAttributes) {
-        System.out.println("DEBUG: checkEmail called with: " + email);
+		System.out.println("DEBUG: checkEmail called with: " + email);
 		User user = userDAO.findByEmail(email);
 
 		if (user == null) {
-            System.out.println("DEBUG: User NOT found in database for email: " + email);
+			System.out.println("DEBUG: User NOT found in database for email: " + email);
 			redirectAttributes.addFlashAttribute("error", "Email not registered yet!");
-			return "redirect:/login"; 
+			return "redirect:/login";
 		}
 
-        // Generate Token
-        String token = java.util.UUID.randomUUID().toString();
-        user.setResetToken(token);
-        // Expiry 24 hours from now
-        user.setResetTokenExpiry(new java.sql.Timestamp(System.currentTimeMillis() + 24 * 60 * 60 * 1000));
-        userDAO.update(user);
-        
-        // Send Email
-        String resetLink = "http://localhost:8081/resetPassword?token=" + token;
-        String message = "Hello " + user.getName() + ",\n\n" +
-                         "You have requested to reset your password.\n" +
-                         "Click the link below to reset your password:\n" +
-                         resetLink + "\n\n" +
-                         "If you did not request this, please ignore this email.\n\n" +
-                         "Best regards,\nMindReach Team";
-        
-        // DEBUG: Print link to console for manual testing if email fails
-        System.out.println("==================================================");
-        System.out.println("DEBUG: Password Reset Link: " + resetLink);
-        System.out.println("==================================================");
+		// Generate Token
+		String token = java.util.UUID.randomUUID().toString();
+		user.setResetToken(token);
+		// Expiry 24 hours from now
+		user.setResetTokenExpiry(new java.sql.Timestamp(System.currentTimeMillis() + 24 * 60 * 60 * 1000));
+		userDAO.update(user);
 
-        try {
-            emailService.sendEmail(email, "Password Reset Request", message);
-            redirectAttributes.addFlashAttribute("successMessage", "A password reset link has been sent to your email.");
-        } catch (Exception e) {
-             System.err.println("Failed to send email to " + email);
-             e.printStackTrace();
-             System.out.println("DEBUG: Password Reset Link: " + resetLink); // Fallback for local testing
-             redirectAttributes.addFlashAttribute("error", "Failed to send email, but logged to console for testing.");
-             return "redirect:/login";
-        }
+		// Send Email
+		String resetLink = "http://localhost:8081/resetPassword?token=" + token;
+		String message = "Hello " + user.getName() + ",\n\n" +
+				"You have requested to reset your password.\n" +
+				"Click the link below to reset your password:\n" +
+				resetLink + "\n\n" +
+				"If you did not request this, please ignore this email.\n\n" +
+				"Best regards,\nMindReach Team";
+
+		// DEBUG: Print link to console for manual testing if email fails
+		System.out.println("==================================================");
+		System.out.println("DEBUG: Password Reset Link: " + resetLink);
+		System.out.println("==================================================");
+
+		try {
+			emailService.sendEmail(email, "Password Reset Request", message);
+			redirectAttributes.addFlashAttribute("successMessage",
+					"A password reset link has been sent to your email.");
+		} catch (Exception e) {
+			System.err.println("Failed to send email to " + email);
+			e.printStackTrace();
+			System.out.println("DEBUG: Password Reset Link: " + resetLink); // Fallback for local testing
+			redirectAttributes.addFlashAttribute("error", "Failed to send email, but logged to console for testing.");
+			return "redirect:/login";
+		}
 
 		return "redirect:/login";
 	}
 
-    // Show Reset Password Page (Validate Token)
+	// Show Reset Password Page (Validate Token)
 	@GetMapping("/resetPassword")
 	public String showResetPassword(@RequestParam(required = false) String token, Model model) {
-        if (token == null || token.isEmpty()) {
-            model.addAttribute("error", "Invalid password reset token.");
-            return "login";
-        }
-        
-        User user = userDAO.findByResetToken(token);
-        if (user == null || user.getResetTokenExpiry().before(new java.sql.Timestamp(System.currentTimeMillis()))) {
-             model.addAttribute("error", "Invalid or expired password reset token.");
-             return "login";
-        }
-        
-        model.addAttribute("token", token);
+		if (token == null || token.isEmpty()) {
+			model.addAttribute("error", "Invalid password reset token.");
+			return "login";
+		}
+
+		User user = userDAO.findByResetToken(token);
+		if (user == null || user.getResetTokenExpiry().before(new java.sql.Timestamp(System.currentTimeMillis()))) {
+			model.addAttribute("error", "Invalid or expired password reset token.");
+			return "login";
+		}
+
+		model.addAttribute("token", token);
 		return "resetPassword";
 	}
 
@@ -288,22 +297,29 @@ public class UserController {
 	@PostMapping("/resetPassword")
 	public String resetPassword(@RequestParam String token, @RequestParam String newPassword,
 			RedirectAttributes redirectAttribute) {
-		
-        User user = userDAO.findByResetToken(token);
+
+		User user = userDAO.findByResetToken(token);
 
 		if (user != null && user.getResetTokenExpiry().after(new java.sql.Timestamp(System.currentTimeMillis()))) {
 			user.setPassword(passwordEncoder.encode(newPassword));
-            user.setResetToken(null);
-            user.setResetTokenExpiry(null);
-            
+			user.setResetToken(null);
+			user.setResetTokenExpiry(null);
+
 			userDAO.update(user);
 			redirectAttribute.addFlashAttribute("successMessage",
 					"Password successfully updated! You can now login with your new password.");
 			return "redirect:/login";
 		}
-        
+
 		redirectAttribute.addFlashAttribute("error", "Invalid or expired token.");
 		return "redirect:/login";
+	}
+
+	// DEBUG: Temporary endpoint to generate BCrypt hash
+	@GetMapping("/debug/generate-hash")
+	@ResponseBody
+	public String generateHash(@RequestParam String password) {
+		return passwordEncoder.encode(password);
 	}
 
 }
