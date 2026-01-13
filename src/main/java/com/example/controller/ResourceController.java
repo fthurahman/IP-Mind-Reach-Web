@@ -17,7 +17,8 @@ public class ResourceController {
     private com.example.model.AnalyticsDAO analyticsDAO;
 
     @RequestMapping
-    public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res, java.security.Principal principal) {
+    public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res,
+            java.security.Principal principal) {
         String action = req.getParameter("action");
         String idParam = req.getParameter("id");
 
@@ -27,15 +28,17 @@ public class ResourceController {
 
         // LOGGING: General module usage when visiting main page or detail
         if ("GET".equals(req.getMethod())) {
-             if (analyticsDAO != null && principal != null) {
-                 analyticsDAO.logActivityProgress("Resources", userEmail);
-             }
+            if (analyticsDAO != null && principal != null) {
+                analyticsDAO.logActivityProgress("Resources", userEmail);
+            }
         }
 
         if ("POST".equals(req.getMethod())) {
             // Check permissions (Only mhprofessional can manage resources)
-            // Note: For permission check, we still use the session 'user' object if it contains role info, 
-            // or we could fetch it from DB using principal. For now, we trust session for Role, but Principal for Logging identity.
+            // Note: For permission check, we still use the session 'user' object if it
+            // contains role info,
+            // or we could fetch it from DB using principal. For now, we trust session for
+            // Role, but Principal for Logging identity.
             if (user == null || !"mhprofessional".equals(user.getRole())) {
                 return new ModelAndView("redirect:resources?error=unauthorized");
             }
@@ -46,6 +49,9 @@ public class ResourceController {
                 String content = req.getParameter("content");
                 String category = req.getParameter("category"); // topic
                 String type = req.getParameter("type");
+
+                System.out.println("DEBUG: ResourceController POST add action triggered");
+                System.out.println("DEBUG: Title received: " + title);
 
                 if (title != null && !title.isEmpty()) {
                     Resource r = new Resource();
@@ -62,8 +68,12 @@ public class ResourceController {
                             r.setVideoUrl(videoUrl);
                         }
                     }
+                    System.out.println("DEBUG: Calling Resource.addResource...");
                     Resource.addResource(r);
+                    System.out.println("DEBUG: Resource added, redirecting...");
                     return new ModelAndView("redirect:resources?status=created");
+                } else {
+                    System.out.println("DEBUG: Title missing, cannot add resource");
                 }
             } else if ("delete".equals(action) && idParam != null) {
                 int id = Integer.parseInt(idParam);
@@ -81,7 +91,7 @@ public class ResourceController {
                     if (analyticsDAO != null && principal != null) {
                         analyticsDAO.logResourceView(resource.getTitle(), userEmail);
                     }
-                    
+
                     ModelAndView mv = new ModelAndView();
                     mv.addObject("resource", resource);
                     mv.setViewName("resource-detail");
