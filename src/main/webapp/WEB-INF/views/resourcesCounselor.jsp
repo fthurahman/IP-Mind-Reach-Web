@@ -118,7 +118,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <c:forEach var="resource" items="${resources}">
                             <div data-id="${resource.id}"
-                                class="bg-gradient-to-r from-white to-[#F7FFF5] hover:shadow-2xl p-6 rounded-3xl shadow-sm transition transform hover:scale-[1.02] space-y-4 group border border-[#E9E4DF] flex flex-col h-full">
+                                onclick="window.location.href='${pageContext.request.contextPath}/resources?action=detail&id=${resource.id}'"
+                                class="cursor-pointer bg-gradient-to-r from-white to-[#F7FFF5] hover:shadow-2xl p-6 rounded-3xl shadow-sm transition transform hover:scale-[1.02] space-y-4 group border border-[#E9E4DF] flex flex-col h-full">
 
                                 <div class="space-y-2">
                                     <div class="flex items-center gap-2 text-sm text-gray-600 justify-between">
