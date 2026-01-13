@@ -1,135 +1,93 @@
 package com.example.controller;
 
-import com.example.model.Resource;
+import com.example.model.MoodEntry;
+import com.example.model.Activity;
+import com.example.model.User;
+import com.example.model.ProgressDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
-import javax.servlet.http.*;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/resources")
-public class ResourceController {
+public class ProgressController {
 
-    @org.springframework.beans.factory.annotation.Autowired
+    @Autowired
+    private ProgressDAO progressDAO;
+
+    @Autowired
     private com.example.model.AnalyticsDAO analyticsDAO;
 
-    @RequestMapping
-    public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res, java.security.Principal principal) {
-        String action = req.getParameter("action");
-        String idParam = req.getParameter("id");
-
-        HttpSession session = req.getSession();
-        com.example.model.User user = (com.example.model.User) session.getAttribute("loggedUser");
-        String userEmail = (principal != null) ? principal.getName() : "anonymous";
-
-        // LOGGING: General module usage when visiting main page or detail
-        if ("GET".equals(req.getMethod())) {
+    @GetMapping("/progress")
+    public String progress(Model model, @ModelAttribute("loggedUser") User user, java.security.Principal principal) {
+             // LOGGING: Progress module usage
              if (analyticsDAO != null && principal != null) {
-                 analyticsDAO.logActivityProgress("Resources", userEmail);
+                 analyticsDAO.logActivityProgress("Progress", principal.getName());
              }
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+        String email = user.getEmail();
+
+        // 1. Fetch Mood Data
+        // Default to last 7 entries for the chart
+        List<MoodEntry> moodData = progressDAO.getRecentMoodEntries(email, 7);
+
+        // 2. Fetch/Calculate Statistics
+        double averageMood = progressDAO.calculateAverageMood(email);
+        int currentStreak = progressDAO.getCurrentStreak(email);
+        int totalActivities = progressDAO.getTotalActivities(email);
+
+        // 3. Fetch Activities
+        List<Activity> activities = progressDAO.getUserActivities(email);
+
+        // Add data to model
+        model.addAttribute("moodData", moodData);
+        model.addAttribute("averageMood", String.format("%.1f", averageMood));
+        model.addAttribute("currentStreak", currentStreak);
+        model.addAttribute("totalActivities", totalActivities);
+        model.addAttribute("activities", activities);
+
+        return "progress";
+    }
+
+    @PostMapping("/progress/logMood")
+    public String logMood(@RequestParam int moodValue,
+            @RequestParam String moodEmoji,
+            @ModelAttribute("loggedUser") User user) {
+
+        if (user == null) {
+            return "redirect:/login";
         }
 
-        if ("POST".equals(req.getMethod())) {
-            // Check permissions (Only mhprofessional can manage resources)
-            // Note: For permission check, we still use the session 'user' object if it contains role info, 
-            // or we could fetch it from DB using principal. For now, we trust session for Role, but Principal for Logging identity.
-            if (user == null || !"mhprofessional".equals(user.getRole())) {
-                return new ModelAndView("redirect:resources?error=unauthorized");
-            }
+        // Logic for "Presentation Mode": Sequential Date Increment
+        // Fetch the last logged date for this user
+        String lastDateStr = progressDAO.getLastMoodDate(user.getEmail());
+        String entryDate;
 
-            if ("add".equals(action)) {
-                String title = req.getParameter("title");
-                String description = req.getParameter("description");
-                String content = req.getParameter("content");
-                String category = req.getParameter("category"); // topic
-                String type = req.getParameter("type");
-
-                if (title != null && !title.isEmpty()) {
-                    Resource r = new Resource();
-                    r.setTitle(title);
-                    r.setDescription(description);
-                    r.setContent(content);
-                    r.setTopic(category);
-                    r.setType(type);
-                    if ("video".equals(type)) {
-                        String duration = req.getParameter("duration");
-                        String videoUrl = req.getParameter("videoUrl");
-                        r.setDuration((duration != null && !duration.isEmpty()) ? duration : "10 min");
-                        if (videoUrl != null && !videoUrl.isEmpty()) {
-                            r.setVideoUrl(videoUrl);
-                        }
-                    }
-                    Resource.addResource(r);
-                    return new ModelAndView("redirect:resources?status=created");
-                }
-            } else if ("delete".equals(action) && idParam != null) {
-                int id = Integer.parseInt(idParam);
-                Resource.deleteResource(id);
-                return new ModelAndView("redirect:resources?status=deleted");
-            }
+        if (lastDateStr != null) {
+            // Increment by 1 day from the last entry
+            LocalDate lastDate = LocalDate.parse(lastDateStr);
+            entryDate = lastDate.plusDays(1).toString();
+        } else {
+            // First entry starts today
+            entryDate = LocalDate.now().toString();
         }
 
-        if ("GET".equals(req.getMethod())) {
-            if ("detail".equals(action) && idParam != null) {
-                int id = Integer.parseInt(idParam);
-                Resource resource = Resource.findById(id);
-                if (resource != null) {
-                    // LOGGING: Specific resource view
-                    if (analyticsDAO != null && principal != null) {
-                        analyticsDAO.logResourceView(resource.getTitle(), userEmail);
-                    }
-                    
-                    ModelAndView mv = new ModelAndView();
-                    mv.addObject("resource", resource);
-                    mv.setViewName("resource-detail");
-                    return mv;
-                }
-            }
-
-            // Filtering
-            String q = req.getParameter("q");
-            String topic = req.getParameter("topic");
-
-            List<Resource> allResources = Resource.mockResources();
-            if (allResources == null) {
-                allResources = new java.util.ArrayList<>();
-            }
-            System.out.println("DEBUG: All Resources Size = " + allResources.size());
-            List<Resource> filtered = allResources.stream()
-                    .filter(r -> {
-                        boolean matchesTopic = topic == null || "all".equals(topic)
-                                || r.getTopic().equalsIgnoreCase(topic);
-                        boolean matchesSearch = q == null || q.trim().isEmpty() ||
-                                r.getTitle().toLowerCase().contains(q.toLowerCase()) ||
-                                r.getDescription().toLowerCase().contains(q.toLowerCase());
-                        return matchesTopic && matchesSearch;
-                    })
-                    .collect(Collectors.toList());
-
-            ModelAndView mv = new ModelAndView();
-            mv.addObject("resources", filtered);
-            mv.addObject("currentTopic", topic == null ? "all" : topic);
-
-            // Role-based View Selection
-            if (user != null) {
-                if ("admin".equals(user.getRole())) {
-                    mv.setViewName("resourcesAdmin");
-                } else if ("mhprofessional".equals(user.getRole())) {
-                    mv.setViewName("resourcesCounselor");
-                } else {
-                    mv.setViewName("resources"); // Student or others
-                }
-            } else {
-                mv.setViewName("resources");
-            }
-
-            return mv;
+        try {
+            progressDAO.logMood(user.getEmail(), moodValue, moodEmoji, entryDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/progress?error=true";
         }
 
-        // Default fallback
-        return new ModelAndView("redirect:resources");
+        return "redirect:/progress";
     }
 }
