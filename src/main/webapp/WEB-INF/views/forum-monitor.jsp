@@ -134,7 +134,7 @@
                                 <c:choose>
                                     <c:when test="${currentView == 'active' || empty currentView}">
                                         <a href="forum-monitor?view=active"
-                                            style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 500; font-size: 0.875rem; transition: all 0.2s; background-color: #F59E0B; color: white;">
+                                            style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 500; font-size: 0.875rem; transition: all 0.2s; background-color: #B4C59B; color: white;">
                                             Active Posts
                                         </a>
                                     </c:when>
@@ -149,7 +149,7 @@
                                 <c:choose>
                                     <c:when test="${currentView == 'archived'}">
                                         <a href="forum-monitor?view=archived"
-                                            style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 500; font-size: 0.875rem; transition: all 0.2s; background-color: #F59E0B; color: white;">
+                                            style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 500; font-size: 0.875rem; transition: all 0.2s; background-color: #B4C59B; color: white;">
                                             Hidden Posts
                                         </a>
                                     </c:when>
@@ -257,7 +257,7 @@
 
                                                             <!-- Warn User -->
                                                             <button class="btn-sm"
-                                                                style="background: #F59E0B; color: white; border: none;"
+                                                                style="background: #B4C59B; color: white; border: none;"
                                                                 data-id="${post.id}" data-author="${post.author}"
                                                                 data-content="${fn:escapeXml(post.content)}"
                                                                 onclick="openWarnModal(this)">
