@@ -52,3 +52,28 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255);
 
 ALTER TABLE users
 ADD COLUMN IF NOT EXISTS reset_token_expiry TIMESTAMP;
+
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS current_streak INT DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS mood_entries (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_email VARCHAR(255) NOT NULL,
+    mood_value INT NOT NULL,
+    emoji VARCHAR(10),
+    entry_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_daily_entry (user_email, entry_date),
+    FOREIGN KEY (user_email) REFERENCES users (email) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS activity_progress (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_email VARCHAR(255) NOT NULL,
+    activity_name VARCHAR(50) NOT NULL, -- 'Self-Help', 'Resources', 'Forum Posts'
+    full_name VARCHAR(100),
+    completed_count INT DEFAULT 0,
+    total_count INT DEFAULT 10,
+    UNIQUE KEY unique_activity (user_email, activity_name),
+    FOREIGN KEY (user_email) REFERENCES users (email) ON DELETE CASCADE
+);

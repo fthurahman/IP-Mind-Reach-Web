@@ -2,43 +2,43 @@ package com.example.controller;
 
 import com.example.model.MoodEntry;
 import com.example.model.Activity;
-import com.example.service.MindReachService;
+import com.example.model.User;
+import com.example.model.ProgressDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
-import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
 public class ProgressController {
 
     @Autowired
-    private MindReachService mindReachService;
+    private ProgressDAO progressDAO;
 
     @GetMapping("/progress")
-    public String progress(Model model, HttpSession session) {
-        // Get or initialize mood data from session
-        @SuppressWarnings("unchecked")
-        List<MoodEntry> moodData = (List<MoodEntry>) session.getAttribute("moodData");
-
-        if (moodData == null) {
-            moodData = mindReachService.initializeMockMoodData();
-            session.setAttribute("moodData", moodData);
+    public String progress(Model model, @ModelAttribute("loggedUser") User user) {
+        if (user == null) {
+            return "redirect:/login";
         }
+        String email = user.getEmail();
 
-        // Calculate statistics
-        double averageMood = mindReachService.calculateAverageMood(moodData);
-        int currentStreak = 6; // Mock data
-        int totalActivities = 27; // Mock data
+        // 1. Fetch Mood Data
+        // Default to last 7 entries for the chart
+        List<MoodEntry> moodData = progressDAO.getRecentMoodEntries(email, 7);
 
-        // Initialize activity data
-        List<Activity> activities = mindReachService.initializeMockActivities();
+        // 2. Fetch/Calculate Statistics
+        double averageMood = progressDAO.calculateAverageMood(email);
+        int currentStreak = progressDAO.getCurrentStreak(email);
+        int totalActivities = progressDAO.getTotalActivities(email);
+
+        // 3. Fetch Activities
+        List<Activity> activities = progressDAO.getUserActivities(email);
 
         // Add data to model
         model.addAttribute("moodData", moodData);
@@ -53,25 +53,32 @@ public class ProgressController {
     @PostMapping("/progress/logMood")
     public String logMood(@RequestParam int moodValue,
             @RequestParam String moodEmoji,
-            HttpSession session) {
+            @ModelAttribute("loggedUser") User user) {
 
-        @SuppressWarnings("unchecked")
-        List<MoodEntry> moodData = (List<MoodEntry>) session.getAttribute("moodData");
-
-        if (moodData == null) {
-            moodData = mindReachService.initializeMockMoodData();
+        if (user == null) {
+            return "redirect:/login";
         }
 
-        // Add new mood entry
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("MM/dd"));
-        moodData.add(new MoodEntry(today, moodValue, moodEmoji));
+        // Logic for "Presentation Mode": Sequential Date Increment
+        // Fetch the last logged date for this user
+        String lastDateStr = progressDAO.getLastMoodDate(user.getEmail());
+        String entryDate;
 
-        // Keep only last 7 entries
-        if (moodData.size() > 7) {
-            moodData.remove(0);
+        if (lastDateStr != null) {
+            // Increment by 1 day from the last entry
+            LocalDate lastDate = LocalDate.parse(lastDateStr);
+            entryDate = lastDate.plusDays(1).toString();
+        } else {
+            // First entry starts today
+            entryDate = LocalDate.now().toString();
         }
 
-        session.setAttribute("moodData", moodData);
+        try {
+            progressDAO.logMood(user.getEmail(), moodValue, moodEmoji, entryDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/progress?error=true";
+        }
 
         return "redirect:/progress";
     }
