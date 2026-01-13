@@ -222,9 +222,11 @@ public class UserController {
 	// email checking for forgot password
 	@PostMapping("/forgotPassword")
 	public String checkEmail(@RequestParam String email, RedirectAttributes redirectAttributes) {
+        System.out.println("DEBUG: checkEmail called with: " + email);
 		User user = userDAO.findByEmail(email);
 
 		if (user == null) {
+            System.out.println("DEBUG: User NOT found in database for email: " + email);
 			redirectAttributes.addFlashAttribute("error", "Email not registered yet!");
 			return "redirect:/login"; 
 		}
@@ -245,13 +247,19 @@ public class UserController {
                          "If you did not request this, please ignore this email.\n\n" +
                          "Best regards,\nMindReach Team";
         
+        // DEBUG: Print link to console for manual testing if email fails
+        System.out.println("==================================================");
+        System.out.println("DEBUG: Password Reset Link: " + resetLink);
+        System.out.println("==================================================");
+
         try {
             emailService.sendEmail(email, "Password Reset Request", message);
             redirectAttributes.addFlashAttribute("successMessage", "A password reset link has been sent to your email.");
         } catch (Exception e) {
              System.err.println("Failed to send email to " + email);
              e.printStackTrace();
-             redirectAttributes.addFlashAttribute("error", "Failed to send email. Verification: " + e.getMessage());
+             System.out.println("DEBUG: Password Reset Link: " + resetLink); // Fallback for local testing
+             redirectAttributes.addFlashAttribute("error", "Failed to send email, but logged to console for testing.");
              return "redirect:/login";
         }
 
@@ -284,7 +292,7 @@ public class UserController {
         User user = userDAO.findByResetToken(token);
 
 		if (user != null && user.getResetTokenExpiry().after(new java.sql.Timestamp(System.currentTimeMillis()))) {
-			user.setPassword(newPassword);
+			user.setPassword(passwordEncoder.encode(newPassword));
             user.setResetToken(null);
             user.setResetTokenExpiry(null);
             

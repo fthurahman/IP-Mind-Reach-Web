@@ -33,6 +33,7 @@ public class SecurityConfig {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setHideUserNotFoundExceptions(false); // Allow distinguishing between user not found and bad credentials
         return authProvider;
     }
 
@@ -47,7 +48,7 @@ public class SecurityConfig {
             .csrf().disable() // Disabling CSRF for now to simplify testing, enable in production!
             .authorizeRequests()
                 .antMatchers("/resources/**", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-                .antMatchers("/register", "/login", "/forgot-password", "/check-email", "/reset-password", "/WEB-INF/views/**").permitAll() // Allow views if direct access needed (though usually behind controller)
+                .antMatchers("/register", "/login", "/forgotPassword", "/check-email", "/resetPassword", "/WEB-INF/views/**").permitAll() // Allow views if direct access needed (though usually behind controller)
                 .antMatchers("/homeStudent/**").hasRole("STUDENT")
                 .antMatchers("/homeAdmin/**", "/user-management/**").hasRole("ADMIN")
                 .antMatchers("/homeMProfessional/**", "/counselor/**").hasRole("MHPROFESSIONAL")

@@ -348,11 +348,16 @@
 					<c:if test="${not empty error or param.error != null}">
 						<div class="error-alert">
 							<c:choose>
-								<c:when test="${not empty sessionScope.SPRING_SECURITY_LAST_EXCEPTION}">
-									${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}
+								<c:when
+									test="${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message == 'Bad credentials'}">
+									Incorrect password.
+								</c:when>
+								<c:when
+									test="${not empty sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message and sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message.startsWith('User not found')}">
+									Email not registered.
 								</c:when>
 								<c:otherwise>
-									Invalid email or password.
+									${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}
 								</c:otherwise>
 							</c:choose>
 						</div>

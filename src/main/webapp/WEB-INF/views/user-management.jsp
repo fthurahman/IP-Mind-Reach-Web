@@ -144,15 +144,28 @@
                                     <div class="p-6 text-center text-gray-500">No active counselors found.</div>
                                 </c:if>
                                 <c:forEach var="user" items="${activeCounselors}">
-                                    <div class="p-4 border-b border-gray-100 last:border-0 flex items-center gap-4">
-                                        <div
-                                            class="w-10 h-10 rounded-full bg-[#B4C59B]/20 flex items-center justify-center text-[#B4C59B]">
-                                            <i data-lucide="stethoscope" class="w-5 h-5"></i>
+                                    <div
+                                        class="p-4 border-b border-gray-100 last:border-0 flex items-center justify-between gap-4">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="w-10 h-10 rounded-full bg-[#B4C59B]/20 flex items-center justify-center text-[#B4C59B]">
+                                                <i data-lucide="stethoscope" class="w-5 h-5"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-[#3D3A37]">${user.name}</p>
+                                                <p class="text-xs text-gray-500">${user.email}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p class="font-medium text-[#3D3A37]">${user.name}</p>
-                                            <p class="text-xs text-gray-500">${user.email}</p>
-                                        </div>
+
+                                        <form action="${pageContext.request.contextPath}/reject-user" method="post"
+                                            onsubmit="return confirm('Are you sure you want to remove this counselor? This action cannot be undone.');">
+                                            <input type="hidden" name="email" value="${user.email}">
+                                            <button type="submit"
+                                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                title="Remove Counselor">
+                                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </c:forEach>
                             </div>
