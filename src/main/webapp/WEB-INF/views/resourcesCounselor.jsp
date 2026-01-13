@@ -207,7 +207,8 @@
                             <p class="text-sm text-gray-500">Add a new resource to the library.</p>
                         </div>
 
-                        <form action="${pageContext.request.contextPath}/resources" method="POST" class="space-y-4">
+                        <form action="${pageContext.request.contextPath}/resources" method="POST" class="space-y-4"
+                            onsubmit="return confirm('Are you sure you want to publish this resource?');">
                             <input type="hidden" name="action" value="add">
 
                             <div class="space-y-1">
@@ -344,5 +345,3 @@
                     }
                 </script>
             </body>
-
-            </html>
