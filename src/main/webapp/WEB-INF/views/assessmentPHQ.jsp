@@ -11,177 +11,177 @@
             <!-- Standard CSS Environment -->
             <script src="https://cdn.tailwindcss.com"></script>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-            <link rel="stylesheet" href="<c:url value='/resources/css/style.css' />">
+            <%@ include file="layout/css-include.jsp" %>
 
-            <style>
-                .fade-in {
-                    animation: fadeIn 0.4s ease-out forwards;
-                }
-
-                @keyframes fadeIn {
-                    from {
-                        opacity: 0;
-                        transform: translateY(10px);
+                <style>
+                    .fade-in {
+                        animation: fadeIn 0.4s ease-out forwards;
                     }
 
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
+                    @keyframes fadeIn {
+                        from {
+                            opacity: 0;
+                            transform: translateY(10px);
+                        }
 
-                /* Custom Radio Button Styling */
-                .custom-radio {
-                    appearance: none;
-                    background-color: #fff;
-                    margin: 0;
-                    font: inherit;
-                    color: currentColor;
-                    width: 1.25em;
-                    height: 1.25em;
-                    border: 2px solid #e9e4df;
-                    border-radius: 50%;
-                    display: grid;
-                    place-content: center;
-                    transition: all 0.2s;
-                }
-
-                .custom-radio::before {
-                    content: "";
-                    width: 0.65em;
-                    height: 0.65em;
-                    border-radius: 50%;
-                    transform: scale(0);
-                    transition: 120ms transform ease-in-out;
-                    box-shadow: inset 1em 1em #B4C59B;
-                }
-
-                .custom-radio:checked {
-                    border-color: #B4C59B;
-                }
-
-                .custom-radio:checked::before {
-                    transform: scale(1);
-                }
-
-                .option-label {
-                    display: flex;
-                    align-items: center;
-                    padding: 1rem;
-                    border: 1px solid transparent;
-                    border-radius: 0.75rem;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                }
-
-                .option-label:hover {
-                    background-color: #f7f3ef;
-                }
-
-                .option-label.selected {
-                    background-color: rgba(180, 197, 155, 0.1);
-                    border-color: #B4C59B;
-                }
-            </style>
-
-            <script>
-                let currentQn = 1;
-                const totalQn = 9;
-
-                function startAssessment() {
-                    document.getElementById("intro-content").classList.add("hidden");
-                    document.getElementById("assessment-content").classList.remove("hidden");
-                    document.getElementById("assessment-content").classList.add("fade-in");
-                    showQuestion(1);
-                }
-
-                function showQuestion(index) {
-                    // Hide all questions
-                    const questions = document.getElementsByClassName("question-block");
-                    for (let q of questions) {
-                        q.classList.add("hidden");
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
                     }
 
-                    // Show current question
-                    const currentQ = document.getElementById("Q" + index);
-                    currentQ.classList.remove("hidden");
-                    currentQ.classList.add("fade-in");
-
-                    // Update Progress Bar
-                    const progress = ((index - 1) / totalQn) * 100;
-                    document.getElementById("progress-bar").style.width = progress + "%";
-                    document.getElementById("question-counter").innerText = "Question " + index + " of " + totalQn;
-
-                    // Update Navigation Buttons
-                    const backBtn = document.getElementById("back-btn");
-                    const nextBtn = document.getElementById("next-btn");
-
-                    // Back button logic - hide on first question
-                    if (index === 1) {
-                        backBtn.classList.add("hidden");
-                    } else {
-                        backBtn.classList.remove("hidden");
+                    /* Custom Radio Button Styling */
+                    .custom-radio {
+                        appearance: none;
+                        background-color: #fff;
+                        margin: 0;
+                        font: inherit;
+                        color: currentColor;
+                        width: 1.25em;
+                        height: 1.25em;
+                        border: 2px solid #e9e4df;
+                        border-radius: 50%;
+                        display: grid;
+                        place-content: center;
+                        transition: all 0.2s;
                     }
 
-                    // Next button text logic
-                    nextBtn.innerHTML = (index === totalQn)
-                        ? 'Submit Assessment <i class="fas fa-check ml-2"></i>'
-                        : 'Next Question <i class="fas fa-arrow-right ml-2"></i>';
-
-                    // Validate current selection to set button state
-                    validateCurrentStep();
-                }
-
-                function handleOptionSelect(element) {
-                    // Highlight selected option
-                    const container = element.closest('.question-block');
-                    const labels = container.querySelectorAll('.option-label');
-                    labels.forEach(l => l.classList.remove('selected'));
-                    element.closest('.option-label').classList.add('selected');
-
-                    // Enable next button
-                    validateCurrentStep();
-                }
-
-                function validateCurrentStep() {
-                    const nextBtn = document.getElementById("next-btn");
-                    const isAnswered = validateSelection(currentQn);
-
-                    if (isAnswered) {
-                        nextBtn.disabled = false;
-                        nextBtn.classList.remove("opacity-50", "cursor-not-allowed");
-                        nextBtn.classList.add("hover:bg-[#9aaf86]", "transform", "active:scale-95");
-                    } else {
-                        nextBtn.disabled = true;
-                        nextBtn.classList.add("opacity-50", "cursor-not-allowed");
-                        nextBtn.classList.remove("hover:bg-[#9aaf86]", "transform", "active:scale-95");
+                    .custom-radio::before {
+                        content: "";
+                        width: 0.65em;
+                        height: 0.65em;
+                        border-radius: 50%;
+                        transform: scale(0);
+                        transition: 120ms transform ease-in-out;
+                        box-shadow: inset 1em 1em #B4C59B;
                     }
-                }
 
-                function validateSelection(qIndex) {
-                    const name = "q" + qIndex;
-                    const options = document.getElementsByName(name);
-                    return Array.from(options).some(r => r.checked);
-                }
-
-                function nextQn() {
-                    if (!validateSelection(currentQn)) return;
-
-                    if (currentQn < totalQn) {
-                        currentQn++;
-                        showQuestion(currentQn);
-                    } else {
-                        document.getElementById("PHQ").submit();
+                    .custom-radio:checked {
+                        border-color: #B4C59B;
                     }
-                }
 
-                function previousQn() {
-                    if (currentQn > 1) {
-                        currentQn--;
-                        showQuestion(currentQn);
+                    .custom-radio:checked::before {
+                        transform: scale(1);
                     }
-                }
-            </script>
+
+                    .option-label {
+                        display: flex;
+                        align-items: center;
+                        padding: 1rem;
+                        border: 1px solid transparent;
+                        border-radius: 0.75rem;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                    }
+
+                    .option-label:hover {
+                        background-color: #f7f3ef;
+                    }
+
+                    .option-label.selected {
+                        background-color: rgba(180, 197, 155, 0.1);
+                        border-color: #B4C59B;
+                    }
+                </style>
+
+                <script>
+                    let currentQn = 1;
+                    const totalQn = 9;
+
+                    function startAssessment() {
+                        document.getElementById("intro-content").classList.add("hidden");
+                        document.getElementById("assessment-content").classList.remove("hidden");
+                        document.getElementById("assessment-content").classList.add("fade-in");
+                        showQuestion(1);
+                    }
+
+                    function showQuestion(index) {
+                        // Hide all questions
+                        const questions = document.getElementsByClassName("question-block");
+                        for (let q of questions) {
+                            q.classList.add("hidden");
+                        }
+
+                        // Show current question
+                        const currentQ = document.getElementById("Q" + index);
+                        currentQ.classList.remove("hidden");
+                        currentQ.classList.add("fade-in");
+
+                        // Update Progress Bar
+                        const progress = ((index - 1) / totalQn) * 100;
+                        document.getElementById("progress-bar").style.width = progress + "%";
+                        document.getElementById("question-counter").innerText = "Question " + index + " of " + totalQn;
+
+                        // Update Navigation Buttons
+                        const backBtn = document.getElementById("back-btn");
+                        const nextBtn = document.getElementById("next-btn");
+
+                        // Back button logic - hide on first question
+                        if (index === 1) {
+                            backBtn.classList.add("hidden");
+                        } else {
+                            backBtn.classList.remove("hidden");
+                        }
+
+                        // Next button text logic
+                        nextBtn.innerHTML = (index === totalQn)
+                            ? 'Submit Assessment <i class="fas fa-check ml-2"></i>'
+                            : 'Next Question <i class="fas fa-arrow-right ml-2"></i>';
+
+                        // Validate current selection to set button state
+                        validateCurrentStep();
+                    }
+
+                    function handleOptionSelect(element) {
+                        // Highlight selected option
+                        const container = element.closest('.question-block');
+                        const labels = container.querySelectorAll('.option-label');
+                        labels.forEach(l => l.classList.remove('selected'));
+                        element.closest('.option-label').classList.add('selected');
+
+                        // Enable next button
+                        validateCurrentStep();
+                    }
+
+                    function validateCurrentStep() {
+                        const nextBtn = document.getElementById("next-btn");
+                        const isAnswered = validateSelection(currentQn);
+
+                        if (isAnswered) {
+                            nextBtn.disabled = false;
+                            nextBtn.classList.remove("opacity-50", "cursor-not-allowed");
+                            nextBtn.classList.add("hover:bg-[#9aaf86]", "transform", "active:scale-95");
+                        } else {
+                            nextBtn.disabled = true;
+                            nextBtn.classList.add("opacity-50", "cursor-not-allowed");
+                            nextBtn.classList.remove("hover:bg-[#9aaf86]", "transform", "active:scale-95");
+                        }
+                    }
+
+                    function validateSelection(qIndex) {
+                        const name = "q" + qIndex;
+                        const options = document.getElementsByName(name);
+                        return Array.from(options).some(r => r.checked);
+                    }
+
+                    function nextQn() {
+                        if (!validateSelection(currentQn)) return;
+
+                        if (currentQn < totalQn) {
+                            currentQn++;
+                            showQuestion(currentQn);
+                        } else {
+                            document.getElementById("PHQ").submit();
+                        }
+                    }
+
+                    function previousQn() {
+                        if (currentQn > 1) {
+                            currentQn--;
+                            showQuestion(currentQn);
+                        }
+                    }
+                </script>
         </head>
 
         <body>
@@ -191,7 +191,7 @@
             </jsp:include>
 
             <!-- Main Content -->
-            <main class="dashboard-content" style="padding-top: 120px !important; min-height: 100vh;">
+            <main class="dashboard-content" style="min-height: 100vh;">
 
                 <!-- INTRO SECTION -->
                 <div id="intro-content" class="max-w-2xl mx-auto py-12 px-4 text-center fade-in">

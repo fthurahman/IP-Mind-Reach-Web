@@ -99,6 +99,8 @@ public class SecurityConfig {
                 redirectUrl = "/homeAdmin";
             } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_MHPROFESSIONAL"))) {
                 redirectUrl = "/homeMProfessional";
+            } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_PENDING"))) {
+                redirectUrl = "/approval-pending";
             }
 
             System.out.println("DEBUG: Redirecting to: " + redirectUrl);

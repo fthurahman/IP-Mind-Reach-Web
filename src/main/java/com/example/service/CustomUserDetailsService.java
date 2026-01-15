@@ -24,17 +24,24 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         System.out.println("DEBUG: User found. Role: " + user.getRole() + ", Password Hash: " + user.getPassword());
 
-        // Map application role to Spring Security role with "ROLE_" prefix
-        String role = "ROLE_" + user.getRole().toUpperCase();
+        // Check active status
+        boolean isActive = "active".equalsIgnoreCase(user.getStatus());
+        
+        String roleName = user.getRole().toUpperCase();
+        
+        // If not active (e.g. pending), assign a restricted role so they can't access protected pages
+        if (!isActive) {
+            roleName = "PENDING";
+        }
 
-        // Check active status if applicable (assuming 'status' field exists and 'active' is valid)
-        boolean enabled = "active".equalsIgnoreCase(user.getStatus());
+        // Map application role to Spring Security role with "ROLE_" prefix
+        String role = "ROLE_" + roleName;
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
                 .authorities(role)
-                .disabled(!enabled) // If not enabled, user cannot login
+                .disabled(false) // Always enable so we can handle redirection
                 .build();
     }
 }

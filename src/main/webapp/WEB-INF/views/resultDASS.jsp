@@ -11,82 +11,83 @@
             <!-- Standard CSS Environment -->
             <script src="https://cdn.tailwindcss.com"></script>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-            <link rel="stylesheet" href="<c:url value='/resources/css/style.css' />">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            <%@ include file="layout/css-include.jsp" %>
 
-            <style>
-                /* FORCE SCROLLING: Override any potential legacy styles causing lock-up */
-                html,
-                body {
-                    overflow-y: auto !important;
-                    height: auto !important;
-                    min-height: 100vh;
-                }
-
-                .fade-in {
-                    animation: fadeIn 0.6s ease-out forwards;
-                }
-
-                @keyframes fadeIn {
-                    from {
-                        opacity: 0;
-                        transform: translateY(20px);
+                <style>
+                    /* FORCE SCROLLING: Override any potential legacy styles causing lock-up */
+                    html,
+                    body {
+                        overflow-y: auto !important;
+                        height: auto !important;
+                        min-height: 100vh;
                     }
 
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
+                    .fade-in {
+                        animation: fadeIn 0.6s ease-out forwards;
                     }
-                }
 
-                .score-card {
-                    transition: all 0.3s ease;
-                }
+                    @keyframes fadeIn {
+                        from {
+                            opacity: 0;
+                            transform: translateY(20px);
+                        }
 
-                .score-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-                }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
 
-                .level-badge {
-                    display: inline-flex;
-                    align-items: center;
-                    padding: 0.25rem 0.75rem;
-                    border-radius: 9999px;
-                    font-size: 0.875rem;
-                    font-weight: 500;
-                }
+                    .score-card {
+                        transition: all 0.3s ease;
+                    }
 
-                .level-Normal {
-                    background-color: #d1fae5;
-                    color: #065f46;
-                }
+                    .score-card:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+                    }
 
-                /* Green */
-                .level-Mild {
-                    background-color: #fef3c7;
-                    color: #92400e;
-                }
+                    .level-badge {
+                        display: inline-flex;
+                        align-items: center;
+                        padding: 0.25rem 0.75rem;
+                        border-radius: 9999px;
+                        font-size: 0.875rem;
+                        font-weight: 500;
+                    }
 
-                /* Yellow */
-                .level-Moderate {
-                    background-color: #ffedd5;
-                    color: #9a3412;
-                }
+                    .level-Normal {
+                        background-color: #d1fae5;
+                        color: #065f46;
+                    }
 
-                /* Light Orange */
-                .level-Severe {
-                    background-color: #ffccbc;
-                    color: #bf360c;
-                }
+                    /* Green */
+                    .level-Mild {
+                        background-color: #fef3c7;
+                        color: #92400e;
+                    }
 
-                /* Orange (Distinct from Red) */
-                .level-Extremely {
-                    background-color: #fee2e2;
-                    color: #b91c1c;
-                }
+                    /* Yellow */
+                    .level-Moderate {
+                        background-color: #ffedd5;
+                        color: #9a3412;
+                    }
 
-                /* Red */
-            </style>
+                    /* Light Orange */
+                    .level-Severe {
+                        background-color: #ffccbc;
+                        color: #bf360c;
+                    }
+
+                    /* Orange (Distinct from Red) */
+                    .level-Extremely {
+                        background-color: #fee2e2;
+                        color: #b91c1c;
+                    }
+
+                    /* Red */
+                </style>
         </head>
 
         <body>
@@ -97,7 +98,7 @@
 
             <!-- Main Content -->
             <!-- Increased padding-top to 120px to prevent header overlap -->
-            <main class="dashboard-content" style="padding-top: 120px !important; min-height: 100vh;">
+            <main class="dashboard-content" style="min-height: 100vh;">
 
                 <div class="max-w-4xl mx-auto py-8 px-4 fade-in">
 

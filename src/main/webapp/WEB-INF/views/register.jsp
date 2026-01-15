@@ -33,15 +33,13 @@
 
 				body {
 					margin: 0;
-					padding: 0;
+					padding: 1.5rem;
 					font-family: var(--font-family-sans);
 					background-color: var(--background);
 					color: var(--foreground);
-					height: 100vh;
+					min-height: 100vh;
 					display: flex;
-					justify-content: center;
-					align-items: center;
-					overflow: hidden;
+					box-sizing: border-box;
 				}
 
 				/* Background Image Layer - Updated for Register Page */
@@ -86,6 +84,7 @@
 					position: relative;
 					z-index: 10;
 					box-sizing: border-box;
+					margin: auto;
 				}
 
 				h1.brand-title {

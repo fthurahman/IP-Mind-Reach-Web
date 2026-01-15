@@ -55,12 +55,13 @@
                             <form action="${pageContext.request.contextPath}/counselor/student-results" method="get"
                                 class="relative">
                                 <input type="text" name="search" value="${searchQuery}"
-                                    placeholder="Search by student name..."
-                                    class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#B4C59B] focus:ring-1 focus:ring-[#B4C59B] shadow-sm">
-                                <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-4 top-3.5"></i>
+                                    placeholder="Search by student name..." style="padding-left: 3.5rem !important;"
+                                    class="w-full pl-16 pr-12 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#B4C59B] focus:ring-1 focus:ring-[#B4C59B] shadow-sm">
+                                <i data-lucide="search"
+                                    class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
                                 <c:if test="${not empty searchQuery}">
                                     <a href="${pageContext.request.contextPath}/counselor/student-results"
-                                        class="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600">
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                         <i data-lucide="x" class="w-5 h-5"></i>
                                     </a>
                                 </c:if>

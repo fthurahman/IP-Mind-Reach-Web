@@ -11,81 +11,82 @@
             <!-- Standard CSS Environment -->
             <script src="https://cdn.tailwindcss.com"></script>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-            <link rel="stylesheet" href="<c:url value='/resources/css/style.css' />">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            <%@ include file="layout/css-include.jsp" %>
 
-            <style>
-                html,
-                body {
-                    overflow-y: auto !important;
-                    height: auto !important;
-                    min-height: 100vh;
-                }
-
-                .fade-in {
-                    animation: fadeIn 0.6s ease-out forwards;
-                }
-
-                @keyframes fadeIn {
-                    from {
-                        opacity: 0;
-                        transform: translateY(20px);
+                <style>
+                    html,
+                    body {
+                        overflow-y: auto !important;
+                        height: auto !important;
+                        min-height: 100vh;
                     }
 
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
+                    .fade-in {
+                        animation: fadeIn 0.6s ease-out forwards;
                     }
-                }
 
-                .score-card {
-                    transition: all 0.3s ease;
-                }
+                    @keyframes fadeIn {
+                        from {
+                            opacity: 0;
+                            transform: translateY(20px);
+                        }
 
-                .score-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-                }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
 
-                /* PHQ Color Classes */
-                .phq-Minimal {
-                    background-color: #d1fae5;
-                    color: #065f46;
-                }
+                    .score-card {
+                        transition: all 0.3s ease;
+                    }
 
-                /* Green */
-                .phq-Mild {
-                    background-color: #fef3c7;
-                    color: #92400e;
-                }
+                    .score-card:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+                    }
 
-                /* Yellow */
-                .phq-Moderate {
-                    background-color: #ffedd5;
-                    color: #9a3412;
-                }
+                    /* PHQ Color Classes */
+                    .phq-Minimal {
+                        background-color: #d1fae5;
+                        color: #065f46;
+                    }
 
-                /* Light Orange */
-                .phq-Moderately {
-                    background-color: #ffccbc;
-                    color: #bf360c;
-                }
+                    /* Green */
+                    .phq-Mild {
+                        background-color: #fef3c7;
+                        color: #92400e;
+                    }
 
-                /* Orange */
-                .phq-Severe {
-                    background-color: #fee2e2;
-                    color: #b91c1c;
-                }
+                    /* Yellow */
+                    .phq-Moderate {
+                        background-color: #ffedd5;
+                        color: #9a3412;
+                    }
 
-                /* Red */
+                    /* Light Orange */
+                    .phq-Moderately {
+                        background-color: #ffccbc;
+                        color: #bf360c;
+                    }
 
-                .severity-badge {
-                    display: inline-block;
-                    padding: 0.5rem 1.5rem;
-                    border-radius: 9999px;
-                    font-weight: 600;
-                    margin-top: 0.5rem;
-                }
-            </style>
+                    /* Orange */
+                    .phq-Severe {
+                        background-color: #fee2e2;
+                        color: #b91c1c;
+                    }
+
+                    /* Red */
+
+                    .severity-badge {
+                        display: inline-block;
+                        padding: 0.5rem 1.5rem;
+                        border-radius: 9999px;
+                        font-weight: 600;
+                        margin-top: 0.5rem;
+                    }
+                </style>
         </head>
 
         <body>
@@ -95,7 +96,7 @@
             </jsp:include>
 
             <!-- Main Content -->
-            <main class="dashboard-content" style="padding-top: 120px !important; min-height: 100vh;">
+            <main class="dashboard-content" style="min-height: 100vh;">
 
                 <div class="max-w-3xl mx-auto py-8 px-4 fade-in">
 
