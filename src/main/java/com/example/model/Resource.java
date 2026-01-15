@@ -162,3 +162,6 @@ public class Resource {
 
     public static void deleteResource(int id) {
         System.out.println("DEBUG: Deleting resource with ID: " + id);
+        mockResources().removeIf(r -> r.getId() == id);
+    }
+}

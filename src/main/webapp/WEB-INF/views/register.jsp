@@ -248,12 +248,22 @@
 
 					<div class="form-group">
 						<label for="name">Full Name</label>
-						<input type="text" id="name" name="name" placeholder="Alex Johnson" required>
+						<input type="text" id="name" name="name" placeholder="Ali bin Abu" required>
 					</div>
 
 					<div class="form-group">
 						<label for="email">Email</label>
-						<input type="text" id="email" name="email" placeholder="name@example.com" required>
+						<input type="text" id="email" name="email" placeholder="name@graduate.utm.my" required>
+					</div>
+
+					<div class="form-group" id="matric-group">
+						<label for="matricNumber">Matric Number</label>
+						<input type="text" id="matricNumber" name="matricNumber" placeholder="A24CS0001">
+					</div>
+
+					<div class="form-group" id="hospital-group" style="display:none;">
+						<label for="workingPlace">Organization / Hospital </label>
+						<input type="text" id="workingPlace" name="workingPlace" placeholder="General Hospital">
 					</div>
 
 					<div class="form-group role-group">
@@ -327,6 +337,15 @@
 
 					// Activate selected
 					document.getElementById('btn-' + role).classList.add('active');
+
+					// Toggle inputs
+					if (role === 'student') {
+						document.getElementById('matric-group').style.display = 'block';
+						document.getElementById('hospital-group').style.display = 'none';
+					} else {
+						document.getElementById('matric-group').style.display = 'none';
+						document.getElementById('hospital-group').style.display = 'block';
+					}
 				}
 
 				function validateForm() {
@@ -335,6 +354,8 @@
 					var confirmPassword = document.getElementById("confirmPassword").value;
 					var role = document.getElementById("roleInput").value;
 					var errorDiv = document.getElementById("js-error");
+					var matric = document.getElementById("matricNumber").value;
+					var hospital = document.getElementById("workingPlace").value;
 
 					// Email Validation based on Role
 					var isValidEmail = false;
@@ -348,10 +369,27 @@
 							errorDiv.style.display = "block";
 							return false;
 						}
+						if (matric.trim() === "") {
+							errorDiv.innerText = "Please enter your Matric Number";
+							errorDiv.style.display = "block";
+							return false;
+						}
+						// Matric Number Validation: 9 characters, alphanumeric
+						var matricRegex = /^[a-zA-Z0-9]{9}$/;
+						if (!matricRegex.test(matric)) {
+							errorDiv.innerText = "Matric Number must be exactly 9 alphanumeric characters";
+							errorDiv.style.display = "block";
+							return false;
+						}
 					} else if (role === 'counselor') {
 						// Logic Update: Counselors can use any email domain
 						if (email.trim() === "") {
 							errorDiv.innerText = "Please enter a valid email address";
+							errorDiv.style.display = "block";
+							return false;
+						}
+						if (hospital.trim() === "") {
+							errorDiv.innerText = "Please enter your Hospital Name (Working Place)";
 							errorDiv.style.display = "block";
 							return false;
 						}

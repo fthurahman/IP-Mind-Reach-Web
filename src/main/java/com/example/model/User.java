@@ -6,6 +6,10 @@ public class User{
 	private String password;
 	private String role;
 	private String status;
+	private String matricNumber;
+	private String workingPlace;
+	private String phoneNumber;
+	private String address;
 	
 	//Constructors
 	public User() {}
@@ -49,6 +53,38 @@ public class User{
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getMatricNumber() {
+		return matricNumber;
+	}
+
+	public void setMatricNumber(String matricNumber) {
+		this.matricNumber = matricNumber;
+	}
+
+	public String getWorkingPlace() {
+		return workingPlace;
+	}
+
+	public void setWorkingPlace(String workingPlace) {
+		this.workingPlace = workingPlace;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
     // Reset Token Fields

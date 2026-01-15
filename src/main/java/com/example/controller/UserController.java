@@ -358,4 +358,76 @@ public class UserController {
 		return passwordEncoder.encode(password);
 	}
 
+	// Profile Page
+	@GetMapping("/profile")
+	public String showProfile(@ModelAttribute("loggedUser") User user, Model model) {
+		if (user == null) return "redirect:/login";
+		return "profile";
+	}
+
+	@PostMapping("/profile/update")
+	public String updateProfile(@ModelAttribute("loggedUser") User user, 
+								@RequestParam String name,
+								@RequestParam(required = false) String phoneNumber,
+								@RequestParam(required = false) String address,
+								@RequestParam(required = false) String matricNumber,
+								@RequestParam(required = false) String workingPlace,
+								RedirectAttributes redirectAttributes,
+								HttpSession session) {
+		
+		if (user == null) return "redirect:/login";
+
+		User dbUser = userDAO.findByEmail(user.getEmail());
+		if (dbUser != null) {
+			dbUser.setName(name);
+			dbUser.setPhoneNumber(phoneNumber);
+			dbUser.setAddress(address);
+			
+			// Conditionally update Matric Number if not set
+			if ((dbUser.getMatricNumber() == null || dbUser.getMatricNumber().isEmpty()) 
+					&& matricNumber != null && !matricNumber.trim().isEmpty()) {
+				dbUser.setMatricNumber(matricNumber);
+			}
+
+			// Update Working Place (Always allow updates for counselors)
+			if (workingPlace != null) {
+				dbUser.setWorkingPlace(workingPlace);
+			}
+
+			userDAO.update(dbUser);
+			
+			// Update Session User to reflect changes immediately
+			session.setAttribute("user", dbUser);
+			
+			redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
+		}
+
+		return "redirect:/profile";
+	}
+
+	// Admin: View User Details (Read-only)
+	@GetMapping("/admin/user-details")
+	public String viewUserDetails(@RequestParam("email") String email, @ModelAttribute("loggedUser") User loggedUser, Model model) {
+		// Security check: only admin can access
+		// Filter handles broad access, but explicit check is good
+		if (loggedUser == null || !"admin".equals(loggedUser.getRole())) {
+			return "redirect:/login";
+		}
+
+		User targetUser = userDAO.findByEmail(email);
+		if (targetUser == null) {
+			return "redirect:/user-management";
+		}
+
+		model.addAttribute("targetUser", targetUser);
+
+		// If student, fetch results
+		if ("student".equals(targetUser.getRole())) {
+			model.addAttribute("dassResults", userDAO.getDassResultsByEmail(email));
+			model.addAttribute("phqResults", userDAO.getPhqResultsByEmail(email));
+		}
+
+		return "admin-user-details";
+	}
+
 }

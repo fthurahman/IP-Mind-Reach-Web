@@ -51,54 +51,9 @@
                 <body class="bg-[#F7F3EF] min-h-screen">
 
                     <!-- Header for Counselor -->
-                    <header class="bg-white border-b border-[#E9E4DF] sticky top-0 z-50 h-[72px] flex justify-center">
-                        <div class="w-full max-w-[1200px] px-8 flex items-center justify-between h-full">
-                            <a href="${pageContext.request.contextPath}/homeMProfessional"
-                                class="font-serif text-2xl text-[#3D3A37] hover:opacity-80">MindReach</a>
-                            <nav class="hidden lg:flex items-center gap-6">
-                                <a href="${pageContext.request.contextPath}/homeMProfessional"
-                                    class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Resources</a>
-                                <a href="${pageContext.request.contextPath}/telehealthCounselor"
-                                    class="text-sm text-[#2D2A28] font-semibold border-b-2 border-[#B4C59B] pb-1 transition-all">Telehealth
-                                    Assistance</a>
-                                <a href="${pageContext.request.contextPath}/counselor/student-results"
-                                    class="text-sm text-[#3D3A37] hover:text-[#2D2A28] font-medium transition-colors">Student
-                                    Assessment</a>
-                            </nav>
-                            <div class="hidden lg:flex items-center gap-3">
-                                <div class="text-right">
-                                    <div class="text-sm text-[#3D3A37] font-medium">
-                                        <c:choose>
-                                            <c:when test="${not empty loggedUser.name}">${fn:split(loggedUser.name, '
-                                                ')[0]}</c:when>
-                                            <c:otherwise>Dr. Smith</c:otherwise>
-                                        </c:choose>
-                                    </div>
-                                    <div class="text-xs text-gray-500 capitalize">
-                                        <c:choose>
-                                            <c:when test="${loggedUser.role == 'mhprofessional'}">Counselor</c:when>
-                                            <c:otherwise>${loggedUser.role}</c:otherwise>
-                                        </c:choose>
-                                    </div>
-                                </div>
-                                <div
-                                    class="w-10 h-10 rounded-full bg-[#B4C59B]/20 flex items-center justify-center text-[#B4C59B]">
-                                    <i data-lucide="user"></i>
-                                </div>
-                                <a href="${pageContext.request.contextPath}/logout" class="btn-ghost"
-                                    style="margin-left: 1rem;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" style="margin-right: 8px">
-                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                                        <polyline points="16 17 21 12 16 7" />
-                                        <line x1="21" x2="9" y1="12" y2="12" />
-                                    </svg>
-                                    Log out
-                                </a>
-                            </div>
-                        </div>
-                    </header>
+                    <jsp:include page="layout/headerCounselor.jsp">
+                        <jsp:param name="activePage" value="telehealth" />
+                    </jsp:include>
 
                     <main class="max-w-[1200px] mx-auto px-6 pb-8 pt-4 space-y-6">
                         <!-- Green Gradient Header -->

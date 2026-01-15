@@ -27,13 +27,23 @@
 
                     <!-- Profile & Logout -->
                     <div class="profile-section">
-                        <div class="profile-info">
-                            <div class="user-name">${fn:split(loggedUser.name, ' ')[0]}</div>
-                            <div class="user-role">${loggedUser.role}</div>
-                        </div>
-                        <div class="profile-icon">
-                            <i data-lucide="user"></i>
-                        </div>
+                        <a href="${pageContext.request.contextPath}/profile" class="profile-link"
+                            style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+                            <div class="profile-info">
+                                <div class="user-name">
+                                    <c:choose>
+                                        <c:when test="${not empty loggedUser and not empty loggedUser.name}">
+                                            ${fn:split(loggedUser.name, ' ')[0]}
+                                        </c:when>
+                                        <c:otherwise>User</c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div class="user-role">${not empty loggedUser ? loggedUser.role : ''}</div>
+                            </div>
+                            <div class="profile-icon">
+                                <i data-lucide="user"></i>
+                            </div>
+                        </a>
 
                         <a href="${pageContext.request.contextPath}/logout" class="btn-ghost"
                             style="margin-left: 1rem;">

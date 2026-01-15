@@ -28,6 +28,10 @@ public class UserDAO {
 					rs.getString("status"));
 			user.setResetToken(rs.getString("reset_token"));
 			user.setResetTokenExpiry(rs.getTimestamp("reset_token_expiry"));
+			user.setMatricNumber(rs.getString("matric_number"));
+			user.setWorkingPlace(rs.getString("working_place"));
+			user.setPhoneNumber(rs.getString("phone_number"));
+			user.setAddress(rs.getString("address"));
 			return user;
 		}
 	};
@@ -37,8 +41,8 @@ public class UserDAO {
 		// handle it too)
 		// Usually, we rely on duplicate key exception or check before insert.
 		// For simplicity matching previous logic which checked in controller:
-		String sql = "INSERT INTO users (name, email, password, role, status, reset_token, reset_token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?)";
-		jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword(), user.getRole(), user.getStatus(), user.getResetToken(), user.getResetTokenExpiry());
+		String sql = "INSERT INTO users (name, email, password, role, status, reset_token, reset_token_expiry, matric_number, working_place) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword(), user.getRole(), user.getStatus(), user.getResetToken(), user.getResetTokenExpiry(), user.getMatricNumber(), user.getWorkingPlace());
 	}
 
 	public User findByEmail(String email) {
@@ -52,8 +56,8 @@ public class UserDAO {
 	}
 
 	public void update(User user) {
-		String sql = "UPDATE users SET name = ?, password = ?, role = ?, status = ?, reset_token = ?, reset_token_expiry = ? WHERE email = ?";
-		jdbcTemplate.update(sql, user.getName(), user.getPassword(), user.getRole(), user.getStatus(), user.getResetToken(), user.getResetTokenExpiry(), user.getEmail());
+		String sql = "UPDATE users SET name = ?, password = ?, role = ?, status = ?, reset_token = ?, reset_token_expiry = ?, matric_number = ?, working_place = ?, phone_number = ?, address = ? WHERE email = ?";
+		jdbcTemplate.update(sql, user.getName(), user.getPassword(), user.getRole(), user.getStatus(), user.getResetToken(), user.getResetTokenExpiry(), user.getMatricNumber(), user.getWorkingPlace(), user.getPhoneNumber(), user.getAddress(), user.getEmail());
 	}
     
     public User findByResetToken(String token) {
@@ -139,5 +143,17 @@ public class UserDAO {
             sql += "ORDER BY p.assessment_date DESC";
             return jdbcTemplate.queryForList(sql);
         }
+    }
+
+    // New: Fetch DASS results by email (for specific user history)
+    public List<Map<String, Object>> getDassResultsByEmail(String email) {
+        String sql = "SELECT * FROM dass_results WHERE user_email = ? ORDER BY assessment_date DESC";
+        return jdbcTemplate.queryForList(sql, email);
+    }
+
+    // New: Fetch PHQ results by email (for specific user history)
+    public List<Map<String, Object>> getPhqResultsByEmail(String email) {
+        String sql = "SELECT * FROM phq_results WHERE user_email = ? ORDER BY assessment_date DESC";
+        return jdbcTemplate.queryForList(sql, email);
     }
 }
