@@ -55,6 +55,15 @@ public class UserDAO {
 		}
 	}
 
+	public User findByMatricNumber(String matricNumber) {
+		String sql = "SELECT * FROM users WHERE matric_number = ?";
+		try {
+			return jdbcTemplate.queryForObject(sql, userRowMapper, matricNumber);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public void update(User user) {
 		String sql = "UPDATE users SET name = ?, password = ?, role = ?, status = ?, reset_token = ?, reset_token_expiry = ?, matric_number = ?, working_place = ?, phone_number = ?, address = ? WHERE email = ?";
 		jdbcTemplate.update(sql, user.getName(), user.getPassword(), user.getRole(), user.getStatus(), user.getResetToken(), user.getResetTokenExpiry(), user.getMatricNumber(), user.getWorkingPlace(), user.getPhoneNumber(), user.getAddress(), user.getEmail());

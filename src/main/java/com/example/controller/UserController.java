@@ -49,6 +49,22 @@ public class UserController {
 			return "register";
 		}
 
+
+		// Check if matric number already exists (only for students)
+		if ("student".equals(user.getRole()) && user.getMatricNumber() != null && !user.getMatricNumber().isEmpty()) {
+			System.out.println("DEBUG: Checking matric number: " + user.getMatricNumber());
+			User existingUser = userDAO.findByMatricNumber(user.getMatricNumber());
+			if (existingUser != null) {
+				System.out.println("DEBUG: Matric number found! User: " + existingUser.getEmail());
+				model.addAttribute("error", "Matric Number already exists!");
+				return "register";
+			} else {
+				System.out.println("DEBUG: Matric number NOT found.");
+			}
+		} else {
+			System.out.println("DEBUG: Skipping matric check. Role: " + user.getRole() + ", Matric: " + user.getMatricNumber());
+		}
+
 		// Encrypt password before saving
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
