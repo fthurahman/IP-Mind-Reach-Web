@@ -63,11 +63,6 @@
 					left: 0;
 					right: 0;
 					bottom: 0;
-					/* React code uses no overlay div but the image itself. 
-               We'll use a slight overlay to ensure text readability if needed, 
-               or just match the CSS logic of login but with potential adjustments. 
-               React code: bg-white/95 backdrop-blur-sm on card. 
-            */
 					z-index: 0;
 				}
 

@@ -37,10 +37,7 @@ public class UserDAO {
 	};
 
 	public void save(User user) {
-		// Check if user exists (optional, but good practice, though controller might
-		// handle it too)
-		// Usually, we rely on duplicate key exception or check before insert.
-		// For simplicity matching previous logic which checked in controller:
+		// Check if user exists 
 		String sql = "INSERT INTO users (name, email, password, role, status, reset_token, reset_token_expiry, matric_number, working_place) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword(), user.getRole(), user.getStatus(), user.getResetToken(), user.getResetTokenExpiry(), user.getMatricNumber(), user.getWorkingPlace());
 	}
