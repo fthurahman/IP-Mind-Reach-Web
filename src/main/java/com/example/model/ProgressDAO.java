@@ -124,15 +124,26 @@ public class ProgressDAO {
     }
 
     public int getTotalActivities(String email) {
-        // Sum completed counts
-        String sql = "SELECT SUM(completed_count) FROM activity_progress WHERE user_email = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
+        int total = 0;
 
-        // Add counseling sessions count
-        String sessionSql = "SELECT COUNT(*) FROM telehealth_sessions WHERE student_email = ? AND status = 'completed'";
-        Integer sessions = jdbcTemplate.queryForObject(sessionSql, Integer.class, email);
+        // 1. Counseling sessions count
+        String counselingSql = "SELECT COUNT(*) FROM telehealth_sessions WHERE student_email = ? AND status = 'completed'";
+        Integer counselingCount = jdbcTemplate.queryForObject(counselingSql, Integer.class, email);
+        total += (counselingCount != null ? counselingCount : 0);
 
-        return (count != null ? count : 0) + (sessions != null ? sessions : 0);
+        // 2. Self-Help, Resources, Forum Posts (from activity_progress)
+        String[] predefinedActivities = { "Self-Help", "Resources", "Forum Posts" };
+        for (String activityName : predefinedActivities) {
+            String sql = "SELECT completed_count FROM activity_progress WHERE user_email = ? AND activity_name = ?";
+            try {
+                Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email, activityName);
+                total += (count != null ? count : 0);
+            } catch (Exception e) {
+                // Activity doesn't exist yet, contributes 0
+            }
+        }
+
+        return total;
     }
 
     // --- Activity Operations ---

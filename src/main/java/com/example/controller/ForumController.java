@@ -7,9 +7,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/forum")
@@ -18,8 +16,12 @@ public class ForumController {
     @org.springframework.beans.factory.annotation.Autowired
     private com.example.model.AnalyticsDAO analyticsDAO;
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.example.model.ForumDAO forumDAO;
+
     @RequestMapping
-    public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res, java.security.Principal principal) {
+    public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res,
+            java.security.Principal principal) {
 
         String action = req.getParameter("action");
         String idParam = req.getParameter("id");
@@ -27,14 +29,14 @@ public class ForumController {
         // LOGGING: Forum module usage
         if ("GET".equals(req.getMethod())) {
             if (analyticsDAO != null && principal != null) {
-                 analyticsDAO.logActivityProgress("Forum", principal.getName());
+                analyticsDAO.logActivityProgress("Forum", principal.getName());
             }
         }
 
         if ("GET".equals(req.getMethod())) {
             if ("detail".equals(action) && idParam != null) {
                 int id = Integer.parseInt(idParam);
-                Post post = Post.findById(id);
+                Post post = forumDAO.getPostById(id);
                 if (post != null) {
                     ModelAndView mv = new ModelAndView();
                     mv.addObject("post", post);
@@ -44,11 +46,12 @@ public class ForumController {
             }
             if ("report".equals(action) && idParam != null) {
                 int id = Integer.parseInt(idParam);
-                Post post = Post.findById(id);
+                Post post = forumDAO.getPostById(id);
                 String resultStatus = "reported";
                 if (post != null) {
                     boolean isAlreadyReported = post.isReported();
-                    post.setReported(!isAlreadyReported);
+                    // Toggle report status
+                    forumDAO.updatePostReportStatus(id, !isAlreadyReported);
                     if (isAlreadyReported) {
                         resultStatus = "unreported";
                     }
@@ -75,14 +78,11 @@ public class ForumController {
             }
             if ("search".equals(action)) {
                 String q = req.getParameter("q");
-                List<Post> allPosts = Post.mockPosts();
-                List<Post> filtered = allPosts;
+                List<Post> filtered;
                 if (q != null && !q.trim().isEmpty()) {
-                    filtered = allPosts.stream()
-                            .filter(p -> p.getContent().toLowerCase().contains(q.toLowerCase()) ||
-                                    p.getAuthor().toLowerCase().contains(q.toLowerCase()) ||
-                                    p.getTopic().toLowerCase().contains(q.toLowerCase()))
-                            .collect(Collectors.toList());
+                    filtered = forumDAO.searchPosts(q.trim());
+                } else {
+                    filtered = forumDAO.getAllPosts();
                 }
                 ModelAndView mv = new ModelAndView();
                 mv.addObject("posts", filtered);
@@ -91,7 +91,7 @@ public class ForumController {
             }
             // Default: list posts
             ModelAndView mv = new ModelAndView();
-            mv.addObject("posts", Post.mockPosts());
+            mv.addObject("posts", forumDAO.getAllPosts());
             mv.setViewName("forum");
             return mv;
         } else if ("POST".equals(req.getMethod())) {
@@ -102,15 +102,19 @@ public class ForumController {
                 if (author != null && topic != null && content != null &&
                         !author.trim().isEmpty() && !topic.trim().isEmpty() && !content.trim().isEmpty()) {
                     Post newPost = new Post();
-                    newPost.setId(Post.mockPosts().size() + 1);
                     newPost.setAuthor(author.trim());
                     newPost.setTopic(topic.trim());
                     newPost.setContent(content.trim());
                     newPost.setStatus("active");
                     newPost.setReported(false);
-                    newPost.setCreatedAt("2025-12-18");
-                    newPost.setComments(new ArrayList<>());
-                    Post.mockPosts().add(newPost);
+                    // Date set in DAO (NOW())
+
+                    forumDAO.createPost(newPost);
+
+                    // NEW: Update Activity Progress
+                    if (analyticsDAO != null && principal != null) {
+                        analyticsDAO.updateForumActivityProgress(principal.getName());
+                    }
                 }
                 // Redirect to forum
                 try {
@@ -121,24 +125,41 @@ public class ForumController {
                 return null;
             }
             // Add comment
-            int id = Integer.parseInt(req.getParameter("id"));
-            String reply = req.getParameter("reply");
-            Post post = Post.findById(id);
-            if (post != null && reply != null && !reply.trim().isEmpty()) {
-                post.addComment("Anonymous", reply.trim());
-            }
-            // Redirect to detail
-            try {
-                res.sendRedirect(req.getContextPath() + "/forum?action=detail&id=" + id + "&status=commented");
-            } catch (Exception e) {
-                e.printStackTrace();
+            String idStr = req.getParameter("id");
+            if (idStr != null) {
+                int id = Integer.parseInt(idStr);
+                String reply = req.getParameter("reply");
+                if (reply != null && !reply.trim().isEmpty()) {
+                    com.example.model.Comment c = new com.example.model.Comment();
+                    c.setAuthor("Anonymous");
+                    c.setContent(reply.trim());
+                    forumDAO.addComment(id, c);
+
+                    // NEW: Update Activity Progress
+                    if (analyticsDAO != null && principal != null) {
+                        analyticsDAO.updateForumActivityProgress(principal.getName());
+                    }
+                }
+                // Redirect to detail
+                try {
+                    res.sendRedirect(req.getContextPath() + "/forum?action=detail&id=" + id + "&status=commented");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // Fallback if no ID
+                try {
+                    res.sendRedirect(req.getContextPath() + "/forum");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return null;
         }
 
         // Default
         ModelAndView mv = new ModelAndView();
-        mv.addObject("posts", Post.mockPosts());
+        mv.addObject("posts", forumDAO.getAllPosts());
         mv.setViewName("forum");
         return mv;
     }

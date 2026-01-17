@@ -18,14 +18,18 @@ public class DASSController {
 
     @Autowired
     private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
-    
+
+    @Autowired
+    private com.example.model.AnalyticsDAO analyticsDAO;
+
     @GetMapping("/DASS")
     public String loadDASSForm() {
         return "assessmentDASS";
     }
 
     @PostMapping("/DASS")
-    public ModelAndView processDASS(HttpServletRequest request, @ModelAttribute("loggedUser") com.example.model.User user) {
+    public ModelAndView processDASS(HttpServletRequest request,
+            @ModelAttribute("loggedUser") com.example.model.User user) {
 
         int[] scores = new int[21];
 
@@ -35,26 +39,31 @@ public class DASSController {
 
         // Call service to compute and interpret
         DASS dassResult = dassService.calculate(scores);
-        
+
         // Get user from model
         String userEmail = (user != null) ? user.getEmail() : "guest@legacy.com";
 
         // Save to Database
         String sql = "INSERT INTO dass_results (user_email, depression_score, anxiety_score, stress_score, " +
-                     "level_depression, level_anxiety, level_stress, assessment_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        
+                "level_depression, level_anxiety, level_stress, assessment_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
         java.sql.Timestamp now = new java.sql.Timestamp(new java.util.Date().getTime());
-        
+
         try {
-            jdbcTemplate.update(sql, userEmail, 
-                dassResult.getDepression(), dassResult.getAnxiety(), dassResult.getStress(),
-                dassResult.getLevelDepression(), dassResult.getLevelAnxiety(), dassResult.getLevelStress(),
-                now
-            );
+            jdbcTemplate.update(sql, userEmail,
+                    dassResult.getDepression(), dassResult.getAnxiety(), dassResult.getStress(),
+                    dassResult.getLevelDepression(), dassResult.getLevelAnxiety(), dassResult.getLevelStress(),
+                    now);
+
+            // NEW: Update Activity Progress
+            if (analyticsDAO != null) {
+                analyticsDAO.updateSelfHelpActivityProgress(userEmail);
+            }
+
         } catch (Exception e) {
             e.printStackTrace(); // Log error but show result anyway
         }
-        
+
         // Format date for display
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a");
         String formattedDate = sdf.format(now);
@@ -65,18 +74,19 @@ public class DASSController {
 
         return mv;
     }
-    
+
     @GetMapping("/resultDASS")
     public ModelAndView loadDASSResult(@ModelAttribute("loggedUser") com.example.model.User user) {
         ModelAndView mv = new ModelAndView("resultDASS");
-        
-        if (user == null) return new ModelAndView("redirect:/login");
+
+        if (user == null)
+            return new ModelAndView("redirect:/login");
 
         String sql = "SELECT * FROM dass_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";
-        
+
         try {
             java.util.Map<String, Object> latestResult = jdbcTemplate.queryForMap(sql, user.getEmail());
-            
+
             DASS dassResult = new DASS();
             dassResult.setDepression((Integer) latestResult.get("depression_score"));
             dassResult.setAnxiety((Integer) latestResult.get("anxiety_score"));
@@ -84,13 +94,13 @@ public class DASSController {
             dassResult.setLevelDepression((String) latestResult.get("level_depression"));
             dassResult.setLevelAnxiety((String) latestResult.get("level_anxiety"));
             dassResult.setLevelStress((String) latestResult.get("level_stress"));
-            
+
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a");
             String formattedDate = sdf.format((java.sql.Timestamp) latestResult.get("assessment_date"));
 
             mv.addObject("result", dassResult);
             mv.addObject("assessmentDate", formattedDate);
-            
+
         } catch (org.springframework.dao.EmptyResultDataAccessException e) {
             // No result found, redirect to assessment
             return new ModelAndView("redirect:/DASS");

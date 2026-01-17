@@ -7,27 +7,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/forum-monitor")
 public class ForumMonitorController {
 
-    // Keep state in memory for the session
-    private static List<Post> posts;
-
-    // Initialize if empty using the mock data from Model
-    private List<Post> getPosts() {
-        if (posts == null) {
-            posts = new ArrayList<>(Post.mockPosts());
-        }
-        return posts;
-    }
-
-    private Post findPost(int id) {
-        return getPosts().stream().filter(p -> p.getId() == id).findFirst().orElse(null);
-    }
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.example.model.ForumDAO forumDAO;
 
     @RequestMapping
     public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse res) {
@@ -37,7 +24,7 @@ public class ForumMonitorController {
 
         if (action != null && idParam != null) {
             int id = Integer.parseInt(idParam);
-            Post post = findPost(id);
+            Post post = forumDAO.getPostById(id);
 
             if (post != null) {
                 if ("warn".equals(action)) {
@@ -47,15 +34,15 @@ public class ForumMonitorController {
                 } else if ("toggle".equals(action)) {
                     // Toggle between visible and hidden
                     if ("visible".equals(post.getStatus())) {
-                        post.setStatus("hidden");
+                        forumDAO.updatePostStatus(id, "hidden");
                     } else if ("hidden".equals(post.getStatus())) {
-                        post.setStatus("visible");
+                        forumDAO.updatePostStatus(id, "visible");
                     }
                 } else if ("remove".equals(action)) {
-                    post.setStatus("removed");
+                    forumDAO.updatePostStatus(id, "removed");
                 } else if ("restore".equals(action)) {
                     // Restore from removed/hidden back to visible
-                    post.setStatus("visible");
+                    forumDAO.updatePostStatus(id, "visible");
                 }
             }
             // Redirect to preserve the view state
@@ -63,24 +50,18 @@ public class ForumMonitorController {
         }
 
         // Filter posts based on view parameter
-        List<Post> allPosts = getPosts();
-        List<Post> filteredPosts = new ArrayList<>();
+        List<Post> filteredPosts;
 
         if ("archived".equals(view)) {
             // Show hidden posts only (removed posts are strictly removed)
             // Show hidden AND removed posts
-            for (Post p : allPosts) {
-                if ("hidden".equals(p.getStatus()) || "removed".equals(p.getStatus())) {
-                    filteredPosts.add(p);
-                }
-            }
+            filteredPosts = forumDAO.getPostsByStatus(List.of("hidden", "removed"));
         } else {
             // Default: Show visible posts (including reported ones if they are visible)
-            for (Post p : allPosts) {
-                if ("visible".equals(p.getStatus())) {
-                    filteredPosts.add(p);
-                }
-            }
+            filteredPosts = forumDAO.getPostsByStatus(List.of("visible", "active", "reported"));
+            // Note: 'active' and 'reported' might be statuses used in creation/logic,
+            // ensuring we catch them.
+            // Ideally we should normalize statuses.
         }
 
         ModelAndView mv = new ModelAndView();

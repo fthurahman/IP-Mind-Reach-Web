@@ -49,7 +49,6 @@ public class UserController {
 			return "register";
 		}
 
-
 		// Check if matric number already exists (only for students)
 		if ("student".equals(user.getRole()) && user.getMatricNumber() != null && !user.getMatricNumber().isEmpty()) {
 			System.out.println("DEBUG: Checking matric number: " + user.getMatricNumber());
@@ -62,7 +61,8 @@ public class UserController {
 				System.out.println("DEBUG: Matric number NOT found.");
 			}
 		} else {
-			System.out.println("DEBUG: Skipping matric check. Role: " + user.getRole() + ", Matric: " + user.getMatricNumber());
+			System.out.println(
+					"DEBUG: Skipping matric check. Role: " + user.getRole() + ", Matric: " + user.getMatricNumber());
 		}
 
 		// Encrypt password before saving
@@ -130,11 +130,6 @@ public class UserController {
 			}
 		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
 			model.addAttribute("hasPHQAssessment", false);
-		}
-
-		// LOGGING: Self-Help module usage
-		if (analyticsDAO != null) {
-			analyticsDAO.logActivityProgress("Self-Help", user.getEmail());
 		}
 
 		return "homeStudent";
@@ -377,30 +372,32 @@ public class UserController {
 	// Profile Page
 	@GetMapping("/profile")
 	public String showProfile(@ModelAttribute("loggedUser") User user, Model model) {
-		if (user == null) return "redirect:/login";
+		if (user == null)
+			return "redirect:/login";
 		return "profile";
 	}
 
 	@PostMapping("/profile/update")
-	public String updateProfile(@ModelAttribute("loggedUser") User user, 
-								@RequestParam String name,
-								@RequestParam(required = false) String phoneNumber,
-								@RequestParam(required = false) String address,
-								@RequestParam(required = false) String matricNumber,
-								@RequestParam(required = false) String workingPlace,
-								RedirectAttributes redirectAttributes,
-								HttpSession session) {
-		
-		if (user == null) return "redirect:/login";
+	public String updateProfile(@ModelAttribute("loggedUser") User user,
+			@RequestParam String name,
+			@RequestParam(required = false) String phoneNumber,
+			@RequestParam(required = false) String address,
+			@RequestParam(required = false) String matricNumber,
+			@RequestParam(required = false) String workingPlace,
+			RedirectAttributes redirectAttributes,
+			HttpSession session) {
+
+		if (user == null)
+			return "redirect:/login";
 
 		User dbUser = userDAO.findByEmail(user.getEmail());
 		if (dbUser != null) {
 			dbUser.setName(name);
 			dbUser.setPhoneNumber(phoneNumber);
 			dbUser.setAddress(address);
-			
+
 			// Conditionally update Matric Number if not set
-			if ((dbUser.getMatricNumber() == null || dbUser.getMatricNumber().isEmpty()) 
+			if ((dbUser.getMatricNumber() == null || dbUser.getMatricNumber().isEmpty())
 					&& matricNumber != null && !matricNumber.trim().isEmpty()) {
 				dbUser.setMatricNumber(matricNumber);
 			}
@@ -411,10 +408,10 @@ public class UserController {
 			}
 
 			userDAO.update(dbUser);
-			
+
 			// Update Session User to reflect changes immediately
 			session.setAttribute("user", dbUser);
-			
+
 			redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
 		}
 
@@ -423,7 +420,8 @@ public class UserController {
 
 	// Admin: View User Details (Read-only)
 	@GetMapping("/admin/user-details")
-	public String viewUserDetails(@RequestParam("email") String email, @ModelAttribute("loggedUser") User loggedUser, Model model) {
+	public String viewUserDetails(@RequestParam("email") String email, @ModelAttribute("loggedUser") User loggedUser,
+			Model model) {
 		// Security check: only admin can access
 		// Filter handles broad access, but explicit check is good
 		if (loggedUser == null || !"admin".equals(loggedUser.getRole())) {

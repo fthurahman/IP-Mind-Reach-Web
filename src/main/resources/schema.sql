@@ -57,8 +57,12 @@ ALTER TABLE users
 ADD COLUMN IF NOT EXISTS current_streak INT DEFAULT 0;
 
 ALTER TABLE users ADD COLUMN IF NOT EXISTS matric_number VARCHAR(50);
-ALTER TABLE users ADD COLUMN IF NOT EXISTS working_place VARCHAR(255);
+
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS working_place VARCHAR(255);
+
 ALTER TABLE users ADD COLUMN IF NOT EXISTS phone_number VARCHAR(20);
+
 ALTER TABLE users ADD COLUMN IF NOT EXISTS address TEXT;
 
 CREATE TABLE IF NOT EXISTS mood_entries (
@@ -142,3 +146,138 @@ CREATE TABLE IF NOT EXISTS resources (
     video_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Seed Data (runs on every startup if using schema.sql and Spring Boot default settings, but harmless if using INSERT IGNORE or checking existence)
+-- Note: schema.sql typically runs DDL. data.sql is better for DML. But here we append since user is editing schema.sql.
+-- Using simple INSERTs with IDs. If table is fresh, it works. If table exists and has data, primary key constraint fails (which is fine, prevents duplication).
+
+-- Post 1
+INSERT INTO
+    forum_posts (
+        id,
+        author,
+        topic,
+        content,
+        status,
+        reported,
+        created_at
+    )
+SELECT 1, 'Anonymous Owl', 'Stress', 'Finals week is overwhelming ', 'visible', FALSE, '2025-12-18 10:00:00'
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM forum_posts
+        WHERE
+            id = 1
+    );
+
+INSERT INTO
+    forum_comments (
+        id,
+        post_id,
+        author,
+        content,
+        created_at
+    )
+SELECT 1, 1, 'Support', 'Hang in there!', '2025-12-18 10:05:00'
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM forum_comments
+        WHERE
+            id = 1
+    );
+
+-- Post 2
+INSERT INTO
+    forum_posts (
+        id,
+        author,
+        topic,
+        content,
+        status,
+        reported,
+        created_at
+    )
+SELECT 2, 'Worried Student', 'Anxiety', 'I''m feeling really anxious about my grades. Any tips?', 'visible', FALSE, '2025-12-17 14:00:00'
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM forum_posts
+        WHERE
+            id = 2
+    );
+
+INSERT INTO
+    forum_comments (
+        id,
+        post_id,
+        author,
+        content,
+        created_at
+    )
+SELECT 2, 2, 'Peer Helper', 'Try deep breathing exercises. You''ve got this!', '2025-12-17 14:30:00'
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM forum_comments
+        WHERE
+            id = 2
+    );
+
+-- Post 3
+INSERT INTO
+    forum_posts (
+        id,
+        author,
+        topic,
+        content,
+        status,
+        reported,
+        created_at
+    )
+SELECT 3, 'Sleepy Scholar', 'Sleep', 'Not getting enough sleep. How do you balance study and rest?', 'visible', FALSE, '2025-12-16 09:00:00'
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM forum_posts
+        WHERE
+            id = 3
+    );
+
+INSERT INTO
+    forum_comments (
+        id,
+        post_id,
+        author,
+        content,
+        created_at
+    )
+SELECT 3, 3, 'Wellness Buddy', 'Set a consistent sleep schedule and avoid screens before bed.', '2025-12-16 09:15:00'
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM forum_comments
+        WHERE
+            id = 3
+    );
+
+-- Post 4
+INSERT INTO
+    forum_posts (
+        id,
+        author,
+        topic,
+        content,
+        status,
+        reported,
+        created_at
+    )
+SELECT 4, 'Motivated Learner', 'Motivation', 'How do you stay motivated during tough times?', 'visible', FALSE, '2025-12-15 16:00:00'
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM forum_posts
+        WHERE
+            id = 4
+    );

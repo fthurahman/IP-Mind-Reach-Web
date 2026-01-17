@@ -19,6 +19,9 @@ public class PHQController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private com.example.model.AnalyticsDAO analyticsDAO;
+
     @GetMapping("/assessmentPHQ")
     public String loadPHQForm() {
         return "assessmentPHQ";
@@ -33,16 +36,22 @@ public class PHQController {
         for (int i = 1; i <= 9; i++) {
             int score = Integer.parseInt(request.getParameter("q" + i));
             totalScore += score;
-            if (i == 9) q9 = score;
+            if (i == 9)
+                q9 = score;
         }
 
         // Determine Severity (KPM Standard)
         String severity;
-        if (totalScore <= 4) severity = "Minimal / None";
-        else if (totalScore <= 9) severity = "Mild";
-        else if (totalScore <= 14) severity = "Moderate";
-        else if (totalScore <= 19) severity = "Moderately Severe";
-        else severity = "Severe";
+        if (totalScore <= 4)
+            severity = "Minimal / None";
+        else if (totalScore <= 9)
+            severity = "Mild";
+        else if (totalScore <= 14)
+            severity = "Moderate";
+        else if (totalScore <= 19)
+            severity = "Moderately Severe";
+        else
+            severity = "Severe";
 
         boolean flaggedSuicide = (q9 >= 1);
 
@@ -56,6 +65,11 @@ public class PHQController {
 
         try {
             jdbcTemplate.update(sql, userEmail, totalScore, severity, flaggedSuicide, now);
+
+            // NEW: Update Activity Progress
+            if (analyticsDAO != null) {
+                analyticsDAO.updateSelfHelpActivityProgress(userEmail);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,7 +84,8 @@ public class PHQController {
     @GetMapping("/resultPHQ")
     public ModelAndView loadPHQResult(@ModelAttribute("loggedUser") User user) {
         ModelAndView mv = new ModelAndView("resultPHQ");
-        if (user == null) return new ModelAndView("redirect:/login");
+        if (user == null)
+            return new ModelAndView("redirect:/login");
 
         String sql = "SELECT * FROM phq_results WHERE user_email = ? ORDER BY assessment_date DESC LIMIT 1";
 

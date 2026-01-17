@@ -32,11 +32,6 @@ public class ResourceController {
         System.out.println("DEBUG: User Role: " + (user != null ? user.getRole() : "null"));
 
         // LOGGING: General module usage when visiting main page or detail
-        if ("GET".equals(req.getMethod())) {
-            if (analyticsDAO != null && principal != null) {
-                analyticsDAO.logActivityProgress("Resources", userEmail);
-            }
-        }
 
         if ("POST".equals(req.getMethod())) {
             // Check permissions (Only mhprofessional can manage resources)
