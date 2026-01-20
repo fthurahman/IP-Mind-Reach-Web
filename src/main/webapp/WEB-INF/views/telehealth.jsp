@@ -191,9 +191,10 @@
                     <c:forEach var="counselor" items="${counselors}">
                       <div class="counselor-card bg-white p-6 border-0 shadow-lg rounded-2xl">
                         <div class="space-y-4">
-                          <img src="${counselor.profileImage}" alt="${counselor.name}"
-                            class="w-20 h-20 rounded-full object-cover border-2 border-[#B4C59B]/30 mx-auto"
-                            onerror="this.src='https://via.placeholder.com/80x80/CCCCCC/FFFFFF?text=${counselor.name.charAt(0)}'">
+                          <div
+                            class="w-20 h-20 rounded-full bg-[#F7F3EF] flex items-center justify-center border-2 border-[#B4C59B]/30 mx-auto">
+                            <i data-lucide="user" class="w-10 h-10 text-[#B4C59B]"></i>
+                          </div>
                           <div class="text-center">
                             <h3 class="text-lg mb-1">${counselor.name}</h3>
                             <span
