@@ -52,7 +52,8 @@ public class ForumDAO {
     // --- Post Actions ---
 
     public List<Post> getAllPosts() {
-        String sql = "SELECT * FROM forum_posts ORDER BY created_at DESC";
+        // Only show visible/active posts
+        String sql = "SELECT * FROM forum_posts WHERE status NOT IN ('removed', 'hidden') ORDER BY created_at DESC";
         List<Post> posts = jdbcTemplate.query(sql, postMapper);
 
         // Populate comments for each post (N+1 query, but simpler for this scale)
@@ -81,14 +82,29 @@ public class ForumDAO {
                 post.isReported());
     }
 
-    public void updatePostReportStatus(int id, boolean reported) {
+    public void updatePostReportStatus(int id, boolean reported, String reportedBy) {
+        // 1. Update forum_posts
         String sql = "UPDATE forum_posts SET reported = ? WHERE id = ?";
         jdbcTemplate.update(sql, reported, id);
+
+        // 2. If reported is true, insert into moderation_reports
+        if (reported) {
+            Post p = getPostById(id);
+            if (p != null) {
+                // Check if already reported to avoid duplicates (optional, but good)
+                // For simplicity, just insert. Schema doesn't enforce unique reports per post-user combo but logic might want to.
+                // We'll insert a new report.
+                String reportSql = "INSERT INTO moderation_reports (content, author, reason, reported_by, status, post_id, created_at) " +
+                                   "VALUES (?, ?, ?, ?, 'pending', ?, NOW())";
+                System.out.println("DEBUG: Inserting report for Post ID: " + id + " Reported By: " + reportedBy);
+                jdbcTemplate.update(reportSql, p.getContent(), p.getAuthor(), "User Reported", reportedBy, id);
+            }
+        }
     }
 
     public List<Post> searchPosts(String query) {
         String likeQuery = "%" + query + "%";
-        String sql = "SELECT * FROM forum_posts WHERE author LIKE ? OR topic LIKE ? OR content LIKE ? ORDER BY created_at DESC";
+        String sql = "SELECT * FROM forum_posts WHERE (author LIKE ? OR topic LIKE ? OR content LIKE ?) AND status NOT IN ('removed', 'hidden') ORDER BY created_at DESC";
         List<Post> posts = jdbcTemplate.query(sql, postMapper, likeQuery, likeQuery, likeQuery);
         for (Post p : posts) {
             p.setComments(getCommentsByPostId(p.getId()));
@@ -124,5 +140,17 @@ public class ForumDAO {
     public void addComment(int postId, Comment comment) {
         String sql = "INSERT INTO forum_comments (post_id, author, content, created_at) VALUES (?, ?, ?, NOW())";
         jdbcTemplate.update(sql, postId, comment.getAuthor(), comment.getContent());
+    }
+
+    // --- Restore Helpers ---
+
+    public void setPostReported(int id, boolean reported) {
+        String sql = "UPDATE forum_posts SET reported = ? WHERE id = ?";
+        jdbcTemplate.update(sql, reported, id);
+    }
+
+    public void updateReportStatusByPostId(int postId, String status) {
+        String sql = "UPDATE moderation_reports SET status = ? WHERE post_id = ?";
+        jdbcTemplate.update(sql, status, postId);
     }
 }

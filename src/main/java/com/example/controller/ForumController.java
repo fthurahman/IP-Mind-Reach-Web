@@ -51,7 +51,8 @@ public class ForumController {
                 if (post != null) {
                     boolean isAlreadyReported = post.isReported();
                     // Toggle report status
-                    forumDAO.updatePostReportStatus(id, !isAlreadyReported);
+                    String reportedBy = (principal != null) ? principal.getName() : "Anonymous";
+                    forumDAO.updatePostReportStatus(id, !isAlreadyReported, reportedBy);
                     if (isAlreadyReported) {
                         resultStatus = "unreported";
                     }

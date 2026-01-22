@@ -10,6 +10,7 @@ public class ReportedPost {
   private String reportedBy;
   private Date date;
   private String status; // pending | resolved | removed (kau decide)
+  private String postId;
 
   public ReportedPost() {}
 
@@ -20,7 +21,8 @@ public class ReportedPost {
       String reason,
       String reportedBy,
       Date date,
-      String status
+      String status,
+      String postId
   ) {
     this.id = id;
     this.content = content;
@@ -29,6 +31,7 @@ public class ReportedPost {
     this.reportedBy = reportedBy;
     this.date = date;
     this.status = status;
+    this.postId = postId;
   }
 
   public String getId() { return id; }
@@ -51,4 +54,7 @@ public class ReportedPost {
 
   public String getStatus() { return status; }
   public void setStatus(String status) { this.status = status; }
+
+  public String getPostId() { return postId; }
+  public void setPostId(String postId) { this.postId = postId; }
 }

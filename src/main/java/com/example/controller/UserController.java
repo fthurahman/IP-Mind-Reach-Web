@@ -156,17 +156,16 @@ public class UserController {
 		try {
 			model.addAttribute("engagementData", mapper.writeValueAsString(analyticsDAO.getEngagementTrend()));
 			model.addAttribute("moduleUsageData", mapper.writeValueAsString(analyticsDAO.getModuleUsage()));
-			model.addAttribute("completionRatesData", mapper.writeValueAsString(analyticsDAO.getCompletionRates()));
+			model.addAttribute("moodTrendData", mapper.writeValueAsString(analyticsDAO.getGlobalMoodTrends()));
 		} catch (com.fasterxml.jackson.core.JsonProcessingException e) {
 			e.printStackTrace();
 			// Fallback empty arrays
 			model.addAttribute("engagementData", "[]");
 			model.addAttribute("moduleUsageData", "[]");
-			model.addAttribute("completionRatesData", "[]");
+			model.addAttribute("moodTrendData", "[]");
 		}
 
 		// 3. Lists
-		model.addAttribute("topResources", analyticsDAO.getTopResources());
 		model.addAttribute("reportedPosts", analyticsDAO.getReportedPosts());
 
 		return "homeAdmin";

@@ -37,19 +37,32 @@ public class PageController {
     try {
       model.addAttribute("engagementData", mapper.writeValueAsString(analyticsDAO.getEngagementTrend()));
       model.addAttribute("moduleUsageData", mapper.writeValueAsString(analyticsDAO.getModuleUsage()));
-      model.addAttribute("completionRatesData", mapper.writeValueAsString(analyticsDAO.getCompletionRates()));
+      model.addAttribute("moodTrendData", mapper.writeValueAsString(analyticsDAO.getGlobalMoodTrends()));
     } catch (JsonProcessingException e) {
       e.printStackTrace();
       // Fallback empty arrays
       model.addAttribute("engagementData", "[]");
       model.addAttribute("moduleUsageData", "[]");
-      model.addAttribute("completionRatesData", "[]");
+      model.addAttribute("moodTrendData", "[]");
     }
 
     // 3. Lists
-    model.addAttribute("topResources", analyticsDAO.getTopResources());
+    model.addAttribute("reportedPosts", analyticsDAO.getReportedPosts());
     model.addAttribute("reportedPosts", analyticsDAO.getReportedPosts());
 
-    return "analytics";
+    return "homeAdmin";
+  }
+
+  @org.springframework.web.bind.annotation.PostMapping("/admin/moderate")
+  @org.springframework.web.bind.annotation.ResponseBody
+  public String moderateReport(@org.springframework.web.bind.annotation.RequestParam("id") int id,
+      @org.springframework.web.bind.annotation.RequestParam("action") String action) {
+    System.out.println("DEBUG: moderateReport called with ID: " + id + " Action: " + action);
+    
+    String msg = "Processing ID: " + id + " Action: " + action;
+    analyticsDAO.updateReportStatus(id, action);
+    msg += " -> Status Updated";
+    
+    return msg;
   }
 }
