@@ -143,9 +143,6 @@ CREATE TABLE IF NOT EXISTS resources (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Seed Data (runs on every startup if using schema.sql and Spring Boot default settings, but harmless if using INSERT IGNORE or checking existence)
--- Note: schema.sql typically runs DDL. data.sql is better for DML. But here we append since user is editing schema.sql.
--- Using simple INSERTs with IDs. If table is fresh, it works. If table exists and has data, primary key constraint fails (which is fine, prevents duplication).
 
 -- Post 1
 INSERT INTO
