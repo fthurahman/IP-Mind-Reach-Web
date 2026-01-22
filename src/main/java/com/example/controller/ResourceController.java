@@ -24,7 +24,6 @@ public class ResourceController {
 
         HttpSession session = req.getSession();
         com.example.model.User user = (com.example.model.User) session.getAttribute("loggedUser");
-        String userEmail = (principal != null) ? principal.getName() : "anonymous";
 
         System.out.println("DEBUG: ResourceController handleRequest");
         System.out.println("DEBUG: Method: " + req.getMethod());
@@ -79,7 +78,7 @@ public class ResourceController {
                 int id = Integer.parseInt(idParam);
                 Resource.deleteResource(id);
                 return new ModelAndView("redirect:resources?status=deleted");
-            }
+
         }
 
         if ("GET".equals(req.getMethod())) {
@@ -88,8 +87,17 @@ public class ResourceController {
                 Resource resource = Resource.findById(id);
                 if (resource != null) {
                     // LOGGING: Specific resource view
-                    if (analyticsDAO != null && principal != null) {
-                        analyticsDAO.logResourceView(resource.getTitle(), userEmail);
+                    if (analyticsDAO != null) {
+                        String emailToLog = "anonymous";
+                        if (user != null) {
+                            emailToLog = user.getEmail();
+                        } else if (principal != null) {
+                            emailToLog = principal.getName();
+                        }
+
+                        if (!"anonymous".equals(emailToLog)) {
+                            analyticsDAO.logResourceView(resource.getTitle(), emailToLog);
+                        }
                     }
 
                     ModelAndView mv = new ModelAndView();

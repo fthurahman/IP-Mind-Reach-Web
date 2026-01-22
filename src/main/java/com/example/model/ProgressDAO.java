@@ -48,8 +48,21 @@ public class ProgressDAO {
             try {
                 jdbcTemplate.execute("ALTER TABLE users ADD COLUMN current_streak INT DEFAULT 0");
             } catch (Exception e) {
-                // Ignore if column already exists (Duplicate column name)
+                // Ignore if column already exists
             }
+
+            // Ensure resource_views table exists (for analytics)
+            jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS resource_views (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                    "resource_name VARCHAR(255) NOT NULL, " +
+                    "viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
+                    "user_email VARCHAR(255), " +
+                    "FOREIGN KEY (user_email) REFERENCES users (email) ON DELETE SET NULL)");
+
+            // Fix for existing data: Update Self-Help total to 5
+            jdbcTemplate.update(
+                    "UPDATE activity_progress SET total_count = 5 WHERE activity_name = 'Self-Help' AND total_count = 15");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -161,7 +174,7 @@ public class ProgressDAO {
         // 2. Others (from activity_progress)
         String[] predefinedActivities = { "Self-Help", "Resources", "Forum Posts" };
         String[] emojis = { "❤️", "📚", "💬" };
-        int[] defaultTotals = { 15, 10, 5 };
+        int[] defaultTotals = { 5, 10, 5 };
 
         for (int i = 0; i < predefinedActivities.length; i++) {
             String actName = predefinedActivities[i];
@@ -179,13 +192,24 @@ public class ProgressDAO {
                 // Fix emoji as it is not stored in DB currently (or we can store it)
                 act.setName(emojis[i]);
                 act.setFullName(actName); // Ensure fullName is set correctly
+
+                // Dynamic Total for Resources
+                if ("Resources".equals(actName)) {
+                    act.setTotal(Resource.mockResources().size());
+                }
+
                 activities.add(act);
 
             } catch (EmptyResultDataAccessException e) {
                 // Create default entry with 0 completed
+                int total = defaultTotals[i];
+                if ("Resources".equals(actName)) {
+                    total = Resource.mockResources().size();
+                }
+
                 String insertSql = "INSERT INTO activity_progress (user_email, activity_name, full_name, completed_count, total_count) VALUES (?, ?, ?, 0, ?)";
-                jdbcTemplate.update(insertSql, email, actName, actName, defaultTotals[i]);
-                activities.add(new Activity(emojis[i], actName, 0, defaultTotals[i]));
+                jdbcTemplate.update(insertSql, email, actName, actName, total);
+                activities.add(new Activity(emojis[i], actName, 0, total));
             }
         }
 

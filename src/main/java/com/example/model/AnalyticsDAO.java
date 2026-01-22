@@ -44,20 +44,26 @@ public class AnalyticsDAO {
         if (uniqueCount == null)
             uniqueCount = 0;
 
-        // Upsert into activity_progress
-        // We use ON DUPLICATE KEY UPDATE logic manually via SELECT/UPDATE/INSERT or
-        // MySQL specific syntax.
-        // Since we are using standard JDBC here and to match logActivityProgress style:
+        System.out.println("DEBUG: updateResourceActivityProgress for " + email);
+        System.out.println("DEBUG: Unique Count from DB: " + uniqueCount);
 
+        // Upsert into activity_progress
+        // ...
         String activityName = "Resources";
 
         String updateSql = "UPDATE activity_progress SET completed_count = ? WHERE user_email = ? AND activity_name = ?";
         int rowsUpdated = jdbcTemplate.update(updateSql, uniqueCount, email, activityName);
+        System.out.println("DEBUG: Rows updated in activity_progress: " + rowsUpdated);
 
         if (rowsUpdated == 0) {
-            String insertSql = "INSERT INTO activity_progress (user_email, activity_name, completed_count, total_count) VALUES (?, ?, ?, 10)";
+            String insertSql = "INSERT INTO activity_progress (user_email, activity_name, completed_count, total_count) VALUES (?, ?, ?, ?)";
             try {
-                jdbcTemplate.update(insertSql, email, activityName, uniqueCount);
+                int total = 10;
+                if ("Resources".equals(activityName)) {
+                    total = Resource.mockResources().size();
+                }
+                jdbcTemplate.update(insertSql, email, activityName, uniqueCount, total);
+                System.out.println("DEBUG: Inserted new row into activity_progress. Total: " + total);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -71,11 +77,14 @@ public class AnalyticsDAO {
         String updateSql = "UPDATE activity_progress SET completed_count = completed_count + 1 WHERE user_email = ? AND activity_name = ?";
         int rowsUpdated = jdbcTemplate.update(updateSql, email, activityName);
 
-        // 2. If no row existed, insert a new one
         if (rowsUpdated == 0) {
-            String insertSql = "INSERT INTO activity_progress (user_email, activity_name, completed_count, total_count) VALUES (?, ?, 1, 10)";
+            String insertSql = "INSERT INTO activity_progress (user_email, activity_name, completed_count, total_count) VALUES (?, ?, 1, ?)";
             try {
-                jdbcTemplate.update(insertSql, email, activityName);
+                int total = 10;
+                if ("Resources".equals(activityName)) {
+                    total = Resource.mockResources().size();
+                }
+                jdbcTemplate.update(insertSql, email, activityName, total);
             } catch (Exception e) {
                 // In case race condition or unique key actually exists now
                 e.printStackTrace();
@@ -105,7 +114,7 @@ public class AnalyticsDAO {
         int rowsUpdated = jdbcTemplate.update(updateSql, totalCount, email, activityName);
 
         if (rowsUpdated == 0) {
-            String insertSql = "INSERT INTO activity_progress (user_email, activity_name, completed_count, total_count) VALUES (?, ?, ?, 15)";
+            String insertSql = "INSERT INTO activity_progress (user_email, activity_name, completed_count, total_count) VALUES (?, ?, ?, 5)";
             try {
                 jdbcTemplate.update(insertSql, email, activityName, totalCount);
             } catch (Exception e) {
@@ -225,4 +234,5 @@ public class AnalyticsDAO {
                     rs.getString("status"));
         });
     }
+
 }
