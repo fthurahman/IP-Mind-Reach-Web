@@ -97,13 +97,7 @@ CREATE TABLE IF NOT EXISTS analytics_sessions (
     FOREIGN KEY (user_email) REFERENCES users (email) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS resource_views (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    resource_name VARCHAR(255) NOT NULL,
-    viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    user_email VARCHAR(255),
-    FOREIGN KEY (user_email) REFERENCES users (email) ON DELETE SET NULL
-);
+
 
 CREATE TABLE IF NOT EXISTS moderation_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -112,8 +106,10 @@ CREATE TABLE IF NOT EXISTS moderation_reports (
     reason VARCHAR(255),
     reported_by VARCHAR(255),
     status VARCHAR(50) DEFAULT 'pending', -- pending, resolved, hidden, removed
+    post_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (reported_by) REFERENCES users (email) ON DELETE SET NULL
+    FOREIGN KEY (reported_by) REFERENCES users (email) ON DELETE SET NULL,
+    FOREIGN KEY (post_id) REFERENCES forum_posts (id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS forum_posts (
@@ -281,3 +277,5 @@ WHERE
         WHERE
             id = 4
     );
+
+ALTER TABLE moderation_reports ADD COLUMN IF NOT EXISTS post_id INT;

@@ -25,44 +25,7 @@ public class AnalyticsDAO {
         }
     }
 
-    public void logResourceView(String resourceName, String email) {
-        String sql = "INSERT INTO resource_views (resource_name, user_email, viewed_at) VALUES (?, ?, NOW())";
-        try {
-            jdbcTemplate.update(sql, resourceName, email);
 
-            // NEW: After logging view, update valid activity progress based on unique count
-            updateResourceActivityProgress(email);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateResourceActivityProgress(String email) {
-        // Count distinct resources viewed by this user
-        String countSql = "SELECT COUNT(DISTINCT resource_name) FROM resource_views WHERE user_email = ?";
-        Integer uniqueCount = jdbcTemplate.queryForObject(countSql, Integer.class, email);
-        if (uniqueCount == null)
-            uniqueCount = 0;
-
-        // Upsert into activity_progress
-        // We use ON DUPLICATE KEY UPDATE logic manually via SELECT/UPDATE/INSERT or
-        // MySQL specific syntax.
-        // Since we are using standard JDBC here and to match logActivityProgress style:
-
-        String activityName = "Resources";
-
-        String updateSql = "UPDATE activity_progress SET completed_count = ? WHERE user_email = ? AND activity_name = ?";
-        int rowsUpdated = jdbcTemplate.update(updateSql, uniqueCount, email, activityName);
-
-        if (rowsUpdated == 0) {
-            String insertSql = "INSERT INTO activity_progress (user_email, activity_name, completed_count, total_count) VALUES (?, ?, ?, 10)";
-            try {
-                jdbcTemplate.update(insertSql, email, activityName, uniqueCount);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public void logActivityProgress(String activityName, String email) {
         System.out.println("DEBUG: Analytics Logging - " + activityName + " for " + email);
@@ -164,21 +127,39 @@ public class AnalyticsDAO {
     // --- Charts Data ---
 
     public List<Map<String, Object>> getEngagementTrend() {
+        // 1. Generate last 7 days map (date -> data)
+        Map<String, Map<String, Object>> dateMap = new java.util.LinkedHashMap<>();
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("MM/dd");
+        java.time.LocalDate today = java.time.LocalDate.now();
+
+        // Populate with zeros
+        for (int i = 6; i >= 0; i--) {
+            String dateStr = today.minusDays(i).format(formatter);
+            Map<String, Object> data = new HashMap<>();
+            data.put("date", dateStr);
+            data.put("users", 0);
+            data.put("sessions", 0);
+            dateMap.put(dateStr, data);
+        }
+
+        // 2. Query DB
         String sql = "SELECT DATE_FORMAT(start_time, '%m/%d') as dateStr, " +
                 "COUNT(DISTINCT user_email) as users, " +
                 "COUNT(*) as sessions " +
                 "FROM analytics_sessions " +
                 "WHERE start_time >= DATE_SUB(NOW(), INTERVAL 7 DAY) " +
-                "GROUP BY DATE_FORMAT(start_time, '%m/%d') " +
-                "ORDER BY MIN(start_time) ASC";
+                "GROUP BY DATE_FORMAT(start_time, '%m/%d')";
 
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("date", rs.getString("dateStr"));
-            map.put("users", rs.getInt("users"));
-            map.put("sessions", rs.getInt("sessions"));
-            return map;
+        jdbcTemplate.query(sql, (rs) -> {
+            String dateStr = rs.getString("dateStr");
+            if (dateMap.containsKey(dateStr)) {
+                Map<String, Object> data = dateMap.get(dateStr);
+                data.put("users", rs.getInt("users"));
+                data.put("sessions", rs.getInt("sessions"));
+            }
         });
+
+        return new java.util.ArrayList<>(dateMap.values());
     }
 
     public List<Map<String, Object>> getModuleUsage() {
@@ -191,26 +172,21 @@ public class AnalyticsDAO {
         });
     }
 
-    public List<Map<String, Object>> getCompletionRates() {
-        // Fix for integer division: Multiply by 100.0 first to force float calculation
-        String sql = "SELECT activity_name, AVG((completed_count * 100.0) / total_count) as avg_rate FROM activity_progress GROUP BY activity_name";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+    public List<Map<String, Object>> getGlobalMoodTrends() {
+        // Daily average mood last 7 days
+        String sql = "SELECT entry_date, AVG(mood_value) as avg_mood FROM mood_entries GROUP BY entry_date ORDER BY entry_date DESC LIMIT 7";
+        List<Map<String, Object>> trends = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("name", rs.getString("activity_name"));
-            map.put("value", Math.round(rs.getDouble("avg_rate")));
+            map.put("date", new java.text.SimpleDateFormat("MMM dd").format(rs.getDate("entry_date")));
+            map.put("value", String.format("%.1f", rs.getDouble("avg_mood")));
             return map;
         });
+        // Reverse to show oldest to newest
+        java.util.Collections.reverse(trends);
+        return trends;
     }
 
-    public List<Map<String, Object>> getTopResources() {
-        String sql = "SELECT resource_name, COUNT(*) as views FROM resource_views GROUP BY resource_name ORDER BY views DESC LIMIT 5";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("title", rs.getString("resource_name"));
-            map.put("views", rs.getInt("views"));
-            return map;
-        });
-    }
+
 
     public List<ReportedPost> getReportedPosts() {
         String sql = "SELECT * FROM moderation_reports ORDER BY created_at DESC";
@@ -222,7 +198,46 @@ public class AnalyticsDAO {
                     rs.getString("reason"),
                     rs.getString("reported_by"),
                     rs.getTimestamp("created_at"),
-                    rs.getString("status"));
+                    rs.getString("status"),
+                    rs.getObject("post_id") != null ? String.valueOf(rs.getInt("post_id")) : null);
         });
     }
+
+    public void updateReportStatus(int reportId, String action) {
+        String status = "resolved";
+        if ("hide".equals(action))
+            status = "hidden";
+        if ("remove".equals(action))
+            status = "removed";
+        if ("approve".equals(action))
+            status = "resolved";
+
+        // Update report status
+        String updateReportSql = "UPDATE moderation_reports SET status = ? WHERE id = ?";
+        jdbcTemplate.update(updateReportSql, status, reportId);
+
+        // Get post_id from report
+        String getPostIdSql = "SELECT post_id FROM moderation_reports WHERE id = ?";
+        Integer postId;
+        try {
+            postId = jdbcTemplate.queryForObject(getPostIdSql, Integer.class, reportId);
+        } catch (Exception e) {
+            postId = null;
+        }
+
+        if (postId != null) {
+            if ("hide".equals(action)) {
+                String updatePostSql = "UPDATE forum_posts SET status = 'hidden' WHERE id = ?";
+                jdbcTemplate.update(updatePostSql, postId);
+            } else if ("remove".equals(action)) {
+                String updatePostSql = "UPDATE forum_posts SET status = 'removed' WHERE id = ?";
+                jdbcTemplate.update(updatePostSql, postId);
+            } else if ("approve".equals(action)) {
+                String updatePostSql = "UPDATE forum_posts SET reported = false, status = 'active' WHERE id = ?";
+                jdbcTemplate.update(updatePostSql, postId);
+            }
+        }
+    }
+
+
 }

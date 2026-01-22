@@ -87,10 +87,7 @@ public class ResourceController {
                 int id = Integer.parseInt(idParam);
                 Resource resource = Resource.findById(id);
                 if (resource != null) {
-                    // LOGGING: Specific resource view
-                    if (analyticsDAO != null && principal != null) {
-                        analyticsDAO.logResourceView(resource.getTitle(), userEmail);
-                    }
+
 
                     ModelAndView mv = new ModelAndView();
                     mv.addObject("resource", resource);

@@ -372,8 +372,7 @@
           <!-- Tabs -->
           <div class="tabs">
             <button class="tabBtn active" data-tab="engagement">Engagement</button>
-            <button class="tabBtn" data-tab="modules">Module Usage</button>
-            <button class="tabBtn" data-tab="resources">Top Resources</button>
+            <button class="tabBtn" data-tab="modules">Usage & Mood</button>
             <button class="tabBtn" data-tab="moderation">Moderation</button>
           </div>
 
@@ -398,31 +397,11 @@
               </div>
 
               <div class="card panelCard">
-                <h3 class="panelTitle">Completion Rates</h3>
+                <h3 class="panelTitle">Global Mood Trends</h3>
                 <div class="chartBox small">
-                  <canvas id="barChart"></canvas>
+                  <canvas id="moodChart"></canvas>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <!-- Resources -->
-          <div class="panel" id="tab-resources">
-            <div class="card panelCard">
-              <h3 class="panelTitle">Most Viewed Resources</h3>
-
-              <c:forEach var="res" items="${topResources}">
-                <div class="listItem">
-                  <div>
-                    <strong>${res.title}</strong>
-                    <div class="small">${res.views} views</div>
-                  </div>
-                </div>
-              </c:forEach>
-              
-              <c:if test="${empty topResources}">
-                <div class="empty">No data available</div>
-              </c:if>
             </div>
           </div>
 
@@ -487,13 +466,13 @@
           // ===== Chart instances (global) =====
           let lineChartInstance = null;
           let pieChartInstance = null;
-          let barChartInstance = null;
+          let moodChartInstance = null;
 
           // ✅ helper: resize charts after tab becomes visible (fix Chart.js weird render)
           function resizeAllCharts() {
             if (lineChartInstance) lineChartInstance.resize();
             if (pieChartInstance) pieChartInstance.resize();
-            if (barChartInstance) barChartInstance.resize();
+            if (moodChartInstance) moodChartInstance.resize();
           }
 
           // Tabs (animated + chart-safe)
@@ -551,9 +530,9 @@
           })();
 
           // ===== Data =====
-          const engagementData = ${engagementData};
-          const moduleUsageData = ${moduleUsageData};
-          const completionRatesData = ${completionRatesData};
+          var engagementData = ${engagementData};
+          var moduleUsageData = ${moduleUsageData};
+          var moodTrendData = ${moodTrendData};
 
           const COLORS = [
             "#B4C59B",
@@ -640,37 +619,37 @@
             },
           });
 
-          // Bar chart (✅ now it shows % completion, looks logical)
-          barChartInstance = new Chart(document.getElementById("barChart"), {
-            type: "bar",
+          // Mood chart (Line)
+          moodChartInstance = new Chart(document.getElementById("moodChart"), {
+            type: "line",
             data: {
-              labels: completionRatesData.map((d) => d.name),
-              datasets: [
-                {
-                  label: "Completion %",
-                  data: completionRatesData.map((d) => d.value),
-                  backgroundColor: "#B4C59B",
-                  borderRadius: 10,
-                  maxBarThickness: 44,
-                },
-              ],
+              labels: moodTrendData.map(d => d.date),
+              datasets: [{
+                label: "Average Mood",
+                data: moodTrendData.map(d => d.value),
+                borderColor: "#10b981",
+                backgroundColor: "#10b981",
+                tension: 0.4,
+                borderWidth: 3,
+                pointRadius: 4
+              }]
             },
             options: {
               responsive: true,
               maintainAspectRatio: false,
-              plugins: { legend: { display: false } },
               scales: {
-                x: { ticks: { maxRotation: 0, minRotation: 0 } },
-                y: {
-                  beginAtZero: true,
-                  suggestedMax: 100,
-                  ticks: {
-                    callback: (v) => v + "%",
-                  },
-                  grid: { color: "rgba(0,0,0,0.05)" },
+                y: { 
+                    beginAtZero: true, 
+                    max: 10,
+                    grid: { borderDash: [2, 2] },
+                    ticks: { stepSize: 1 }
                 },
+                x: { grid: { display: false } }
               },
-            },
+              plugins: {
+                legend: { position: 'top' }
+              }
+            }
           });
 
           // ✅ once at start (in case browser loads fonts late)

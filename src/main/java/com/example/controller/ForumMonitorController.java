@@ -41,8 +41,8 @@ public class ForumMonitorController {
                 } else if ("remove".equals(action)) {
                     forumDAO.updatePostStatus(id, "removed");
                 } else if ("restore".equals(action)) {
-                    // Restore from removed/hidden back to visible
-                    forumDAO.updatePostStatus(id, "visible");
+                    // Restore from removed/hidden back to active
+                    forumDAO.updatePostStatus(id, "active");
                 }
             }
             // Redirect to preserve the view state
