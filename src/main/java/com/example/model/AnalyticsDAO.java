@@ -232,8 +232,6 @@ public class AnalyticsDAO {
         return trends;
     }
 
-
-
     public List<ReportedPost> getReportedPosts() {
         String sql = "SELECT * FROM moderation_reports ORDER BY created_at DESC";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -247,5 +245,24 @@ public class AnalyticsDAO {
                     rs.getString("status"),
                     rs.getObject("post_id") != null ? String.valueOf(rs.getInt("post_id")) : null);
         });
+    }
+
+    public void updateReportStatus(int id, String action) {
+        String status = "resolved";
+        if ("remove".equals(action)) {
+            status = "removed";
+        } else if ("hide".equals(action)) {
+            status = "hidden";
+        } else if ("approve".equals(action)) {
+            status = "approved";
+        }
+
+        String sql = "UPDATE moderation_reports SET status = ? WHERE id = ?";
+        try {
+            jdbcTemplate.update(sql, status, id);
+            System.out.println("DEBUG: Updated report " + id + " to " + status);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

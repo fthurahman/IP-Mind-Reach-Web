@@ -48,7 +48,6 @@ public class PageController {
 
     // 3. Lists
     model.addAttribute("reportedPosts", analyticsDAO.getReportedPosts());
-    model.addAttribute("reportedPosts", analyticsDAO.getReportedPosts());
 
     return "homeAdmin";
   }
@@ -58,11 +57,11 @@ public class PageController {
   public String moderateReport(@org.springframework.web.bind.annotation.RequestParam("id") int id,
       @org.springframework.web.bind.annotation.RequestParam("action") String action) {
     System.out.println("DEBUG: moderateReport called with ID: " + id + " Action: " + action);
-    
+
     String msg = "Processing ID: " + id + " Action: " + action;
     analyticsDAO.updateReportStatus(id, action);
     msg += " -> Status Updated";
-    
+
     return msg;
   }
 }

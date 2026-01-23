@@ -79,6 +79,7 @@ public class ResourceController {
                 Resource.deleteResource(id);
                 return new ModelAndView("redirect:resources?status=deleted");
 
+            }
         }
 
         if ("GET".equals(req.getMethod())) {
